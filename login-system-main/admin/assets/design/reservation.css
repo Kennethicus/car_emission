@@ -1,0 +1,127 @@
+
+
+    
+/* Custom styles for DataTable */
+#carEmissionTable {
+    border-collapse: collapse;
+    width: 100%;
+    border-top: 1px solid rgba(206, 212, 218, 0) ;
+}
+
+#carEmissionTable th {
+    border: 1px solid rgba(206, 212, 218, 0.5);
+    border-top: none !important;
+    padding: 8px;
+    text-align: left;
+}
+
+#carEmissionTable td {
+    border: 1px solid rgba(206, 212, 218, 0.5);
+    padding: 8px;
+    text-align: left;
+}
+
+#carEmissionTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+#carEmissionTable tbody tr:hover {
+    background-color: #e2e6ea;
+}
+
+/* Custom styles for DataTable previous and next buttons */
+#carEmissionTable_paginate .paginate_button:hover {
+    background-color: #007bff; /* Change the background color on hover */
+    color: #fff; /* Change the text color on hover */
+}
+
+/* Style for the clear button (x icon) */
+#clearSearchBtn {
+    color: #ced4da;
+    border: 1px solid #ced4da;
+    background-color: transparent;
+}
+
+#clearSearchBtn:hover {
+    color: #000;
+}
+
+/* Style for the DataTable search input */
+#carEmissionTable_filter input[type="search"] {
+    border: 1px solid #ced4da;
+    padding: 5px;
+}
+
+/* Style for the DataTable search button */
+#carEmissionTable_filter button {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+    padding: 5px 10px;
+}
+
+#carEmissionTable_filter button:hover {
+    background-color: #0056b3;
+}
+
+/* Style for DataTable length change select input */
+#carEmissionTable_length select {
+    border: 1px solid #ced4da;
+    padding: 5px;
+}
+
+/* Style for DataTable info display */
+/* #carEmissionTable_info {
+    margin-top: 10px;
+} */
+
+/* Style for DataTable pagination */
+#carEmissionTable_paginate .paginate_button {
+    background-color: #4e73df !important;
+    color: #fff !important;
+    border: 1px solid #4e73df !important;
+    padding: 5px 10px;
+    border-radius: 5px !important; /* Add this line for rounded corners */
+
+}
+
+#carEmissionTable_paginate .paginate_button:hover {
+    background-color: #4262be !important;
+    color: #fff !important; 
+}
+
+
+.no-vertical-border {
+    border-collapse: collapse !important;
+}
+
+.no-vertical-border th,
+.no-vertical-border td {
+    border-right: none !important;
+    border-left: none !important;
+}
+
+.no-vertical-border th.date,
+.no-vertical-border td.date {
+    border-left: 1px solid #dee2e6 !important; /* Add a left border to the "Date" column */
+    border-right: none !important; /* Remove the right border of the "Date" column */
+   
+}
+
+.no-vertical-border th.action {
+    border-right: 1px solid #dee2e6 !important; /* Add the border color of your choice to the "Action" column header */
+
+}
+
+.no-vertical-border td.action {
+    border-right: 1px solid #dee2e6 !important; /* Add the border color of your choice to the "Action" column cells */
+}
+
+.no-vertical-border tr {
+    border-left: 1px solid #dee2e6 !important; /* Add a left border to all rows */
+    border-right: 1px solid #dee2e6 !important; /* Add a left border to all rows */
+}
+
+
+
+
