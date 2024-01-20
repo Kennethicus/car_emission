@@ -36,6 +36,8 @@ if (isset($_GET['date'])) {
             'title' => $row['title'],
             'qty_of_person' => $row['qty_of_person'],
             'reserve_count' => $row['reserve_count'],
+            'price_3' => $row['price_3'],
+            'price_2' => $row['price_2'],
             'price_1' => $row['price_1'],
             'start' => $row['start_datetime'],
             'end' => $row['end_datetime'],

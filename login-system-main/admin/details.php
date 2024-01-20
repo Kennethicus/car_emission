@@ -43,6 +43,7 @@ if (isset($_GET['id']) && isset($_GET['ticketId'])) {
     echo "Reservation details not found!";
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>

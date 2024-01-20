@@ -21,6 +21,11 @@ if (!$customerQuery) {
     die("Error in customer query: " . $connect->error);
 }
 
+$customerQuery = $connect->prepare("SELECT user_id, first_name, middle_name, last_name FROM login WHERE email = ?");
+if (!$customerQuery) {
+    die("Error in customer query: " . $connect->error);
+}
+
 $customerQuery->bind_param("s", $customerEmail);
 $customerQuery->execute();
 
@@ -38,12 +43,12 @@ $customerQuery->close();
 // Check if the customer has any bookings
 $bookingQuery = $connect->prepare("SELECT ce.*, sl.start_datetime, sl.end_datetime FROM car_emission ce 
     JOIN schedule_list sl ON ce.event_id = sl.id 
-    WHERE ce.customer_email = ?");
+    WHERE ce.user_id = ?"); // Change from customer_email to user_id
 if (!$bookingQuery) {
     die("Error in booking query: " . $connect->error);
 }
 
-$bookingQuery->bind_param("s", $customerEmail);
+$bookingQuery->bind_param("i", $customerDetails['user_id']); // Use user_id instead of customer_email
 $bookingQuery->execute();
 
 $bookingResult = $bookingQuery->get_result();
@@ -51,6 +56,7 @@ $bookingResult = $bookingQuery->get_result();
 if (!$bookingResult) {
     die("Error fetching booking details: " . $bookingQuery->error);
 }
+
 ?>
 
 <!DOCTYPE html>
