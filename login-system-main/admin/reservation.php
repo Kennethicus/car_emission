@@ -185,6 +185,7 @@ $doneResult = $connect->query($doneQuery);
                 <p>Are you sure you want to cancel this reservation for:</p>
                 <p id="reservationIdDisplay" class="font-weight-bold"></p>
                 <p id="customerName"></p>
+                <p id="plateNumbers"></p>
                 <p id="EventDate"></p>
                 <p id="EventStartDate"></p>
                 <p id="EventEndDate"></p>
@@ -329,6 +330,7 @@ $.ajax({
     success: function (data) {
         // Display the details in the modal
         $('#customerName').text('Customer Name: ' + data.customerName);
+        $('#plateNumbers').text('Plate Number: ' + data.plateNumber);
         $('#EventDate').text('Event Date: ' + data.eventDate);
         $('#EventStartDate').text('Start Time: ' + data.startTime);
         $('#EventEndDate').text('End Time: ' + data.endTime);
@@ -456,7 +458,7 @@ function displayCarEmission($carEmissionResult)
         // Inside the displayCarEmission function
      
         echo '<table id="carEmissionTable" class="table table-bordered custom-table no-vertical-border">';
-        echo '<thead><tr><th class="date">Date</th><th>Time</th><th>Ticket ID</th><th>Customer Name</th><th>Plate Number</th><th class="action">Action</th></tr></thead>';
+        echo '<thead><tr><th class="date">Date</th><th>Time</th><th>Ticket ID</th><th>Customer Name</th><th>Plate Number</th><th>Booked by</th><th class="action">Action</th></tr></thead>';
         // Rest of your table rendering code...
         
         echo '<tbody>';
@@ -469,6 +471,7 @@ function displayCarEmission($carEmissionResult)
             $lastName = $row['customer_last_name'];
             $status = $row['status'];
             $eventId = $row['event_id'];
+            $adminId = $row['smurf_admin_id'];
 
             // Retrieve start and end datetime from schedule_list
             $scheduleQuery = "SELECT start_datetime, end_datetime FROM schedule_list WHERE id = $eventId";
@@ -477,23 +480,26 @@ function displayCarEmission($carEmissionResult)
             $startDatetime = $scheduleRow['start_datetime'];
             $endDatetime = $scheduleRow['end_datetime'];
 
+            // Determine "Booked by" status
+            $bookedBy = ($adminId !== null) ? 'Admin' : 'Customer';
+
             echo '<tr>';
             echo '<td>' . date('M. j, Y', strtotime($startDatetime)) . '</td>';
             echo '<td>' . date('g:ia', strtotime($startDatetime)) . ' - ' . date('g:ia', strtotime($endDatetime)) . '</td>';
             echo '<td>' . $ticketingId . '</td>';
             echo '<td>' . $firstName . ' ' . $lastName . '</td>';
             echo '<td>' . $plateNumber . '</td>';
+            echo '<td>' . $bookedBy . '</td>';
             echo '<td>';
             
-         // Display "Cancel" link only for entries with status 'booked'
-if ($status === 'booked') {
-echo '<a href="#" class="cancel-link" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</a>';
-    echo ' '; // Add a space character
-    echo '<a href="details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '">Details</a>';
-} else {
-    echo '<a href="details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '">Details</a>';
-}
-
+            // Display "Cancel" link only for entries with status 'booked'
+            if ($status === 'booked') {
+                echo '<a href="#" class="cancel-link" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</a>';
+                echo ' '; // Add a space character
+                echo '<a href="details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '">Details</a>';
+            } else {
+                echo '<a href="details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '">Details</a>';
+            }
             
             echo '</td>';
             echo '</tr>';
@@ -505,5 +511,6 @@ echo '<a href="#" class="cancel-link" data-reservation-id="' . $reserve_id . '" 
         echo ' ';
     }
 }
+
 ?>
 

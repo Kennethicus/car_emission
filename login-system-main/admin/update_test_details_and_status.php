@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     do {
         // Generate a 7-digit random number for auth_code
         $auth_code = rand(1000000, 9999999);
-     $finalize = 1;
+        $finalize = 1;
         // Generate the cec_number based on the year today + 000000 + petc_or
         $yearToday = date('Y');
         $cec_number = $yearToday . '000000' . $petc_or;
@@ -53,31 +53,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } while ($cecNumberExistsResult->num_rows > 0);
 
-    // Update the car_emission table with the generated values
-    $updateCarEmissionQuery = "UPDATE car_emission SET petc_or = '$petc_or', payment_date = '$payment_date', status = '$doned_customer', paymentStatus = '$payment_status', cec_number = '$cec_number' WHERE id = '$reserve_id'";
+    // Fetch the current payment status from the database
+    $paymentStatusQuery = "SELECT paymentStatus FROM car_emission WHERE id = '$reserve_id'";
+    $paymentStatusResult = $connect->query($paymentStatusQuery);
 
-    if ($connect->query($updateCarEmissionQuery) === TRUE) {
-        // Update the test_result table with the generated auth_code
-        $updateTestResultQuery = "UPDATE test_result SET auth_code = '$auth_code', finalize = '$finalize' WHERE booking_id = '$reserve_id'";
+    if ($paymentStatusResult->num_rows == 1) {
+        $currentPaymentStatus = $paymentStatusResult->fetch_assoc()['paymentStatus'];
 
-        if ($connect->query($updateTestResultQuery) === TRUE) {
-            // Assuming you have fetched the updated values from the database
-            $updatedValues = array(
-                'dateTested' => $payment_date,  // Modify this based on your actual data
-                'petcValue' => $petc_or,        // Modify this based on your actual data
-                'authCode' => $auth_code,       // Include the authCode in the response
-                'cecNumber' => $cec_number,  
-                'finalize' => $finalize,   // Include the cecNumber in the response
-                // Add other values as needed
-            );
+        // Update the car_emission table with the generated values
+        $updateCarEmissionQuery = "UPDATE car_emission SET petc_or = '$petc_or', status = '$doned_customer', cec_number = '$cec_number'";
 
-            // Return the updated values as a JSON response
-            echo json_encode($updatedValues);
+        if ($currentPaymentStatus !== "paid") {
+            // Payment is not "paid," update specific fields
+            $updateCarEmissionQuery .= ", payment_date = '$payment_date', paymentStatus = '$payment_status'";
+        }
+
+        // Complete the query with the WHERE clause
+        $updateCarEmissionQuery .= " WHERE id = '$reserve_id'";
+
+        // Execute the query
+        if ($connect->query($updateCarEmissionQuery) === TRUE) {
+            // Update the test_result table with the generated auth_code
+            $updateTestResultQuery = "UPDATE test_result SET auth_code = '$auth_code', finalize = '$finalize' WHERE booking_id = '$reserve_id'";
+
+            if ($connect->query($updateTestResultQuery) === TRUE) {
+                // Assuming you have fetched the updated values from the database
+                $updatedValues = array(
+                    'dateTested' => $payment_date,  // Modify this based on your actual data
+                    'petcValue' => $petc_or,        // Modify this based on your actual data
+                    'authCode' => $auth_code,       // Include the authCode in the response
+                    'cecNumber' => $cec_number,
+                    'finalize' => $finalize,       // Include the cecNumber in the response
+                    // Add other values as needed
+                );
+
+                // Return the updated values as a JSON response
+                echo json_encode($updatedValues);
+            } else {
+                echo "Error updating auth_code in test_result record: " . $connect->error;
+            }
         } else {
-            echo "Error updating auth_code in test_result record: " . $connect->error;
+            echo "Error updating car_emission record: " . $connect->error;
         }
     } else {
-        echo "Error updating car_emission record: " . $connect->error;
+        echo "Error fetching current payment status: " . $connect->error;
     }
 }
 ?>

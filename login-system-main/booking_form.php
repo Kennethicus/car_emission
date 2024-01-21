@@ -54,12 +54,19 @@ $customerQuery->execute();
 $customerResult = $customerQuery->get_result();
 $customerDetails = $customerResult->fetch_assoc();
 
+
+
+
+
 // Close the customer query statement
 $customerQuery->close();
 
 // Close the database connection
 $stmt->close();
 $connect->close();
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +104,7 @@ $connect->close();
     <title>Booking Form</title>
 </head>
 
-<body class="bg-light">
+<body class="bg-">
     <div class="container py-5">
         <!-- Display event details -->
         <h2>Booking Details for <?php echo $event['title']; ?></h2>
@@ -124,11 +131,7 @@ $connect->close();
                     <label for="carPicture">Car Picture</label>
                     <input type="file" name="carPicture" id="carPicture" class="form-control-file" accept="image/*" required>
                     </div>
-                    
-                    <!-- <div class="form-group">
-                    <label for="appDate">Application Date</label>
-                    <input type="datetime-local" name="appDate" id="appDate" class="form-control" required>
-                    </div> -->
+                
 
                     <div class="form-group">
                     <label for="vehicleCrNo">Vehicle CR No.</label>
@@ -211,16 +214,7 @@ $connect->close();
                         <!-- Populate options dynamically based on your requirements -->
                     </select>
                     </div>
-<!-- 
-                    <div class="form-group">
-                    <label for="paymentDate">Payment Date</label>
-                    <input type="datetime-local" name="paymentDate" id="paymentDate" class="form-control">
-                    </div> -->
 
-                    <!-- <div class="form-group">
-                    <label for="petcOr">PETC OR</label>
-                    <input type="text" name="petcOr" id="petcOr" class="form-control">
-                    </div> -->
 
 
                     <div class="form-group">
@@ -242,22 +236,22 @@ $connect->close();
 
                     <div class="form-group">
                     <label for="last_name"> Last name </label>
-                    <input type="text" name="customerLastName" id="last_name" class="form-control" value="<?php echo $customerDetails['last_name']; ?>" readonly>
+                    <input type="text" name="customerLastName" id="last_name" class="form-control" >
                 </div>
 
                 <div class="form-group">
                 <label for="middle_name"> Middle name </label>
-                <input type="text" name="customerMiddleName" id="middle_name" class="form-control" value="<?php echo $customerDetails['middle_name']; ?>" readonly>
+                <input type="text" name="customerMiddleName" id="middle_name" class="form-control">
                 </div>  
 
                 <div class="form-group">
                 <label for="first_name"> First name </label>
-                <input type="text" name="customerFirstName" id="first_name" class="form-control" value="<?php echo $customerDetails['first_name']; ?>" readonly>
+                <input type="text" name="customerFirstName" id="first_name" class="form-control" >
                 </div>
 
                     <div class="form-group">
                     <label for="address">Address</label>
-                    <input type="type" name="customerAddress" id="address" class="form-control"  value="<?php echo $customerDetails['address']; ?>" readonly>
+                    <input type="type" name="customerAddress" id="address" class="form-control" >
                     </div>
 
                     <div class="form-group">
@@ -301,15 +295,6 @@ $connect->close();
                     <input type="text" name="netCapacity" id="netCapacity" class="form-control">
                     </div>
 
-                    <!-- <div class="form-group">
-                    <label for="cecNumber">CEC Number</label>
-                    <input type="text" name="cecNumber" id="cecNumber" class="form-control">
-                    </div> -->
-
-                    <!-- <div class="form-group">
-                    <label for="mvectOperator">MVECT/Operator</label>
-                    <input type="text" name="mvectOperator" id="mvectOperator" class="form-control">
-                    </div> -->
 
                 </div>
                 <div class="form-group">
@@ -495,34 +480,35 @@ $connect->close();
         });
 
         function updateAmount() {
-            var mvTypeSelect = document.getElementById('mvType');
-            var amountInput = document.getElementById('amount');
-            var price1 = <?php echo $event['price_1']; ?>;
-            var price2 = <?php echo $event['price_2']; ?>;
-            var price3 = <?php echo $event['price_3']; ?>;
+    var mvTypeSelect = document.getElementById('mvType');
+    var amountInput = document.getElementById('amount');
+    var price1 = <?php echo $event['price_1']; ?>;
+    var price2 = <?php echo $event['price_2']; ?>;
+    var price3 = <?php echo $event['price_3']; ?>;
 
-            // Get the selected mvType
-            var selectedMvType = mvTypeSelect.value;
+    // Get the selected mvType
+    var selectedMvType = mvTypeSelect.value;
 
-            // Update the amount based on mvType
-            if (selectedMvType === 'Mopeds (0-49 cc)' || selectedMvType === 'Motorcycle w/ side car' || selectedMvType === 'Motorcycle w/o side car' || selectedMvType === 'Non-conventional MC (Car)' || selectedMvType === 'Tricycle') {
-                amountInput.value = price1;
-            } else if (selectedMvType === 'Car' || selectedMvType === 'Sports utility Vehicle' || selectedMvType === 'Utility Vehicle' ||  selectedMvType === 'Rebuilt' || selectedMvType === 'Mobil Clinic') {
-                amountInput.value = price2;
-            } else if (selectedMvType === 'School bus' || selectedMvType === 'Shuttle Bus' || selectedMvType === 'Tourist Bus' || selectedMvType === 'Truck Bus' || selectedMvType === 'Trucks' || selectedMvType === 'Trailer') {
-                amountInput.value = price3;
-            } else {
-                // Handle other cases or set a default value
-                amountInput.value = 0;
-            }
-        }
+    // Update the amount based on mvType
+    if (selectedMvType === 'Mopeds (0-49 cc)' || selectedMvType === 'Motorcycle w/ side car' || selectedMvType === 'Motorcycle w/o side car' || selectedMvType === 'Non-conventional MC (Car)' || selectedMvType === 'Tricycle') {
+        amountInput.value = price1;
+    } else if (selectedMvType === 'Car' || selectedMvType === 'Sports utility Vehicle' || selectedMvType === 'Utility Vehicle' ||  selectedMvType === 'Rebuilt' || selectedMvType === 'Mobil Clinic') {
+        amountInput.value = price2;
+    } else if (selectedMvType === 'School bus' || selectedMvType === 'Shuttle Bus' || selectedMvType === 'Tourist Bus' || selectedMvType === 'Truck Bus' || selectedMvType === 'Trucks' || selectedMvType === 'Trailer') {
+        amountInput.value = price3;
+    } else {
+        // Handle other cases or set a default value
+        amountInput.value = 0;
+    }
+}
 
-        // Add an event listener to the mvType select element
-        var mvTypeSelect = document.getElementById('mvType');
-        mvTypeSelect.addEventListener('change', updateAmount);
+// Add an event listener to the mvType select element
+var mvTypeSelect = document.getElementById('mvType');
+mvTypeSelect.addEventListener('change', updateAmount);
 
-        // Call the function initially to set the default amount
-        updateAmount();
+// Call the function initially to set the default amount
+updateAmount();
+
     });
 </script>
 

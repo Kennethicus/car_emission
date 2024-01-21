@@ -403,6 +403,21 @@ if ($testResultResult->num_rows === 1) {
         });
     });
 </script>
+
+ <script>
+        $(document).ready(function () {
+            var finalizeValue = parseInt($("#finalizeInput").val());
+
+            // Check if finalizeValue equals 1
+            if (finalizeValue === 1) {
+                // Disable the select element
+                $("#mvectOperator").prop("disabled", true);
+            } else {
+                // Enable the select element
+                $("#mvectOperator").prop("disabled", false);
+            }
+        });
+    </script>
 <script>
    function checkOperatorSelection() {
     // Get the selected operator value
@@ -581,7 +596,7 @@ if (pass) {
 
 
 function SaveTestStatus(pass) {
-    // Get the selected MVect operator
+    // Get the selected MVECT operator
     var selectedOperator = document.getElementById('mvectOperator').value;
 
     // Get the input values

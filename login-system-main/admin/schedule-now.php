@@ -96,13 +96,13 @@ $connect->close();
                                             <tbody>
                                           
                                             <tr>
-                                            <td class="text-end" style="width: 200px;">
-    User ID:
-    <input id="userId" type="text" style="margin-left: 5px;" readonly>
+                                            <td  class="text-end" style="width: 200px;">
+  
+    <input id="userId" type="hidden" style="margin-left: 5px;" readonly>
 </td>
 <td class="text-end" style="width: 200px;">
-   Admin ID:
-    <input id="adminId"  class="form-control form-group" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text" value="<?php echo $admin['id']; ?>" readonly>
+ 
+    <input id="adminId" type="hidden" class="form-control form-group" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text" value="<?php echo $admin['id']; ?>" readonly>
 </td>
                                         </tr>
                                             <tr>
@@ -320,7 +320,7 @@ $connect->close();
                     </tr>
                     <tr>
                         <td id="bookdetails" >
-                            <input type="text" class="form-control" id="sched_id" readonly>
+                            <input type="hidden" class="form-control" id="sched_id" readonly>
                         </td>
                     </tr>
                     <tr>
@@ -335,17 +335,17 @@ $connect->close();
                     </tr>
                     <tr>
                         <td >
-                            <input type="text" class="form-control" id="price1" readonly>
+                            <input type="hidden" class="form-control" id="price1" readonly>
                         </td>
                     </tr>
                     <tr>
                         <td >
-                            <input type="text" class="form-control" id="price2" readonly>
+                            <input type="hidden" class="form-control" id="price2" readonly>
                         </td>
                     </tr>
                     <tr>
                         <td >
-                            <input type="text" class="form-control" id="price3" readonly>
+                            <input type="hidden" class="form-control" id="price3" readonly>
                         </td>
                     </tr>
                 </tbody>
@@ -363,7 +363,8 @@ $connect->close();
 
 <!-- Modify your existing "Submit Booking" button -->
 <button type="button" class="btn btn-primary" onclick="openConfirmationModal()">Submit Booking</button>    
-    <button class="btn btn-danger m-2" onclick="cancelBookFunction()">Cancel</button>
+<button class="btn btn-danger m-2" onclick="cancelBookFunction()">Cancel</button>
+
 </div>
 </div>
 
@@ -385,9 +386,7 @@ $connect->close();
         </div>
     </div>
 </div>
-<div class="text-end mt-5">
-        <button type="submit" class="btn btn-primary btn-lg">Submit Form</button>
-    </div>
+
 
 <!-- Back button outside the card, positioned lower and larger with increased margin-top -->
 <div class="text-end mt-5">
@@ -448,6 +447,20 @@ $connect->close();
         </div>
     </div>
 
+
+    <script>
+function cancelBookFunction() {
+    // Display a confirmation dialog
+    var confirmed = window.confirm("Are you sure you want to cancel? Any unsaved changes will be lost.");
+
+    // Check if the user confirmed
+    if (confirmed) {
+        // Reload the page
+        location.reload();
+    }
+    // If the user cancels, do nothing
+}
+</script>
 <!-- Add this JavaScript code to your file -->
 <script>
     function openConfirmationModal() {

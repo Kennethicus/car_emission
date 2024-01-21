@@ -33,13 +33,19 @@ if ($result['status']) {
     exit();
 }
 
-// ... (Continue with your existing code)
-
-
 // Continue with other input data
 $status = 'booked';
 date_default_timezone_set('Asia/Manila');
 $appdate = date('Y-m-d H:i:s');
+
+
+if (!isAvailableSpaceInSchedule($event_id)) {
+    $response['status'] = 'error';
+    $response['message'] = 'There\'s someone booked first. No available space in the schedule.';
+    echo json_encode($response);
+    exit();
+}
+
 
 $vehicleCrNo = isset($_POST['vehicleCrNo']) ? mysqli_real_escape_string($connect, $_POST['vehicleCrNo']) : '';
 $vehicleOrNo = isset($_POST['vehicleOrNo']) ? mysqli_real_escape_string($connect, $_POST['vehicleOrNo']) : '';
@@ -93,8 +99,14 @@ if (isset($_FILES['carPicture']) && $_FILES['carPicture']['error'] == UPLOAD_ERR
     $carPicturePath = '';
 }
 
+
+// Check if $paymentStatus is "paid"
+if ($paymentStatus === 'paid') {
+    $paymentDate = date('Y-m-d H:i:s'); // Set paymentDate to the current date and time
+}
+
 // Perform the database insert with prepared statement and bind_param
-$query = "INSERT INTO car_emission (event_id, user_id, plate_number, customer_first_name, customer_middle_name, customer_last_name, address, status, app_date, vehicle_cr_no, vehicle_or_no, first_reg_date, year_model, fuel_type, purpose, mv_type, region, mv_file_no, classification, payment_date, petc_or, amount, organization, engine, chassis, make, series, color, gross_weight, net_capacity, cec_number, mvect_operator, car_picture, paymentMethod, paymentStatus, ticketing_id, reference_number, date_tested, smurf_admin_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$query = "INSERT INTO car_emission (event_id, user_id, plate_number, customer_first_name, customer_middle_name, customer_last_name, address, status, app_date, vehicle_cr_no, vehicle_or_no, first_reg_date, year_model, fuel_type, purpose, mv_type, region, mv_file_no, classification, payment_date, petc_or, amount, organization, engine, chassis, make, series, color, gross_weight, net_capacity, cec_number, mvect_operator, car_picture, paymentMethod, paymentStatus, ticketing_id, reference_number, date_tested, smurf_admin_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $connect->prepare($query);
 
@@ -108,8 +120,19 @@ $response = array();
 
 // Check if the query was successful
 if ($stmt->affected_rows > 0) {
-    $response['status'] = 'success';
-    $response['message'] = 'Data inserted successfully';
+    // If successful, update the reserve_count for the booked event
+    $updateCountQuery = $connect->prepare("UPDATE schedule_list SET reserve_count = reserve_count + 1 WHERE id = ?");
+    $updateCountQuery->bind_param("i", $event_id);
+
+    if ($updateCountQuery->execute()) {
+        $response['status'] = 'success';
+        $response['message'] = 'Data inserted successfully';
+    } else {
+        $response['status'] = 'error';
+        $response['message'] = 'Error updating reserve count';
+    }
+
+    $updateCountQuery->close();
 } else {
     $response['status'] = 'error';
     $response['message'] = 'Error inserting data into the database';
@@ -117,8 +140,6 @@ if ($stmt->affected_rows > 0) {
 
 // Output the response as JSON
 echo json_encode($response);
-
-
 
 // Close the statement
 $stmt->close();
@@ -218,6 +239,38 @@ function isPlateNumberTestedWithinYear($plateNumber) {
 
     $stmt->close();
     return array('status' => false, 'comeBackDate' => null); // Plate number not tested within the last 12 months or no testing records found
+}
+
+
+// Function to check if there is available space in the schedule
+function isAvailableSpaceInSchedule($event_id) {
+    global $connect;
+
+    // Get the reserve_count for the given event_id from the schedule_list table
+    $stmt = $connect->prepare("SELECT qty_of_person FROM schedule_list WHERE id = ?");
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        $stmt->bind_result($reserveCount);
+        $stmt->fetch();
+
+        // Check the number of persons booked for the given event_id in the car_emission table
+        $stmt->prepare("SELECT COUNT(*) FROM car_emission WHERE event_id = ?");
+        $stmt->bind_param("i", $event_id);
+        $stmt->execute();
+        $stmt->bind_result($bookedPersonsCount);
+        $stmt->fetch();
+
+        $stmt->close();
+
+        // Compare the booked persons count with the reserve count
+        return $bookedPersonsCount < $reserveCount;
+    }
+
+    $stmt->close();
+    return false; // Event_id not found in schedule_list
 }
 
 
