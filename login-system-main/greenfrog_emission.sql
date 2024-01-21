@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 20, 2024 at 10:12 PM
+-- Generation Time: Jan 21, 2024 at 05:47 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.0.25
 
@@ -100,12 +100,154 @@ CREATE TABLE `car_emission` (
 
 INSERT INTO `car_emission` (`id`, `event_id`, `user_id`, `plate_number`, `customer_email`, `customer_first_name`, `customer_middle_name`, `customer_last_name`, `address`, `status`, `app_date`, `vehicle_cr_no`, `vehicle_or_no`, `first_reg_date`, `year_model`, `fuel_type`, `purpose`, `mv_type`, `region`, `mv_file_no`, `classification`, `payment_date`, `petc_or`, `amount`, `organization`, `engine`, `chassis`, `make`, `series`, `color`, `gross_weight`, `net_capacity`, `cec_number`, `mvect_operator`, `car_picture`, `paymentMethod`, `paymentStatus`, `ticketing_id`, `reference_number`, `date_tested`, `smurf_admin_id`) VALUES
 (1, 1, 3, 'NBAA 1232', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'canceled', '2023-12-27 20:00:00', '12', '12', '2023-12-06', '2023', 'Gasoline', 'Meeting', 'Type1', 'Region1', '13', 'Compact', '0000-00-00 00:00:00', '0', '500.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', 'uploads/icon.png', 'cash', 'unpaid', '2293686', '76012', '0000-00-00 00:00:00', NULL),
-(2, 2, 3, 'NBAA 1332', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'booked', '2023-12-27 22:16:00', '12', '12', '2023-11-29', '2019', 'Diesel - None Turbo', 'For Registration', 'Tricycle', 'Region I', '13', 'Diplomatic-Consular Corps', '2024-01-15 07:13:14', '19761', '400.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '202400000019761', 'Operator 1', 'uploads/1011917966.jpg', 'cash', 'paid', '5052674', '35401', '2024-01-15 06:11:57', NULL),
-(3, 2, 3, 'PBAA 1234', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'doned', '2023-12-28 03:48:00', '12', '12', '2023-11-27', '2023', 'LPG', 'For Registration', 'Car', 'Region I', '13', 'Diplomatic-Consular Corps', '2024-01-12 04:38:34', '81476', '400.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'Operator 2', 'uploads/R.jpg', 'cash', 'paid', '5480037', '72550', '2024-01-11 06:35:09', NULL),
-(4, 3, 3, 'PBAA 1221', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'booked', '2024-01-15 17:08:00', '12', '12', '2024-01-11', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', '12', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'Operator 1', 'uploads/star.png', 'cash', 'unpaid', '3414908', '50328', '2024-01-15 09:32:22', NULL),
-(47, 3, 3, '12', '', '12', '12', '12', '8th', 'booked', '2024-01-21 01:40:09', '12', '12', '2024-01-11', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', 'KORAK', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', '../uploads/65ac0579dae3c_IMG_20231005_181357.jpg', 'cash', 'unpaid', '9306863', '75065', '0000-00-00 00:00:00', 1),
-(48, 3, 3, 'ABCD 1234', '', '12', '12', '12', '12', 'booked', '2024-01-21 02:37:46', '12', '12', '2024-01-05', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', '12', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', '../uploads/65ac12fa2396c_IMG_20231005_181404.jpg', 'cash', 'unpaid', '8388803', '73753', '0000-00-00 00:00:00', 1),
-(49, 3, 2, 'ABCD 1235', '', '12', '12', '12', 'Mckinley BGC', 'booked', '2024-01-21 02:52:33', '12', '12', '2024-01-31', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', 'KORAK', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', '../uploads/65ac1671677f4_IMG_20231005_181404.jpg', 'cash', 'unpaid', '5247395', '25081', '0000-00-00 00:00:00', 1);
+(2, 2, 3, 'NBAA 1332', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'doned', '2023-12-27 22:16:00', '12', '12', '2023-11-29', '2019', 'Diesel - None Turbo', 'For Registration', 'Tricycle', 'Region I', '13', 'Diplomatic-Consular Corps', '2024-01-21 09:57:01', '71952', '400.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '202400000071952', 'Operator 1', 'uploads/1011917966.jpg', 'cash', 'paid', '5052674', '35401', '2024-01-21 08:28:32', NULL),
+(3, 2, 3, 'PBAA 1234', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'doned', '2023-12-28 03:48:00', '12', '12', '2023-11-27', '2023', 'LPG', 'For Registration', 'Car', 'Region I', '13', 'Diplomatic-Consular Corps', '2024-01-12 04:38:34', '81476', '400.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'Operator 2', 'uploads/R.jpg', 'cash', 'paid', '5480037', '72550', '2024-01-21 07:43:22', NULL),
+(4, 3, 3, 'PBAA 1221', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'booked', '2024-01-15 17:08:00', '12', '12', '2024-01-11', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', '12', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'Operator 1', 'uploads/star.png', 'cash', 'unpaid', '3414908', '50328', '2024-01-15 09:32:22', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `classifications`
+--
+
+CREATE TABLE `classifications` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `classifications`
+--
+
+INSERT INTO `classifications` (`id`, `name`) VALUES
+(1, 'Diplomatic-Consular Corps'),
+(2, 'Diplomatic-Chief of Mission'),
+(3, 'Diplomatic-Diplomatic Corps'),
+(4, 'Exempt-Government'),
+(5, 'Diplomatic Exempt-Economics Z'),
+(6, 'Government'),
+(7, 'For hire'),
+(8, 'Diplomatic-OEV'),
+(9, 'Private'),
+(10, 'Exempt-For-Hire'),
+(11, 'Exempt-Private');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `color`
+--
+
+CREATE TABLE `color` (
+  `color_id` int(11) NOT NULL,
+  `color_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `color`
+--
+
+INSERT INTO `color` (`color_id`, `color_name`) VALUES
+(1, 'Red'),
+(2, 'Maroon'),
+(3, 'Dark Red'),
+(4, 'Brown'),
+(5, 'Orange'),
+(6, 'Coral'),
+(7, 'Dark Orange'),
+(8, 'Orange Red'),
+(9, 'Yellow'),
+(10, 'Gold'),
+(11, 'Khaki'),
+(12, 'Lemon Chiffon'),
+(13, 'Lime'),
+(14, 'Green Yellow'),
+(15, 'Chartreuse'),
+(16, 'Lime Green'),
+(17, 'Green'),
+(18, 'Forest Green'),
+(19, 'Olive Drab'),
+(20, 'Olive'),
+(21, 'Teal'),
+(22, 'Dark Cyan'),
+(23, 'Medium Turquoise'),
+(24, 'Turquoise'),
+(25, 'Cyan'),
+(26, 'Aqua'),
+(27, 'Light Cyan'),
+(28, 'Pale Turquoise'),
+(29, 'Blue'),
+(30, 'Dodger Blue'),
+(31, 'Steel Blue'),
+(32, 'Royal Blue'),
+(33, 'Medium Blue'),
+(34, 'Dark Blue'),
+(35, 'Navy'),
+(36, 'Midnight Blue'),
+(37, 'Purple'),
+(38, 'Indigo'),
+(39, 'Slate Blue'),
+(40, 'Medium Slate Blue'),
+(41, 'Dark Slate Blue'),
+(42, 'Medium Purple'),
+(43, 'Dark Orchid'),
+(44, 'Magenta'),
+(45, 'Medium Orchid'),
+(46, 'Medium Violet Red'),
+(47, 'Dark Violet'),
+(48, 'Purple'),
+(49, 'Pink'),
+(50, 'Light Pink'),
+(51, 'Hot Pink'),
+(52, 'Deep Pink'),
+(53, 'White'),
+(54, 'Snow'),
+(55, 'Honeydew'),
+(56, 'Mint Cream'),
+(57, 'Azure'),
+(58, 'Alice Blue'),
+(59, 'Ghost White'),
+(60, 'White Smoke'),
+(61, 'Seashell'),
+(62, 'Beige'),
+(63, 'Old Lace'),
+(64, 'Floral White'),
+(65, 'Ivory'),
+(66, 'Antique White'),
+(67, 'Linen'),
+(68, 'Lavender Blush'),
+(69, 'Misty Rose'),
+(70, 'Gainsboro'),
+(71, 'Light Gray'),
+(72, 'Silver'),
+(73, 'Dark Gray'),
+(74, 'Gray'),
+(75, 'Dim Gray'),
+(76, 'Light Slate Gray'),
+(77, 'Slate Gray'),
+(78, 'Dark Slate Gray'),
+(79, 'Black');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fuel_types`
+--
+
+CREATE TABLE `fuel_types` (
+  `id` int(11) NOT NULL,
+  `fuel_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `fuel_types`
+--
+
+INSERT INTO `fuel_types` (`id`, `fuel_name`) VALUES
+(1, 'Gasoline'),
+(2, 'LPG'),
+(3, 'Diesel - None Turbo'),
+(4, 'Turbo Diesel');
 
 -- --------------------------------------------------------
 
@@ -135,6 +277,153 @@ INSERT INTO `login` (`user_id`, `email`, `password`, `first_name`, `last_name`, 
 (3, 'tecson.k.bsinfotech@gmail.com', '$2y$10$ddzangNM8PaV3MnT4aEXZurnx91HjvlXR49uxF2txpT1u5raHSZXC', 'Kenneth Gabriel', 'Tecson', 'Guimong', '09951260721', 'Mckinley BGC', 1, 1),
 (5, 'teson@gmail.com', '$2y$10$ODaQXl04OOGtSghE8knT..7n4feNS92oEKAGw1bHTBBEAfcaWINze', 'Kennenth', 'Tecson', 'Guimong', '0888861528', 'BGC Mckinley', 0, 1),
 (7, 'kyrispy2@gmail.com', '$2y$10$UZjsKFGTkDd3F1braTxnouROfZ9dQqj2tzL/WDw1SXPhznl38FbMG', 'Kenenth', 'Tecson', 'Guimong', '0888861528', 'BGC Mckinley', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `make`
+--
+
+CREATE TABLE `make` (
+  `make_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `make`
+--
+
+INSERT INTO `make` (`make_name`) VALUES
+('Acura'),
+('Alfa Romeo'),
+('Aston Martin'),
+('Audi'),
+('Bentley'),
+('BMW'),
+('Buick'),
+('Cadillac'),
+('Chevrolet'),
+('Chrysler'),
+('Dodge'),
+('Ferrari'),
+('Fiat'),
+('Ford'),
+('Genesis'),
+('GMC'),
+('Honda'),
+('Hyundai'),
+('Infiniti'),
+('Jaguar'),
+('Jeep'),
+('Kia'),
+('Lamborghini'),
+('Land Rover'),
+('Lexus'),
+('Lincoln'),
+('Lotus'),
+('Maserati'),
+('Mazda'),
+('McLaren'),
+('Mercedes-Benz'),
+('MINI'),
+('Mitsubishi'),
+('Nissan'),
+('Porsche'),
+('Ram'),
+('Rolls-Royce'),
+('Rusi'),
+('Subaru'),
+('Suzuki'),
+('Tesla'),
+('Toyota'),
+('Volkswagen'),
+('Volvo');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mvtypes`
+--
+
+CREATE TABLE `mvtypes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `mvtypes`
+--
+
+INSERT INTO `mvtypes` (`id`, `name`) VALUES
+(1, 'Car'),
+(2, 'Mopeds (0-49 cc)'),
+(3, 'Motorcycle w/ side car'),
+(4, 'Motorcycle w/o side car'),
+(5, 'Non-conventional MC (Car)'),
+(6, 'Shuttle Bus'),
+(7, 'Sports Utility Vehicle'),
+(8, 'Tourist Bus'),
+(9, 'Tricycle'),
+(10, 'Truck Bus'),
+(11, 'Trucks'),
+(12, 'Utility Vehicle'),
+(13, 'School bus'),
+(14, 'Rebuilt'),
+(15, 'Mobil Clinic'),
+(16, 'Trailer');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `purposes`
+--
+
+CREATE TABLE `purposes` (
+  `id` int(11) NOT NULL,
+  `purpose_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `purposes`
+--
+
+INSERT INTO `purposes` (`id`, `purpose_name`) VALUES
+(1, 'For Registration'),
+(2, 'For Compliance'),
+(3, 'Plate Redemption');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `regions`
+--
+
+CREATE TABLE `regions` (
+  `id` int(11) NOT NULL,
+  `region_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `regions`
+--
+
+INSERT INTO `regions` (`id`, `region_name`) VALUES
+(1, 'Region I'),
+(2, 'Region II'),
+(3, 'Region III'),
+(4, 'Region IV‑A'),
+(5, 'MIMAROPA'),
+(6, 'Region V'),
+(7, 'Region VI'),
+(8, 'Region VII'),
+(9, 'Region VIII'),
+(10, 'Region IX'),
+(11, 'Region X'),
+(12, 'Region XI'),
+(13, 'Region XII'),
+(14, 'Region XIII'),
+(15, 'NCR'),
+(16, 'CAR'),
+(17, 'BARMM');
 
 -- --------------------------------------------------------
 
@@ -239,8 +528,29 @@ CREATE TABLE `test_result` (
 --
 
 INSERT INTO `test_result` (`id`, `booking_id`, `HC`, `CO`, `CO2`, `O2`, `N`, `RPM`, `K_AVE`, `testing_status`, `record_status`, `vehicle_img`, `Tested`, `Uploaded_Image`, `Retest`, `Uploaded`, `Motorcycle`, `Rebuilt`, `Valid`, `auth_code`, `finalize`) VALUES
-(5, 2, '0.00', '0.00', '14.00', '2.00', '0.00', '0.00', '0.00', 1, 1, 'assets/img/test_img/1011917966.jpg', 1, 1, NULL, 1, NULL, NULL, 1, 5377789, 1),
-(6, 4, '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 2, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0);
+(5, 2, '0.00', '0.00', '14.00', '2.00', '0.00', '0.00', '0.00', 1, 1, 'assets/img/test_img/1011917966.jpg', 1, 1, NULL, 1, NULL, NULL, 1, 6396447, 1),
+(6, 4, '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 2, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0),
+(7, 3, '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 2, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vehicle_eries`
+--
+
+CREATE TABLE `vehicle_eries` (
+  `series_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vehicle_series`
+--
+
+CREATE TABLE `vehicle_series` (
+  `series_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
@@ -266,11 +576,53 @@ ALTER TABLE `car_emission`
   ADD KEY `fk_car_emission_smurf_admin` (`smurf_admin_id`);
 
 --
+-- Indexes for table `classifications`
+--
+ALTER TABLE `classifications`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `color`
+--
+ALTER TABLE `color`
+  ADD PRIMARY KEY (`color_id`);
+
+--
+-- Indexes for table `fuel_types`
+--
+ALTER TABLE `fuel_types`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `login`
 --
 ALTER TABLE `login`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `make`
+--
+ALTER TABLE `make`
+  ADD PRIMARY KEY (`make_name`);
+
+--
+-- Indexes for table `mvtypes`
+--
+ALTER TABLE `mvtypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `purposes`
+--
+ALTER TABLE `purposes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `regions`
+--
+ALTER TABLE `regions`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `schedule_list`
@@ -300,6 +652,18 @@ ALTER TABLE `test_result`
   ADD KEY `booking_id` (`booking_id`);
 
 --
+-- Indexes for table `vehicle_eries`
+--
+ALTER TABLE `vehicle_eries`
+  ADD PRIMARY KEY (`series_name`);
+
+--
+-- Indexes for table `vehicle_series`
+--
+ALTER TABLE `vehicle_series`
+  ADD PRIMARY KEY (`series_name`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -313,13 +677,49 @@ ALTER TABLE `cancellation_reasons`
 -- AUTO_INCREMENT for table `car_emission`
 --
 ALTER TABLE `car_emission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+
+--
+-- AUTO_INCREMENT for table `classifications`
+--
+ALTER TABLE `classifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `color`
+--
+ALTER TABLE `color`
+  MODIFY `color_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+
+--
+-- AUTO_INCREMENT for table `fuel_types`
+--
+ALTER TABLE `fuel_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `login`
 --
 ALTER TABLE `login`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `mvtypes`
+--
+ALTER TABLE `mvtypes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `purposes`
+--
+ALTER TABLE `purposes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `regions`
+--
+ALTER TABLE `regions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `schedule_list`
@@ -343,7 +743,7 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT for table `test_result`
 --
 ALTER TABLE `test_result`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
