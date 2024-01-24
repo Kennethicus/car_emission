@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("partials/navbar.php");
+
 include("connect/connection.php");
 
 // Check if the user is logged in
@@ -65,76 +65,39 @@ if (isset($_GET['id'])) {
         header('Location: schedule-status.php');
         exit();
     }
+
+
+     // Now, fetch details from the 'schedule list' based on the 'event_id' from the 'car_emission' table
+     $event_id = $bookingDetails['event_id'];
+
+     $scheduleQuery = $connect->prepare("SELECT * FROM schedule_list WHERE id = ?");
+     if (!$scheduleQuery) {
+         die("Error in schedule query: " . $connect->error);
+     }
+ 
+     $scheduleQuery->bind_param("i", $event_id);
+     $scheduleQuery->execute();
+ 
+     $scheduleResult = $scheduleQuery->get_result();
+ 
+     if (!$scheduleResult) {
+         die("Error fetching schedule details: " . $scheduleQuery->error);
+     }
+ 
+     $scheduleDetails = $scheduleResult->fetch_assoc();
+ 
+     // Close the schedule query statement
+     $scheduleQuery->close();
+     
+     $carPicturePath = $bookingDetails['car_picture'];
+     $userName = $bookingDetails['customer_first_name'];
 } else {
     // If 'id' parameter is not set, redirect to the schedule status page
     header('Location: schedule-status.php');
     exit();
 }
 
-// Handle form submission for editing the booking
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve updated values from the form
-    // (you should perform proper validation and sanitation)
-    
-    $updatedPlateNum = $_POST['plate_num'];
-    $updatedCrNo = $_POST['vehicleCrNo'];
-    $updatedOrNo = $_POST['vehicleOrNo'];
-    $updatedFirstRegDate = $_POST["firstRegDate"];
-    $updatedYearModel = $_POST["yearModel"];
-    $updatedfuelType = $_POST["fuelType"];
-    $updatedPurpose = $_POST["purpose"];
-    $updatedmvType = $_POST["mvType"];
-    $updatedregionType = $_POST["region"];
-    $updatedmvfileNo = $_POST["mvFileNo"];
-    $updatedclassification = $_POST["classification"];
-    $updatedengine = $_POST["engine"];
-    $updatedchassis = $_POST["chassis"];
-    $updatedmake = $_POST["make"];
-    $updatedseries = $_POST["series"];
-    $updatedcolor = $_POST["color"];
-    $updatedgrossWeight = $_POST["grossWeight"];
-    $updatednetCapacity = $_POST["netCapacity"];
-    
-    // Check if a new picture is uploaded
-    if (!empty($_FILES['car_picture']['name'])) {
-        $targetDirectory = "uploads/";  // Change this to your desired directory
-        $targetFile = $targetDirectory . basename($_FILES['car_picture']['name']);
 
-        if (move_uploaded_file($_FILES['car_picture']['tmp_name'], $targetFile)) {
-            // File upload successful
-            $updatedCarPic = $targetFile;
-        } else {
-            // File upload failed
-            $updateError = "Failed to upload car picture.";
-        }
-    }
-
-    // Update the booking details in the database
-    $updateQuery = $connect->prepare("UPDATE car_emission SET plate_number = ?, car_picture = ?, vehicle_cr_no = ?, vehicle_or_no = ?, first_reg_date = ?, year_model = ?, fuel_type = ?, purpose = ?, mv_type = ?, region = ?, mv_file_no = ?, classification = ?, engine = ?, chassis = ?, make = ?, series = ?, color = ?, gross_weight = ?, net_capacity = ? WHERE id = ?");
-    if (!$updateQuery) {
-        die("Error in update query: " . $connect->error);
-    }
-
-    $carPicture = isset($updatedCarPic) ? $updatedCarPic : $bookingDetails['car_picture'];
-
-    // If a new picture is uploaded, use $updatedCarPic; otherwise, use the existing value from the database
-    $updateQuery->bind_param("sssssssssssssssssssi", $updatedPlateNum, $carPicture, $updatedCrNo, $updatedOrNo, $updatedFirstRegDate, $updatedYearModel, $updatedfuelType, $updatedPurpose, $updatedmvType, $updatedregionType, $updatedmvfileNo, $updatedclassification, $updatedengine, $updatedchassis, $updatedmake, $updatedseries, $updatedcolor, $updatedgrossWeight, $updatednetCapacity, $bookingId);
-    $updateQuery->execute();
-
-    if ($updateQuery->affected_rows > 0) {
-        // Update successful
-        // Redirect to the view booking page or show a success message
-        header('Location: view-booking.php?id=' . $bookingId);
-        exit();
-    } else {
-        // Update failed
-        // Handle the error (show an error message or redirect to an error page)
-        $updateError = "Failed to update booking details.";
-    }
-
-    // Close the update query statement
-    $updateQuery->close();
-}
 ?>
 
 <!-- Rest of the HTML/PHP code for your page -->
@@ -142,90 +105,111 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html data-bs-theme="light" lang="en">
 
 <head>
-    <title>Edit Booking</title>
-    <!-- Add Bootstrap CSS link -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <style>
-        .form-group {
-            margin-bottom: 10px; /* Remove the default bottom margin */
-            display: flex;
-            align-items: center; /* Align label and input vertically */
-        }
-
-        .form-group label {
-            flex: 1; /* Make label take available space */
-            padding-right: 10px; /* Add some right padding to create space between label and input */
-            text-align: right; /* Right-align the label text */
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            flex: 2; /* Make input take more space */
-        }
-
-        #viewPictureLink {
-            margin-left: 10px; /* Adjust left margin for spacing */
-        }
-
-        /* Add your custom styles here */
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Log in - Brand</title>
+    <link rel="stylesheet" href="admin/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <!-- <link rel="stylesheet" href="admin/assets/css/aos.min.css">
+    <link rel="stylesheet" href="admin/assets/css/NavBar-with-pictures.css"> -->
 </head>
 
-<body class="bg-light">
-    <div class="container py-5">
-        <h2>Edit Booking for <?php echo $customerDetails['first_name'] . ' ' . $customerDetails['last_name']; ?></h2>
+<body style=" background-color: #f8f9fa;">
+  <?php include 'partials/nav.php'?>
+    <div class="container mt-3">  
+                    <form    method="POST"  name="bookingForm">
+                    <div class="row">
+                
+                    <div class="col-12 col-md-8 col-lg-9 mx-auto">          
+                
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
+            <h6 class="text-primary fw-bold m-0"><span style="color: rgb(244, 248, 244);">MOTOR VEHICLE INFORMATION</span></h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">    
+                                            <tbody>
 
-        <!-- Display update error message if any -->
-        <?php if (isset($updateError)) : ?>
-            <div class="alert alert-danger" role="alert">
-                <?php echo $updateError; ?>
-            </div>
-        <?php endif; ?>
-        <div>
-  
+                                            <!-- <tr>
+                                                <td style="text-align: right;"><input id="userId" class="" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="hidden" value="<?php echo $customerDetails['user_id']; ?>" readonly></td>
+                                                <td class="text-end"><input id="sched_id" class="" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="hidden" value="<?php echo $event['id']; ?>" readonly></td>   
+                                                </tr> -->
+                                                <tr>
+   
+   <td class="text-end" style="vertical-align: middle;">Ticketing ID<input id="ticketingId" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['ticketing_id']; ?>" type="text" readonly disabled></td>
+   <td class="text-end" style="vertical-align: middle;">Application Date<input id="appDate" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['app_date']; ?>" type="text" readonly disabled></td>
+   
+   </tr>
+                                            <tr>
+                                            <!-- <td  class="text-end">App Date<input type="text" style="margin-left: 5px;" ></td> -->
+   
 
-    <!-- Display price details -->
-    <p>Price 1: <?php echo $bookingDetails['price_1']; ?></p>
-    <p>Price 2: <?php echo $bookingDetails['price_2']; ?></p>
-    <p>Price 3: <?php echo $bookingDetails['price_3']; ?></p>
-</div>
-        <form method="POST" enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="plate_num"> Plate Number </label>
-                        <input type="text" name="plate_num" id="plate_num" class="form-control" value="<?php echo $bookingDetails['plate_number']; ?>" >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="car_picture">Car Picture</label>
-                        <input type="file" name="car_picture" id="car_picture" class="form-control-file" accept="image/*" >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="vehicleCrNo">Vehicle CR No.</label>
-                        <input type="text" name="vehicleCrNo" id="vehicleCrNo" class="form-control"  value="<?php echo $bookingDetails['vehicle_cr_no']; ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="vehicleOrNo">Vehicle OR No.</label>
-                        <input type="text" name="vehicleOrNo" id="vehicleOrNo" class="form-control"  value="<?php echo $bookingDetails['vehicle_or_no']; ?>">
-                    </div>
-
-                    <div class="form-group">
-                    <label for="firstRegDate">First Registration Date</label>
-                    <input type="date" name="firstRegDate" id="firstRegDate" class="form-control" value="<?php echo $bookingDetails['first_reg_date']; ?>">
-                    </div>
-
-                    
-                    <div class="form-group">
-                    <label for="yearModel">Year Model</label>
-                    <select name="yearModel" id="yearModel" class="form-control">
-                    <?php
+                                            <td class="text-end" type="text" style="width: 200px;">Plate Number<input id="plateNumber" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;"  value="<?php echo $bookingDetails['plate_number']; ?>"  ></td>
+                                                    <td class="text-end" style="width: 200px;">Organization<input id="organizationInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['organization']; ?>" ></td>
+                                                </tr>
+                                               <tr>
+                                                    <!-- <td class="text-end" style="width: 200px;">Ticketing ID<input type="text" style="margin-left: 5px;" ></td> -->
+                                                    <td class="text-end">
+                 <!-- Input for uploading a picture -->
+                <label for="carPictureInput" class="btn btn-primary">
+                Car Picture
+                <input type="file" id="carPictureInput" class="d-none" accept="image/*" onchange="displaySelectedPicture(this)" disabled>
+                </label>
+                <!-- Button to display the selected picture -->
+                <button type="button" class="btn btn-success" onclick="displaySelectedPicture()" id="selectedPictureFilename">Display</button>
+                </td>
+                                                    <td class="text-end">First Name<input id="firstnameInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['customer_first_name']; ?>" ></td>
+                                                </tr> 
+                                                <tr>
+                                                <td class="text-end">
+                 <!-- Input for uploading a picture -->
+                 <label for="OrInputPicture" class="btn btn-primary">
+    OR Picture
+    <input type="file" id="OrInputPicture" class="d-none" accept="image/*" onchange="displaySelectedOrPicture(this)" >
+</label>
+                <!-- Button to display the selected picture -->
+                <button type="button" class="btn btn-success" onclick="displaySelectedOrPicture(this)" id="selectedOrFilename">Display</button>
+                </td>
+                <td class="text-end" style="width: 200px;">Middle Name<input id="middleNameInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['customer_middle_name']; ?>"  ></td>
+                                            
+                                                <tr>
+                                                <td class="text-end">
+                 <!-- Input for uploading a picture -->
+                 <label for="CrInputPicture" class="btn btn-primary">
+                CR Picture
+                <input type="file" id="CrInputPicture" class="d-none" accept="image/*" onchange="displaySelectedCrPicture(this)" disabled>
+                </label>
+                <!-- Button to display the selected picture -->
+                <button type="button" class="btn btn-success" onclick="displaySelectedCrPicture()" id="selectedCrFilename">Display</button>  
+                </td>
+                                                
+                                                    <td class="text-end" style="width: 200px;">Last Name<input id="lastNameInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['customer_last_name']; ?>" ></td>
+                                                </tr>
+                                                <tr>
+   
+                                                <td class="text-end" style="vertical-align: middle;">Vehicle CR No.<input id="vehicleCrInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['vehicle_cr_no']; ?>"  ></td>
+                                                <td class="text-end" style="width: 200px;">Address<input id="addressInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['address']; ?>"  ></td>
+                                                </tr>
+                                                <tr>
+                                                <td style="text-align: right;">Vehicle OR No.<input id="vehicleOrInput" type="text"  class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['vehicle_or_no']; ?>" ></td>
+                                                <td class="text-end">Engine<input id="engineInput" class="form-control" type="text" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['engine']; ?>"  ></td>
+                                           
+                                                </tr>
+                                            
+                                                <tr>
+                                                <td class="text-end">First Registration Date
+                                                <input id="firstRegInput" type="date" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['first_reg_date']; ?>" >
+    </td>
+    <td style="text-align: right;">Chassis<input type="text" id="chassisInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['chassis']; ?>"  ></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-end">Year Model
+                                                    <select id="yearModelInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;"> <!-- Adjust the width as needed -->
+                                                    <?php
                     // Assuming $startYear and $endYear are your desired range
                     $startYear = date("Y") - 20; // Display 20 recent years
                     $endYear = date("Y"); // Current year
@@ -236,14 +220,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         echo '<option value="' . $year . '" ' . $selected . '>' . $year . '</option>';
                     }
                     ?>
-                    </select>
-                    </div>
+                                                </select>
+                                                    </td>
+                                                    <td class="text-end">Make
+                                                    <select name="makeInput" id="makeInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
+                                                    <?php
+                                                    // Assuming $fuelTypes is an array containing your fuel types
+                                                    $makeTypes = array("Toyota", "Honda", "Ford", "Chevrolet", "Mitsubishi");
 
-
-                    <div class="form-group">
-                    <label for="fuelType">Fuel Type</label>
-                    <select name="fuelType" id="fuelType" class="form-control">
-                    <?php
+                                                    // Loop to generate options
+                                                    foreach ($makeTypes as $makeType) {
+                                                        $selected = ($makeType === $bookingDetails['make']) ? 'selected' : '';
+                                                        echo '<option value="' . $makeType . '" ' . $selected . '>' . $makeType . '</option>';
+                                                    }
+                                                    ?>  
+                                                    </select>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-end">Fuel type
+                                                    <select name="fuelTypeInput" id="fuelTypeInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['fuel_type']; ?>" >
+                        <!-- Populate options dynamically based on your requirements -->
+                        <?php
                     // Assuming $fuelTypes is an array containing your fuel types
                     $fuelTypes = array("Gasoline", "LPG", "Diesel - None Turbo", "Turbo Diesel");
 
@@ -253,153 +250,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         echo '<option value="' . $fuelType . '" ' . $selected . '>' . $fuelType . '</option>';
                     }
                     ?>
-                    </select>
-                    </div>
-
-                    <div class="form-group">
-                    <label for="purpose">Purpose</label>
-                    <select name="purpose" id="purpose" class="form-control">
-                    <?php
-                    // Assuming $fuelTypes is an array containing your fuel types
-                    $purposeTypes = array("For Registration", "For Compliance", "Plate Redemption");
-
-                    // Loop to generate options
-                    foreach ($purposeTypes as $purposeType) {
-                        $selected = ($purposeType === $bookingDetails['purpose']) ? 'selected' : '';
-                        echo '<option value="' . $purposeType . '" ' . $selected . '>' . $purposeType . '</option>';
-                    }
-                    ?>
-                    </select>
-                    </div>
-
-
-                    <div class="form-group">
-                    <label for="mvType">MV Type</label>
-                    <select name="mvType" id="mvType" class="form-control">
-                    <?php
-                    // Assuming $fuelTypes is an array containing your fuel types
-                    $mvTypes = array("Car", "Mopeds (0-49 cc)", "Motorcycle w/ side car", "Motorcycle w/o side car", "Non-conventional MC (Car)", "Shuttle Bus", "Sports utility Vehicle", "Tourist Bus", "Tricycle", "Truck Bus", "Trucks", "Utility Vehicle", "School bus", "Rebuilt", "Mobil Clinic", "Trailer");
-
-                    // Loop to generate options
-                    foreach ($mvTypes as $mvType) {
-                        $selected = ($mvType === $bookingDetails['mv_type']) ? 'selected' : '';
-                        echo '<option value="' . $mvType . '" ' . $selected . '>' . $mvType . '</option>';
-                    }
-                    ?>
-                    </select>
-                    </div>
-
-                    <div class="form-group">
-                    <label for="region">Region</label>
-                    <select name="region" id="region" class="form-control">
-                    <?php
-                    // Assuming $fuelTypes is an array containing your fuel types
-                    $regionTypes = array("Region I", "Region II", "Region III", "Region IV‑A", "MIMAROPA", "Region V", "Region VI", "Region VII", "'Region VIII", "Region IX", "Region X", "Region XI", "Region XII", "Region XIII", "NCR", "CAR", "BARMM");
-
-                    // Loop to generate options
-                    foreach ($regionTypes as $regionType) {
-                        $selected = ($regionType === $bookingDetails['region']) ? 'selected' : '';
-                        echo '<option value="' . $regionType . '" ' . $selected . '>' . $regionType . '</option>';
-                    }
-                    ?>
-                    </select>
-                    </div>
-
-
-                    <div class="form-group">
-                    <label for="mvFileNo">MV File No.</label>
-                    <input type="text" name="mvFileNo" id="mvFileNo" class="form-control" value="<?php echo $bookingDetails['mv_file_no']; ?>">
-                    </div>
-
-
-                    <div class="form-group">
-                    <label for="classification">Classification</label>
-                    <select name="classification" id="classification" class="form-control">
-  <?php
-                    // Assuming $fuelTypes is an array containing your fuel types
-                    $classificationTypes = array("Diplomatic-Consular Corps", "Diplomatic-Chief of Mission", "Diplomatic-Diplomatic Corps", "Exempt-Government", "Diplomatic Exempt-Economics Z", "Government", "For hire", "Diplomatic-OEV", "Private", "Exempt-For-Hire", "Exempt-Private");
-
-                    // Loop to generate options
-                    foreach ($classificationTypes as $classificationType) {
-                        $selected = ($classificationType === $bookingDetails['classification']) ? 'selected' : '';
-                        echo '<option value="' . $classificationType . '" ' . $selected . '>' . $classificationType . '</option>';
-                    }
-                    ?>                   
-                    </select>
-                    </div>
-
-                    <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <div class="input-group-prepend">
-                    <span class="input-group-text">₱</span>
-                    </div>
-                    <input type="text" name="amount" id="amount" class="form-control" value="<?php echo $bookingDetails['amount']; ?>" readonly>
-                    </div>
-                    <!-- Add more fields for editing as needed -->
-
-                    
-                </div>
-
-            <!-- Second Column -->
-        <div class="col-md-6">
-
-                <div class="form-group">
-                    <label for="organization">Organization </label>
-                    <input type="text" name="organization" id="organization" class="form-control" value="<?php echo $bookingDetails['organization']; ?>">
-                </div>
-
-
-                    <div class="form-group">
-                    <label for="last_name"> Last name </label>
-                    <input type="text" name="customerLastName" id="last_name" class="form-control" value="<?php echo $customerDetails['last_name']; ?>" readonly>
-                </div>
-
-
-                <div class="form-group">
-                    <label for="middle_name"> Middle name </label>
-                    <input type="text" name="customerMiddleName" id="middle_name" class="form-control" value="<?php echo $customerDetails['middle_name']; ?>" readonly>
-                </div>  
-
-                <div class="form-group">
-                    <label for="first_name"> First name </label>
-                    <input type="text" name="customerFirstName" id="first_name" class="form-control" value="<?php echo $customerDetails['first_name']; ?>" readonly>
-                </div>
-
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="type" name="customerAddress" id="address" class="form-control"  value="<?php echo $customerDetails['address']; ?>" readonly>
-                    </div>
-
-                    <div class="form-group">
-                    <label for="engine">Engine</label>
-                    <input type="text" name="engine" id="engine" class="form-control" value="<?php echo $bookingDetails['engine']; ?>" >
-                    </div>
-           
-                    <div class="form-group">
-                    <label for="chassis">Chassis</label>
-                    <input type="text" name="chassis" id="chassis" class="form-control" value="<?php echo $bookingDetails['chassis']; ?>">
-                    </div>
-
-                    <div class="form-group">
-                    <label for="make">Make</label>
-                    <select name="make" id="make" class="form-control">
-                    <?php
-                    // Assuming $fuelTypes is an array containing your fuel types
-                    $makeTypes = array("Toyota", "Honda", "Ford", "Chevrolet", "Mitsubishi");
-
-                    // Loop to generate options
-                    foreach ($makeTypes as $makeType) {
-                        $selected = ($makeType === $bookingDetails['make']) ? 'selected' : '';
-                        echo '<option value="' . $makeType . '" ' . $selected . '>' . $makeType . '</option>';
-                    }
-                    ?>  
-                    </select>
-                    </div>
-
-
-                    <div class="form-group">
-                    <label for="series">Series</label>
-                    <select name="series" id="series" class="form-control">
+                                                    </select>
+                                                    </td>
+                                                    <td class="text-end">Series
+                                                    <select name="seriesInput" id="seriesInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
                     <?php
                     // Assuming $fuelTypes is an array containing your fuel types
                     $seriesTypes = array("Sedan", "SUV", "Truck", "Hatchback");
@@ -411,52 +265,284 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     ?> 
                     </select>
-                    </div>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-end">Purpose
+                                                    <select name="purposeInput" id="purposeInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
+                                                    <?php
+                                                    // Assuming $fuelTypes is an array containing your fuel types
+                                                    $purposeTypes = array("For Registration", "For Compliance", "Plate Redemption");
 
-                    <div class="form-group">
-                    <label for="color">Color</label>
-                    <select name="color" id="color" class="form-control">
+                                                    // Loop to generate options
+                                                    foreach ($purposeTypes as $purposeType) {
+                                                        $selected = ($purposeType === $bookingDetails['purpose']) ? 'selected' : '';
+                                                        echo '<option value="' . $purposeType . '" ' . $selected . '>' . $purposeType . '</option>';
+                                                    }
+                                                    ?>
+                                                    </select>
+                                                    <td class="text-end">Color
+                                                    <select name="colorInput" id="colorInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
+                                                    <?php
+                                                    // Assuming $fuelTypes is an array containing your fuel types
+                                                    $colorTypes = array("Red", "Blue", "Green", "Black");
+
+                                                    // Loop to generate options
+                                                    foreach ($colorTypes as $colorType) {
+                                                        $selected = ( $colorType === $bookingDetails['color']) ? 'selected' : '';
+                                                        echo '<option value="' .  $colorType . '" ' . $selected . '>' .  $colorType . '</option>';
+                                                    }
+                                                    ?> 
+                                                    </select>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-end">MV Type
+                                                    <select name="mvTypeInput" id="mvTypenput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
+                                                    <?php
+                                                    // Assuming $fuelTypes is an array containing your fuel types
+                                                    $mvTypes = array("Car", "Mopeds (0-49 cc)", "Motorcycle w/ side car", "Motorcycle w/o side car", "Non-conventional MC (Car)", "Shuttle Bus", "Sports utility Vehicle", "Tourist Bus", "Tricycle", "Truck Bus", "Trucks", "Utility Vehicle", "School bus", "Rebuilt", "Mobil Clinic", "Trailer");
+
+                                                    // Loop to generate options
+                                                    foreach ($mvTypes as $mvType) {
+                                                        $selected = ($mvType === $bookingDetails['mv_type']) ? 'selected' : '';
+                                                        echo '<option value="' . $mvType . '" ' . $selected . '>' . $mvType . '</option>';
+                                                    }
+                                                    ?>
+                                                    </select>
+                                                    <td class="text-end">
+    Gross Weight
+    <input id="grossWeightInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['gross_weight']; ?>" >
+</td>
+                                                   
+                                                </tr>
+                                                
+                                                <tr>
+                                                   <td class="text-end">MV File No.<input id="mvFileInput" type="text"class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['mv_file_no']; ?>" ></td>  
+                                           
+                                                    <td class="text-end">Net Capacity<input id="netCapacityInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['net_capacity']; ?>" ></td>
+                                                </tr> 
+                                                <tr>
+                                                      <!-- <td class="text-end" style="width: 200px;">Ticketing ID<input type="text" style="margin-left: 5px;" ></td> -->
+                                                      <td class="text-end">Classification
+                                                      <select name="classification" id="classificationInput" class="form-control" style="max-width: 230px; display: inline-block; margin-left: 8px;" >
+                                                        <?php
+                                                        // Assuming $fuelTypes is an array containing your fuel types
+                                                        $classificationTypes = array("Diplomatic-Consular Corps", "Diplomatic-Chief of Mission", "Diplomatic-Diplomatic Corps", "Exempt-Government", "Diplomatic Exempt-Economics Z", "Government", "For hire", "Diplomatic-OEV", "Private", "Exempt-For-Hire", "Exempt-Private");
+
+                                                        // Loop to generate options
+                                                        foreach ($classificationTypes as $classificationType) {
+                                                            $selected = ($classificationType === $bookingDetails['classification']) ? 'selected' : '';
+                                                            echo '<option value="' . $classificationType . '" ' . $selected . '>' . $classificationType . '</option>';
+                                                        }
+                                                        ?>                   
+                                                        </select>
+                                                    <td class="text-end">Region
+                                                    <select name="region" id="regionInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
                     <?php
                     // Assuming $fuelTypes is an array containing your fuel types
-                    $colorTypes = array("Red", "Blue", "Green", "Black");
+                    $regionTypes = array("Region I", "Region II", "Region III", "Region IV‑A", "MIMAROPA", "Region V", "Region VI", "Region VII", "'Region VIII", "Region IX", "Region X", "Region XI", "Region XII", "Region XIII", "NCR", "CAR", "BARMM");
 
                     // Loop to generate options
-                    foreach ($colorTypes as $colorType) {
-                        $selected = ( $colorType === $bookingDetails['color']) ? 'selected' : '';
-                        echo '<option value="' .  $colorType . '" ' . $selected . '>' .  $colorType . '</option>';
+                    foreach ($regionTypes as $regionType) {
+                        $selected = ($regionType === $bookingDetails['region']) ? 'selected' : '';
+                        echo '<option value="' . $regionType . '" ' . $selected . '>' . $regionType . '</option>';
                     }
-                    ?> 
+                    ?>
                     </select>
-                    </div>
+                                                </tr>
+                                           
+                                                
+                                                
+                                              
+                                              
+                                                <tr>
 
-                    <div class="form-group">
-                    <label for="grossWeight">Gross Weight</label>
-                    <input type="text" name="grossWeight" id="grossWeight" class="form-control" value="<?php echo $bookingDetails['gross_weight']; ?>">
-                    </div>
+                                              
+                                               
+                                               
+                                                <!-- Add more rows based on your structure -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
 
-                    <div class="form-group">
-                    <label for="netCapacity">Net Capacity</label>
-                    <input type="text" name="netCapacity" id="netCapacity" class="form-control" value="<?php echo $bookingDetails['net_capacity']; ?>">
-                    </div>
-
-
-                    <div class="col-md-13">
-    <!-- ... (additional form fields) ... -->
-    <div class="d-flex justify-content-end mt-md-5 mt-3">
-        <button type="submit" class="btn btn-primary mr-2">Save Changes</button>
-        <a href="view-booking.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-secondary">Cancel</a>
+                        <!-- <div class="col-lg-5 col-xl-4 col-xxl-4"> -->
+                        <div class="">
+                       <div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
+        <h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">TEST DETAIL</span></h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <tbody> <!-- Wrap the table content in tbody for better structure -->
+                <tr>
+                        <th><span style="font-weight: normal !important;">Date</span></th>
+                    </tr>   
+                    <tr>
+                       <td class="text-center" style="font-size: 23px;"><?php echo date('M. j, Y', strtotime( $scheduleDetails['start_datetime'])); ?></td>
+                    </tr> 
+                <tr>
+                        <th><span style="font-weight: normal !important;">Date</span></th>
+                    </tr>   
+                    <tr>
+                       <td class="text-center" style="font-size: 23px;"><?php echo date('g:ia', strtotime( $scheduleDetails['start_datetime'])) . ' to ' . date('g:ia', strtotime( $scheduleDetails['end_datetime'])); ?></td>
+                    </tr>  
+                <tr>
+                        <th><span style="font-weight: normal !important;">Amount (PHP)</span></th>
+                    </tr>
+                    <tr>
+                        <td id ="amountValue" class="text-center" style="color: ;font-size: 23px;" ><?php echo $bookingDetails['amount']; ?></td>
+                    </tr>
+                    <tr>
+    <th><span style="font-weight: normal !important;">Mode of Payment</span></th>
+</tr>
+<tr>
+<td class="text-center" style="font-size: 23px;"><?php echo strtoupper($bookingDetails['paymentMethod']); ?></td>
+</tr>
+<tr>
+    <th><span style="font-weight: normal !important;">Status</span></th>
+</tr>
+<tr>
+<td class="text-center" style="font-size: 23px; color:orange;"><?php echo strtoupper($bookingDetails['status']); ?></td>
+</tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-                  
+<div>
+</div>
+
+                            <div class="card" style=" margin-bottom: 20px;">
+    <div class="card-header" style="background: var(--bs-success-text-emphasis);">
+        <h6 class="mb-0" style="text-align: center; color: var(--bs-body-bg); font-weight: bold; font-size: 16px;">ACTIONS</h6>
+    </div>
+    <div class="card-body" style="text-align: center; padding-top: 10px;">
+<!-- Modify your existing "Submit Booking" button -->
+<button type="button" class="btn btn-warning" onclick="finishEditModal()">Finish Edit</button>    
+<button type="button" class="btn btn-danger m-2" onclick="cancelFunction()">Cancel</button>
+
+</div>
+</div>
+
+
+
+<!-- Modal HTML structure -->
+<div class="modal fade" id="confirmGoBackModal" tabindex="-1" role="dialog" aria-labelledby="confirmGoBackModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmGoBackModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to go back to View Booking? Any unsaved changes will be lost.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="navigateBack()">Go Back</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="text-end mt-5">
+    <button type="button" class="btn btn-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#confirmGoBackModal">Back</button>
+</div>
+
+
+
+                      </div>
                 </div>
-            </div> 
-        </form>
+            </div>  
+        </form> 
+        </div>
+
+
+
+    <!-- Modal for displaying the picture -->
+    <div class="modal fade" id="carPictureModal" tabindex="-1" aria-labelledby="carPictureModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="carPictureModalLabel">Car Picture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Display the picture here -->
+                    <img src="<?php echo $carPicturePath; ?>" alt="Car Picture" class="img-fluid">
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Include Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<!-- Modal for displaying the OR picture -->
+<div class="modal fade" id="orPictureModal" tabindex="-1" aria-labelledby="orPictureModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orPictureModalLabel">OR Picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Display the OR picture here -->
+                <img id="orPictureDisplay" class="img-fluid" alt="OR Picture">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal for displaying the CR picture -->
+<div class="modal fade" id="crPictureModal" tabindex="-1" aria-labelledby="crPictureModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crPictureModalLabel">CR Picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Display the CR picture here -->
+                <img id="crPictureDisplay" class="img-fluid" alt="CR Picture">
+            </div>
+        </div>
+    </div>
+</div>
+
+  <?php include 'partials/footer.php' ?>
+
+    <script src="admin/assets2/bootstrap/js/bootstrap.min.js"></script>
+    <!-- <script src="admin/assets2/js/aos.min.js"></script> -->
+    <script src="admin/assets2/js/bs-init.js"></script>
+    <!-- <script src="admin/assets2/js/bold-and-bright.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+
+
+<script>
+function displaySelectedPicture() {
+    // Show the modal when the button is clicked
+    $('#carPictureModal').modal('show');
+}
+</script>
+
+
+
+<script>
+    function navigateBack() {
+        // Redirect to home.php
+        var bookingId = '<?php echo $bookingId; ?>';
+        window.location.href = 'view-booking.php?id=' + bookingId;
+    }
+</script>
+
 </body>
 
 </html>

@@ -1,13 +1,34 @@
+
+
 <?php
 //admin side
 // book-now.php
 // Start the session
+// homepage.php
+// Start the session
 session_start();
-include("partials/navbar.php");
+include("connect/connection.php");
 // Check if the email session variable is set
 if (isset($_SESSION['email'])) {
-    // Echo a welcome message
-    echo 'Welcome, ' . $_SESSION['email'];
+    // Get the email from the session
+    $email = $_SESSION['email'];
+
+    // Query the database to fetch user details
+    $sql = "SELECT * FROM login WHERE email = '$email'";
+    $result = $connect->query($sql);
+
+    // Check if the query was successful
+    if ($result) {
+        // Fetch the user details
+        $user = $result->fetch_assoc();
+
+        $userName = $user['first_name'];
+        // Echo the email, first_name, and last_name
+      
+    } else {
+        // Handle the error, e.g., display an error message
+        echo 'Error fetching user details';
+    }
 } else {
     // If the email session variable is not set, redirect to the login page
     header('Location: index.php');
@@ -17,31 +38,40 @@ if (isset($_SESSION['email'])) {
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Home - Greenfrog</title>
+    <link rel="stylesheet" href="assets2/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <link rel="stylesheet" href="assets2/css/aos.min.css">
+    <link rel="stylesheet" href="assets2/css/animate.min.css">
+    <link rel="stylesheet" href="assets2/css/NavBar-with-pictures.css">
 </head>
-
 <body class="bg-light">
+    <?php include("partials/nav.php"); ?>
+
     <div class="container py-5" id="page-container">
-        <div class="row">
-            <div class="col-md-9">
-                <input type="date" class="form-control" id="datePicker" placeholder="date" />
-            </div>
+    <div class="row">
+        <div class="col-md-9 mx-auto text-center">
+            <input type="date" class="form-control" id="datePicker" placeholder="date" />
         </div>
     </div>
+</div>
+
 
     <div class="container py-5" id="events-container">
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="assets2/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets2/js/aos.min.js"></script>
+    <script src="assets2/js/bs-init.js"></script>
+    <script src="assets2/js/bold-and-bright.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
     var datePicker = document.getElementById('datePicker');
@@ -125,5 +155,17 @@ console.log('qty_of_person:', response[i].qty_of_person);
 });
 
     </script>
+<script>
+    // Add the 'active' class to the 'Home' link when on home.php
+    document.addEventListener('DOMContentLoaded', function () {
+        var currentPage = window.location.pathname;
+        var homeLink = document.querySelector('.navbar-nav .nav-item:first-child');
+
+        if (currentPage.includes('home.php')) {
+            homeLink.classList.add('active');
+        }
+    });
+</script>
+
 </body>
 </html>

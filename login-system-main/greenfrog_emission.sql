@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 21, 2024 at 05:47 PM
+-- Generation Time: Jan 24, 2024 at 06:02 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.0.25
 
@@ -99,10 +99,13 @@ CREATE TABLE `car_emission` (
 --
 
 INSERT INTO `car_emission` (`id`, `event_id`, `user_id`, `plate_number`, `customer_email`, `customer_first_name`, `customer_middle_name`, `customer_last_name`, `address`, `status`, `app_date`, `vehicle_cr_no`, `vehicle_or_no`, `first_reg_date`, `year_model`, `fuel_type`, `purpose`, `mv_type`, `region`, `mv_file_no`, `classification`, `payment_date`, `petc_or`, `amount`, `organization`, `engine`, `chassis`, `make`, `series`, `color`, `gross_weight`, `net_capacity`, `cec_number`, `mvect_operator`, `car_picture`, `paymentMethod`, `paymentStatus`, `ticketing_id`, `reference_number`, `date_tested`, `smurf_admin_id`) VALUES
-(1, 1, 3, 'NBAA 1232', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'canceled', '2023-12-27 20:00:00', '12', '12', '2023-12-06', '2023', 'Gasoline', 'Meeting', 'Type1', 'Region1', '13', 'Compact', '0000-00-00 00:00:00', '0', '500.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', 'uploads/icon.png', 'cash', 'unpaid', '2293686', '76012', '0000-00-00 00:00:00', NULL),
-(2, 2, 3, 'NBAA 1332', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'doned', '2023-12-27 22:16:00', '12', '12', '2023-11-29', '2019', 'Diesel - None Turbo', 'For Registration', 'Tricycle', 'Region I', '13', 'Diplomatic-Consular Corps', '2024-01-21 09:57:01', '71952', '400.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '202400000071952', 'Operator 1', 'uploads/1011917966.jpg', 'cash', 'paid', '5052674', '35401', '2024-01-21 08:28:32', NULL),
-(3, 2, 3, 'PBAA 1234', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'doned', '2023-12-28 03:48:00', '12', '12', '2023-11-27', '2023', 'LPG', 'For Registration', 'Car', 'Region I', '13', 'Diplomatic-Consular Corps', '2024-01-12 04:38:34', '81476', '400.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'Operator 2', 'uploads/R.jpg', 'cash', 'paid', '5480037', '72550', '2024-01-21 07:43:22', NULL),
-(4, 3, 3, 'PBAA 1221', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'booked', '2024-01-15 17:08:00', '12', '12', '2024-01-11', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', '12', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'Operator 1', 'uploads/star.png', 'cash', 'unpaid', '3414908', '50328', '2024-01-15 09:32:22', NULL);
+(1, 0, 3, 'NBAA 1232', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'canceled', '2023-12-27 20:00:00', '12', '12', '2023-12-06', '2023', 'Gasoline', 'Meeting', 'Type1', 'Region1', '13', 'Compact', '0000-00-00 00:00:00', '0', '500.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', 'uploads/icon.png', 'cash', 'unpaid', '2293686', '76012', '0000-00-00 00:00:00', NULL),
+(2, 5, 3, 'NBAA 1332', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'doned', '2023-12-27 22:16:00', '12', '12', '2023-11-29', '2019', 'Diesel - None Turbo', 'For Registration', 'Tricycle', 'Region I', '13', 'Diplomatic-Consular Corps', '2024-01-21 09:57:01', '71952', '400.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '202400000071952', 'Operator 1', 'uploads/1011917966.jpg', 'cash', 'paid', '5052674', '35401', '2024-01-21 08:28:32', NULL),
+(3, 0, 3, 'PBAA 1234', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'doned', '2023-12-28 03:48:00', '12', '12', '2023-11-27', '2023', 'LPG', 'For Registration', 'Car', 'Region I', '13', 'Diplomatic-Consular Corps', '2024-01-12 04:38:34', '81476', '400.00', 'KORAK', '12', '1543', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'Operator 2', 'uploads/R.jpg', 'cash', 'paid', '5480037', '72550', '2024-01-21 07:43:22', NULL),
+(4, 3, 3, 'PBAA 1221', 'tecson.k.bsinfotech@gmail.com', 'Kenneth Gabriel', 'Guimong', 'Tecson', 'Mckinley BGC', 'booked', '2024-01-15 17:08:00', '12', '12', '2024-01-11', '2021', 'LPG', 'For Registration', 'Tricycle', 'Region I', '12', 'Diplomatic-Chief of Mission', '0000-00-00 00:00:00', '0', '500.00', '12', '12', '12', 'Toyota', 'SUV', 'Red', '12.00', '12.00', '0', 'Operator 1', 'uploads/star.png', 'cash', 'unpaid', '3414908', '50328', '2024-01-23 12:33:31', NULL),
+(65, 3, 3, 'PBAA 5555', '', 'Kenneth', 'G.', 'Gabriel', 'Mckinley BGC', 'doned', '2024-01-22 17:11:43', '12', '12', '2024-01-10', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '123', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', 'KORAK', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', 'uploads/car_picture/65ae314f1a9b1_star.png', 'cash', 'unpaid', '4110013', '63050', '0000-00-00 00:00:00', NULL),
+(70, 4, 3, 'PBAA 5555', '', '12', '12', '12', '12', 'booked', '2024-01-23 11:04:55', '12', '12', '2024-01-01', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', '1', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', 'uploads/car_picture/65af2cd7787c7_R.jpg', 'cash', 'unpaid', '8777625', '44217', '0000-00-00 00:00:00', NULL),
+(71, 3, 3, 'NBAA 2222', '', '12', '12', '12', '12', 'doned', '2024-01-23 11:11:35', '12', '12', '2024-01-02', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '2024-01-23 04:21:08', '46125', '500.00', '1', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '202400000046125', 'Operator 2', 'uploads/car_picture/65af2e6742002_Lord.png', 'cash', 'paid', '4278231', '90071', '2024-01-23 03:19:24', NULL);
 
 -- --------------------------------------------------------
 
@@ -374,6 +377,40 @@ INSERT INTO `mvtypes` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `mv_types`
+--
+
+CREATE TABLE `mv_types` (
+  `mv1` varchar(255) DEFAULT NULL,
+  `mv2` varchar(255) DEFAULT NULL,
+  `mv3` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `mv_types`
+--
+
+INSERT INTO `mv_types` (`mv1`, `mv2`, `mv3`) VALUES
+('Mopeds (0-49 cc)', NULL, NULL),
+('Motorcycle w/ side car', NULL, NULL),
+('Motorcycle w/o side car', NULL, NULL),
+('Non-conventional MC (Car)', NULL, NULL),
+('Tricycle', NULL, NULL),
+(NULL, 'Car', NULL),
+(NULL, 'Sports utility Vehicle', NULL),
+(NULL, 'Utility Vehicle', NULL),
+(NULL, 'Rebuilt', NULL),
+(NULL, 'Mobil Clinic', NULL),
+(NULL, NULL, 'School bus'),
+(NULL, NULL, 'Shuttle Bus'),
+(NULL, NULL, 'Tourist Bus'),
+(NULL, NULL, 'Truck Bus'),
+(NULL, NULL, 'Trucks'),
+(NULL, NULL, 'Trailer');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `purposes`
 --
 
@@ -450,10 +487,20 @@ CREATE TABLE `schedule_list` (
 --
 
 INSERT INTO `schedule_list` (`id`, `title`, `description`, `qty_of_person`, `reserve_count`, `price_3`, `price_2`, `price_1`, `start_datetime`, `end_datetime`, `availability`) VALUES
-(1, 'Vehicle Emission', 'Vehicle Emission', 2, -1, '0.00', '500.00', '300.00', '2023-12-29 13:00:00', '2023-12-29 13:30:00', 'available'),
-(2, 'Vehicle Emission', 'Vehicle', 2, 2, '700.00', '400.00', '500.00', '2023-12-30 20:00:00', '2023-12-30 13:00:00', 'available'),
-(3, 'Vehicle Emission', 'Emission', 2, 1, '800.00', '500.00', '300.00', '2024-02-10 13:00:00', '2024-02-10 13:30:00', 'available'),
-(4, 'Vehicle Emission', 'Vehicle', 5, 0, '700.00', '500.00', '300.00', '2024-02-12 07:00:00', '2024-01-12 07:30:00', 'available');
+(3, 'Vehicle Emission', 'emission', 5, 1, '600.00', '500.00', '300.00', '2024-01-26 09:00:00', '2024-01-26 09:30:00', 'available'),
+(4, 'Vehicle Emission', 'emission', 5, 4, '600.00', '500.00', '300.00', '2024-01-26 09:30:00', '2024-01-26 10:00:00', 'available'),
+(5, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 10:00:00', '2024-01-26 10:30:00', 'available'),
+(6, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 10:30:00', '2024-01-26 11:00:00', 'available'),
+(7, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 11:00:00', '2024-01-26 11:30:00', 'available'),
+(8, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 11:30:00', '2024-01-26 12:00:00', 'available'),
+(9, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 13:00:00', '2024-01-26 13:30:00', 'available'),
+(10, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 13:30:00', '2024-01-26 14:00:00', 'available'),
+(11, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 14:00:00', '2024-01-26 14:30:00', 'available'),
+(12, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 14:30:00', '2024-01-26 15:00:00', 'available'),
+(13, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 15:00:00', '2024-01-26 15:30:00', 'available'),
+(14, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 15:30:00', '2024-01-26 16:00:00', 'available'),
+(15, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 16:00:00', '2024-01-26 16:30:00', 'available'),
+(16, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-26 16:30:00', '2024-01-26 17:00:00', 'available');
 
 -- --------------------------------------------------------
 
@@ -530,17 +577,9 @@ CREATE TABLE `test_result` (
 INSERT INTO `test_result` (`id`, `booking_id`, `HC`, `CO`, `CO2`, `O2`, `N`, `RPM`, `K_AVE`, `testing_status`, `record_status`, `vehicle_img`, `Tested`, `Uploaded_Image`, `Retest`, `Uploaded`, `Motorcycle`, `Rebuilt`, `Valid`, `auth_code`, `finalize`) VALUES
 (5, 2, '0.00', '0.00', '14.00', '2.00', '0.00', '0.00', '0.00', 1, 1, 'assets/img/test_img/1011917966.jpg', 1, 1, NULL, 1, NULL, NULL, 1, 6396447, 1),
 (6, 4, '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 2, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0),
-(7, 3, '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 2, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `vehicle_eries`
---
-
-CREATE TABLE `vehicle_eries` (
-  `series_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(7, 3, '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 2, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0),
+(8, 65, '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0),
+(9, 71, '100.00', '0.25', '14.00', '2.00', '0.00', '0.00', '0.00', 1, 1, 'assets/img/test_img/star.png', 1, 1, NULL, 1, NULL, NULL, 1, 6507378, 1);
 
 -- --------------------------------------------------------
 
@@ -571,9 +610,9 @@ ALTER TABLE `cancellation_reasons`
 --
 ALTER TABLE `car_emission`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `event_id` (`event_id`),
   ADD KEY `fk_car_emission_user_id` (`user_id`),
-  ADD KEY `fk_car_emission_smurf_admin` (`smurf_admin_id`);
+  ADD KEY `fk_car_emission_smurf_admin` (`smurf_admin_id`),
+  ADD KEY `car_emission_ibfk_1` (`event_id`);
 
 --
 -- Indexes for table `classifications`
@@ -652,12 +691,6 @@ ALTER TABLE `test_result`
   ADD KEY `booking_id` (`booking_id`);
 
 --
--- Indexes for table `vehicle_eries`
---
-ALTER TABLE `vehicle_eries`
-  ADD PRIMARY KEY (`series_name`);
-
---
 -- Indexes for table `vehicle_series`
 --
 ALTER TABLE `vehicle_series`
@@ -677,7 +710,7 @@ ALTER TABLE `cancellation_reasons`
 -- AUTO_INCREMENT for table `car_emission`
 --
 ALTER TABLE `car_emission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `classifications`
@@ -725,7 +758,7 @@ ALTER TABLE `regions`
 -- AUTO_INCREMENT for table `schedule_list`
 --
 ALTER TABLE `schedule_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `smurf_admin`
@@ -743,7 +776,7 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT for table `test_result`
 --
 ALTER TABLE `test_result`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
@@ -762,7 +795,6 @@ ALTER TABLE `cancellation_reasons`
 -- Constraints for table `car_emission`
 --
 ALTER TABLE `car_emission`
-  ADD CONSTRAINT `car_emission_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `schedule_list` (`id`),
   ADD CONSTRAINT `fk_car_emission_smurf_admin` FOREIGN KEY (`smurf_admin_id`) REFERENCES `smurf_admin` (`id`),
   ADD CONSTRAINT `fk_car_emission_user_id` FOREIGN KEY (`user_id`) REFERENCES `login` (`user_id`);
 

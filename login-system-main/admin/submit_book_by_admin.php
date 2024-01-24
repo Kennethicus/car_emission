@@ -257,7 +257,7 @@ function isAvailableSpaceInSchedule($event_id) {
         $stmt->fetch();
 
         // Check the number of persons booked for the given event_id in the car_emission table
-        $stmt->prepare("SELECT COUNT(*) FROM car_emission WHERE event_id = ?");
+        $stmt->prepare("SELECT COUNT(*) FROM car_emission WHERE event_id = ? AND status = 'booked'");
         $stmt->bind_param("i", $event_id);
         $stmt->execute();
         $stmt->bind_result($bookedPersonsCount);

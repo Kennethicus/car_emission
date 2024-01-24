@@ -4,7 +4,7 @@ session_start();
 
 date_default_timezone_set('Asia/Manila');
 
-
+include("partials/navbar.php");
 include("connect/connection.php");
 
 // Check if the user is logged in
@@ -66,301 +66,453 @@ $stmt->close();
 $connect->close();
 
 
+
 ?>
+
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="en">
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Log in - Brand</title>
-    <link rel="stylesheet" href="admin/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
-    <link rel="stylesheet" href="admin/assets/css/aos.min.css">
-    <link rel="stylesheet" href="admin/assets/css/NavBar-with-pictures.css">
+    <!-- Include the Select2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+
+<!-- Include jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include the Select2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<style>
+        .form-group {
+            margin-bottom: 10px; /* Remove the default bottom margin */
+            display: flex;
+            align-items: center; /* Align label and input vertically */
+        }
+
+        .form-group label {
+            flex: 1; /* Make label take available space */
+            padding-right: 10px; /* Add some right padding to create space between label and input */
+            text-align: right; /* Right-align the label text */
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            flex: 2; /* Make input take more space */
+        }
+        </style>
+    <title>Booking Form</title>
 </head>
 
-<body style=" background-color: #f8f9fa;">
-  <?php include 'partials/nav.php'?>
-    <div class="container mt-3">  
-                    <form action="submit_book_by_admin.php" method="POST"  name="bookingForm">
-                    <div class="row">
-                
-                    <div class="col-12 col-md-8 col-lg-9 mx-auto">          
-                
-    <div class="card shadow mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
-            <h6 class="text-primary fw-bold m-0"><span style="color: rgb(244, 248, 244);">MOTOR VEHICLE INFORMATION</span></h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table">    
-                                            <tbody>
-                                          
-     
-                                            <tr>
-                                            <!-- <td  class="text-end">App Date<input type="text" style="margin-left: 5px;" ></td> -->
-   
+<body class="bg-">
+    <div class="container py-5">
+        <!-- Display event details -->
+        <h2>Booking Details for <?php echo $event['title']; ?></h2>
+        <p><strong>DATE:</strong> <?php echo date('M. j, Y', strtotime($event['start_datetime'])); ?></p>
+        <p><strong>TIME:</strong> <?php echo date('g:ia', strtotime($event['start_datetime'])) . ' to ' . date('g:ia', strtotime($event['end_datetime'])); ?></p>
+        <p><strong>SLOT:</strong> <?php echo $event['qty_of_person']; ?></p>
+        <p><strong>PRICE:</strong> <?php echo $event['price_1']; ?></p>
+        <p><strong>PRICE:</strong> <?php echo $event['price_2']; ?></p>
+        <p><strong>PRICE:</strong> <?php echo $event['price_3']; ?></p>
+        <!-- Car Emission Form -->
+        <h2>Car Emission Details</h2>
+        <form action="process_pending.php" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- First Column -->
+                    <input type="hidden" name="eventId" value="<?php echo $eventId; ?>">
+                    
+                    <div class="form-group">
+                    <label for="plateNumber">Plate Number</label>
+                    <input type="text" name="plateNumber" id="plateNumber" class="form-control" required>
+                    </div>
 
-                                            <td class="text-end" style="width: 200px;">
-                                                Plate No. 
-                                                <input id="plateNumberLetters" class="form-control" style="max-width: 100px; display: inline-block;" type="text" placeholder="ex. ABCD">
-                                                <input id="plateNumberNumbers" class="form-control" style="max-width: 100px; display: inline-block; margin-left: 8px;" type="text" placeholder="ex. 1234">
-                                                 </td>
-                                                    <td class="text-end" style="width: 200px;">Organization<input id="organizationInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                                </tr>
-                                               <tr>
-                                                    <!-- <td class="text-end" style="width: 200px;">Ticketing ID<input type="text" style="margin-left: 5px;" ></td> -->
-                                                    <td class="text-end">
-                 <!-- Input for uploading a picture -->
-                <label for="carPictureInput" class="btn btn-primary">
-                Car Picture
-                <input type="file" id="carPictureInput" class="d-none" accept="image/*" onchange="displaySelectedPicture(this)">
-                </label>
-                <!-- Button to display the selected picture -->
-                <button type="button" class="btn btn-success" onclick="displaySelectedPicture()" id="selectedPictureFilename">Display</button>  
-                </td>
-                                                    <td class="text-end">First Name<input id="firstnameInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                                </tr> 
-                                                <tr>
-                                                <td class="text-end">
-                 <!-- Input for uploading a picture -->
-                <label for="OrInputPicture" class="btn btn-primary">
-                OR Picture
-                <input type="file" id="OrInputPicture" class="d-none" accept="image/*" onchange="displaySelectedOrPicture(this)">
-                </label>
-                <!-- Button to display the selected picture -->
-                <button type="button" class="btn btn-success" onclick="displaySelectedOrPicture()" id="selectedOrFilename">Display</button>  
-                </td>
-                <td class="text-end" style="width: 200px;">Middle Name<input id="middleNameInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                            
-                                                <tr>
-                                                <td class="text-end">
-                 <!-- Input for uploading a picture -->
-                <label for="CrInputPicture" class="btn btn-primary">
-                CR Picture
-                <input type="file" id="CrInputPicture" class="d-none" accept="image/*" onchange="displaySelectedCrPicture(this)">
-                </label>
-                <!-- Button to display the selected picture -->
-                <button type="button" class="btn btn-success" onclick="displaySelectedCrPicture()" id="selectedCrFilename">Display</button>  
-                </td>
-                                                
-                                                    <td class="text-end" style="width: 200px;">Last Name<input id="lastNameInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                                </tr>
-                                                <tr>
-   
-                                                <td class="text-end" style="vertical-align: middle;">Vehicle CR No.<input id="vehicleCrInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                                <td class="text-end" style="width: 200px;">Address<input id="addressInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                                </tr>
-                                                <tr>
-                                                <td style="text-align: right;">Vehicle OR No.<input id="vehicleOrInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text" ></td>
-                                                <td class="text-end">Engine<input id="engineInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                           
-                                                </tr>
-                                            
-                                                <tr>
-                                                <td class="text-end">First Registration Date
-                                                <input id="firstRegInput" type="date" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-    </td>
-    <td style="text-align: right;">Chassis<input type="text" id="chassisInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-end">Year Model
-                                                    <select id="yearModelInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;"> <!-- Adjust the width as needed -->
-                                                    <?php
-                                                    // Assuming $startYear and $endYear are your desired range
-                                                    $startYear = date("Y") - 20; // Display 20 recent years
-                                                    $endYear = date("Y"); // Current year
+                    <div class="form-group">
+                    <label for="carPicture">Car Picture</label>
+                    <input type="file" name="carPicture" id="carPicture" class="form-control-file" accept="image/*" required>
+                    </div>
+                
 
-                                                    // Loop to generate options
-                                                    for ($year = $endYear; $year >= $startYear; $year--) {
-                                                        echo '<option value="' . $year . '">' . $year . '</option>';
-                                                    }
-                                                    ?>
-                                                </select>
-                                                    </td>
-                                                    <td class="text-end">Make
-                                                    <select name="makeInput" id="makeInput"  class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" >
-                        <!-- Populate options dynamically based on your requirements -->
-                                                    </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-end">Fuel type
-                                                    <select name="fuelTypeInput" id="fuelTypeInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
+                    <div class="form-group">
+                    <label for="vehicleCrNo">Vehicle CR No.</label>
+                    <input type="text" name="vehicleCrNo" id="vehicleCrNo" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="vehicleOrNo">Vehicle OR No.</label>
+                    <input type="text" name="vehicleOrNo" id="vehicleOrNo" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                    <label for="firstRegDate">First Registration Date</label>
+                    <input type="date" name="firstRegDate" id="firstRegDate" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="yearModel">Year Model</label>
+                    <select name="yearModel" id="yearModel" class="form-control" >
+                    <?php
+                   // Assuming $startYear and $endYear are your desired range
+                    $startYear = date("Y") - 20; // Display 20 recent years
+                    $endYear = date("Y"); // Current year
+
+                    // Loop to generate options
+                    for ($year = $endYear; $year >= $startYear; $year--) {
+                        echo '<option value="' . $year . '">' . $year . '</option>';
+                    }
+                    ?>
+                    </select>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="fuelType">Fuel Type</label>
+                    <select name="fuelType" id="fuelType" class="form-control">
                         <!-- Populate options dynamically based on your requirements -->
                     </select>
-                                                    </td>
-                                                    <td class="text-end">Series
-                                                    <select name="seriesInput" id="seriesInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                <!-- Populate options dynamically based on your requirements -->
-                                                </select>    
-                                                </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-end">Purpose
-                                                    <select name="purposeInput" id="purposeInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                    <!-- Populate options dynamically based on your requirements -->
-                                                    </select>
-                                                    </td>
-                                                    <td class="text-end">Color
-                                                    <select name="colorInput" id="colorInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                    <!-- Populate options dynamically based on your requirements -->
-                                                    </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-end">MV Type
-                                                    <select name="mvTypeInput" id="mvTypeInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                    <!-- Populate options dynamically based on your requirements -->
-                                                    </select>
-                                                    </td>
-                                                    <td class="text-end">
-    Gross Weight
-    <input id="grossWeightInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text">
-</td>
-                                                   
-                                                </tr>
-                                                
-                                                <tr>
-                                                    <!-- <td class="text-end" style="width: 200px;">Ticketing ID<input type="text" style="margin-left: 5px;" ></td> -->
-                                                    <td class="text-end">Classification
-                                                    <select name="classification" id="classificationInput"  class="form-control" style="max-width: 230px; display: inline-block; margin-left: 8px;" type="text">
+                    </div>
+
+                    
+
+                    <div class="form-group">
+                    <label for="purpose">Purpose</label>
+                    <select name="purpose" id="purpose" class="form-control">
                         <!-- Populate options dynamically based on your requirements -->
-                                                    </select>
-                                                    </td>
-                                                    <td class="text-end">Net Capacity<input id="netCapacityInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
-                                                </tr> 
-                                                <tr>
-                                                    <td class="text-end">Region
-                                                    <select name="regionInput" id="regionInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                    <!-- Populate options dynamically based on your requirements -->
-                                                    </select>
-                                                    </td>
-         
-                                                </tr>
-                                                
-                                                
-                                              
-                                              
-                                                <tr>
+                    </select>
+                    </div>
+                   
+                  
 
-                                              
-                                               
-                                               
-                                                <!-- Add more rows based on your structure -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
+                    
 
-                        <!-- <div class="col-lg-5 col-xl-4 col-xxl-4"> -->
-                        <div class="">
-                       <div class="card shadow mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
-        <h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">TEST DETAIL</span></h6>
+                    <div class="form-group">
+                    <label for="mvType">MV Type</label>
+                    <select name="mvType" id="mvType" class="form-control">
+                        <!-- Populate options dynamically based on your requirements -->
+                    </select>
+                    </div>
+
+               
+
+
+                    <div class="form-group">
+                    <label for="region">Region</label>
+                    <select name="region" id="region" class="form-control">
+                        <!-- Populate options dynamically based on your requirements -->
+                    </select>
+                    </div>
+
+                  
+
+                    <div class="form-group">
+                    <label for="mvFileNo">MV File No.</label>
+                    <input type="text" name="mvFileNo" id="mvFileNo" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                    <label for="classification">Classification</label>
+                    <select name="classification" id="classification" class="form-control">
+                        <!-- Populate options dynamically based on your requirements -->
+                    </select>
+                    </div>
+
+
+
+                    <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <div class="input-group-prepend">
+        <span class="input-group-text">₱</span>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table">
-                <tbody> <!-- Wrap the table content in tbody for better structure -->
-                <tr>
-                        <th><span style="font-weight: normal !important;">Date</span></th>
-                    </tr>   
-                    <tr>
-                       <td class="text-center" style="font-size: 23px;"><?php echo date('M. j, Y', strtotime($event['start_datetime'])); ?></td>
-                    </tr> 
-                <tr>
-                        <th><span style="font-weight: normal !important;">Date</span></th>
-                    </tr>   
-                    <tr>
-                       <td class="text-center" style="font-size: 23px;"><?php echo date('g:ia', strtotime($event['start_datetime'])) . ' to ' . date('g:ia', strtotime($event['end_datetime'])); ?></td>
-                    </tr>  
-                <tr>
-                        <th><span style="font-weight: normal !important;">Amount (PHP)</span></th>
-                    </tr>
-                    <tr>
-                        <td class="text-center" style="color: ;font-size: 23px;"></td>
-                    </tr>
-              
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-<div>
-</div>
-
-                            <div class="card" style=" margin-bottom: 20px;">
-    <div class="card-header" style="background: var(--bs-success-text-emphasis);">
-        <h6 class="mb-0" style="text-align: center; color: var(--bs-body-bg); font-weight: bold; font-size: 16px;">ACTIONS</h6>
-    </div>
-    <div class="card-body" style="text-align: center; padding-top: 10px;">
-
-
-<!-- Modify your existing "Submit Booking" button -->
-<button type="button" class="btn btn-primary" onclick="openConfirmationModal()">Submit Booking</button>    
-<button class="btn btn-danger m-2" onclick="cancelBookFunction()">Cancel</button>
-
-</div>
-</div>
-
-<!-- Add this code where your other HTML content is -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Confirm Booking Submission</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to submit the booking with the entered information?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="submitBooking()">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Back button outside the card, positioned lower and larger with increased margin-top -->
-<div class="text-end mt-5">
-    <button class="btn btn-secondary btn-lg" onclick="goBack()">Back</button>
-</div>
-
-
-    <!-- Modal for displaying the picture -->
-    <div class="modal fade" id="carPictureModal" tabindex="-1" aria-labelledby="carPictureModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="carPictureModalLabel">Car Picture</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <input type="text" name="amount" id="amount" class="form-control" value="<?php echo $event['price_1']; ?>" readonly>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <!-- Display the picture here -->
-                    <img id="carPictureDisplay" class="img-fluid" alt="Car Picture">
+
+                <div class="col-md-6">
+                    <!-- Second Column -->
+                    
+                    <div class="form-group">
+                    <label for="organization">Organization </label>
+                    <input type="text" name="organization" id="organization" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                    <label for="last_name"> Last name </label>
+                    <input type="text" name="customerLastName" id="last_name" class="form-control" >
                 </div>
+
+                <div class="form-group">
+                <label for="middle_name"> Middle name </label>
+                <input type="text" name="customerMiddleName" id="middle_name" class="form-control">
+                </div>  
+
+                <div class="form-group">
+                <label for="first_name"> First name </label>
+                <input type="text" name="customerFirstName" id="first_name" class="form-control" >
+                </div>
+
+                    <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="type" name="customerAddress" id="address" class="form-control" >
+                    </div>
+
+                    <div class="form-group">
+                    <label for="engine">Engine</label>
+                    <input type="text" name="engine" id="engine" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                    <label for="chassis">Chassis</label>
+                    <input type="text" name="chassis" id="chassis" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                    <label for="make">Make</label>
+                    <select name="make" id="make" class="form-control">
+                        <!-- Populate options dynamically based on your requirements -->
+                    </select>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="series">Series</label>
+                    <select name="series" id="series" class="form-control">
+                        <!-- Populate options dynamically based on your requirements -->
+                    </select>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="color">Color</label>
+                    <select name="color" id="color" class="form-control">
+                        <!-- Populate options dynamically based on your requirements -->
+                    </select>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="grossWeight">Gross Weight</label>
+                    <input type="text" name="grossWeight" id="grossWeight" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                    <label for="netCapacity">Net Capacity</label>
+                    <input type="text" name="netCapacity" id="netCapacity" class="form-control">
+                    </div>
+
+
+                </div>
+                <div class="form-group">
+    <label>Payment Method</label>
+    <div>
+        <button type="button" class="btn btn-primary payment-method" data-value="cash">Cash</button>
+        <button type="button" class="btn btn-secondary payment-method" data-value="paymaya" disabled>Paymaya (Coming Soon)</button>
+        <input type="hidden" name="paymentMethod" id="paymentMethod" value="cash"> <!-- Hidden input to store the selected value -->
+    </div>
+</div>
+
             </div>
-        </div>
+
+            
+            <!-- Add more fields as needed -->
+
+            <!-- Display fetched customer details -->
+            <!-- <div class="row mt-3">
+                <div class="col-md-6">
+                    <p><strong>First Name:</strong> <?php echo $customerDetails['first_name']; ?></p>
+                    <p><strong>Middle Name:</strong> <?php echo $customerDetails['middle_name']; ?></p>
+                    <p><strong>Last Name:</strong> <?php echo $customerDetails['last_name']; ?></p>
+                    <p><strong>Address:</strong> <?php echo $customerDetails['address']; ?></p>
+                </div>
+            </div> -->
+
+            <!-- Hidden fields for customer details -->
+            <input type="hidden" name="userId" value="<?php echo $customerDetails['user_id']; ?>">
+            <input type="hidden" name="customerEmail" value="<?php echo $customerEmail; ?>">
+            <!-- <input type="hidden" name="customerFirstName" value="<?php echo $customerDetails['first_name']; ?>">
+            <input type="hidden" name="customerMiddleName" value="<?php echo $customerDetails['middle_name']; ?>">
+            <input type="hidden" name="customerLastName" value="<?php echo $customerDetails['last_name']; ?>">
+            <input type="hidden" name="customerAddress" value="<?php echo $customerDetails['address']; ?>"> -->
+            <input type="hidden" name="mvectOperator" id="mvectOperator" value="pending">
+            <input type="hidden" name="petcOr" id="petcOr" value="0">
+            <input type="hidden" name="cecNumber" id="cecNumber" value="0">
+            <input type="hidden" name="paymentDate" id="paymentDate" class="form-control">
+            <input type="hidden" name="appDate" id="appDate" class="form-control" >
+            <input type="hidden" name="dateTested" id="dateTested" class="form-control" >
+            <input type="hidden" name="ticketing_id">
+            <input type="hidden" name="reference_id">
+            <input type="hidden" name="status" value="booked">
+            <input type="hidden" name="payment_status" value="unpaid">
+            <button type="submit" class="btn btn-primary">Submit Booking</button>
+        </form>
     </div>
 
+<!-- Add this script after the Fuel Type and Purpose script -->
 
-                      </div>
-                </div>
-            </div>  
-        </form> 
-        </div>
-  <?php include 'partials/footer.php' ?>
-    <script src="admin/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="admin/assets/js/aos.min.js"></script>
-    <script src="admin/assets/js/bs-init.js"></script>
-    <script src="admin/assets/js/bold-and-bright.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Simulated data (replace it with your actual data fetching logic) 
+        var fuelTypes = ['Gasoline', 'LPG', 'Diesel - None Turbo', 'Turbo Diesel'];
+        var purposes = ['For Registration', 'For Compliance', 'Plate Redemption']; 
+        var mvTypes = ['Car', 'Mopeds (0-49 cc)', 'Motorcycle w/ side car', 'Motorcycle w/o side car', 'Non-conventional MC (Car)', 'Shuttle Bus', 'Sports utility Vehicle', 'Tourist Bus', 'Tricycle', 'Truck Bus', 'Trucks', 'Utility Vehicle', 'School bus', 'Rebuilt', 'Mobil Clinic', 'Trailer'];     
+        var regions = ['Region I', 'Region II', 'Region III', 'Region IV‑A', 'MIMAROPA', 'Region V', 'Region VI', 'Region VII', 'Region VIII', 'Region IX', 'Region X', 'Region XI', 'Region XII', 'Region XIII', 'NCR', 'CAR', 'BARMM'];
+
+        var makes = ['Toyota', 'Honda', 'Mitsubishi', 'Ford', 'Chevrolet', 'Kia', 'Hyundai', 'MG', 'Geely', 'Chery'];
+        var series = ['Sedan', 'SUV', 'Truck', 'Hatchback'];
+        var colors = ['Red', 'Blue', 'Green', 'Black'];
+        var classifications = ['Diplomatic-Consular Corps', 'Diplomatic-Chief of Mission', 'Diplomatic-Diplomatic Corps', 'Exempt-Government', 'Diplomatic Exempt-Economics Z', 'Government', 'For hire', 'Diplomatic-OEV', 'Private', 'Exempt-For-Hire', 'Exempt-Private'];
+     
+        // Get the select elements
+        var makeSelect = document.getElementById('make');
+        var seriesSelect = document.getElementById('series');
+        var colorSelect = document.getElementById('color');
+        var classificationSelect = document.getElementById('classification');
+        var fuelTypeSelect = document.getElementById('fuelType');
+        var purposeSelect = document.getElementById('purpose');
+        var mvTypeSelect = document.getElementById('mvType');
+        var regionSelect = document.getElementById('region');
+        
+        
+        const paymentButtons = document.querySelectorAll('.payment-method');
+        const paymentMethodInput = document.getElementById('paymentMethod');
+
+  
+        var bookingForm = document.querySelector('form');
+
+       
+    // Add a submit event listener to the form
+    bookingForm.addEventListener('submit', function (event) {
+    // Get the appDate input element
+    var appDateInput = document.getElementById('appDate');
+    // Get the paymentDate input element
+    var paymentDateInput = document.getElementById('paymentDate');
+
+    var dateTestedInput = document.getElementById('dateTested');
+    // Set the current date and time in the Philippines timezone (Asia/Manila)
+    var currentDate = new Date();
+    var offset = 8 * 60; // Philippines timezone offset (in minutes)
+    
+    // Adjust the time to the correct timezone
+    currentDate.setMinutes(currentDate.getMinutes() + offset);
+
+    // Format as "YYYY-MM-DDTHH:mm"
+    var currentDateString = currentDate.toISOString().slice(0, 16);
+    
+    // Set the appDateInput value
+    appDateInput.value = currentDateString;
+    
+    // Set the value of paymentDate to zero
+    paymentDateInput.value = "0000-00-00T00:00";
+    
+    // Additionally, set the dateTested to the same value as appDate
+    dateTestedInput.value = "0000-00-00T00:00";
+});
+
+
+
+
+        paymentButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const selectedValue = this.getAttribute('data-value');
+                paymentMethodInput.value = selectedValue;
+
+                // Optionally, you can add styles to highlight the selected button
+                paymentButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Populate options dynamically
+        fuelTypes.forEach(function (fuelType) {
+            var option = document.createElement('option');
+            option.value = fuelType; //.toLowerCase() You can set the value based on your requirements
+            option.text = fuelType;
+            fuelTypeSelect.add(option);
+        });
+
+        // Populate options dynamically
+        purposes.forEach(function (purpose) {
+            var option = document.createElement('option');
+            option.value = purpose; //.toLowerCase() You can set the value based on your requirements
+            option.text = purpose;
+            purposeSelect.add(option);
+        });
+
+
+        // Populate options dynamically
+        mvTypes.forEach(function (mvType) {
+            var option = document.createElement('option');
+            option.value = mvType; //.toLowerCase() You can set the value based on your requirements
+            option.text = mvType;
+            mvTypeSelect.add(option);
+        });
+
+        // Populate options dynamically
+        regions.forEach(function (region) {
+            var option = document.createElement('option');
+            option.value = region; //.toLowerCase() You can set the value based on your requirements
+            option.text = region;
+            regionSelect.add(option);
+        });    
+        
+        // Populate options dynamically
+        makes.forEach(function (make) {
+            var option = document.createElement('option');
+            option.value = make; //.toLowerCase()
+            option.text = make;
+            makeSelect.add(option);
+        });
+
+        series.forEach(function (serie) {
+            var option = document.createElement('option');
+            option.value = serie; //.toLowerCase()
+            option.text = serie;
+            seriesSelect.add(option);
+        });
+
+        colors.forEach(function (color) {
+            var option = document.createElement('option');
+            option.value = color; //.toLowerCase()
+            option.text = color;
+            colorSelect.add(option);
+        });
+
+        classifications.forEach(function (classification) {
+            var option = document.createElement('option');
+            option.value = classification; //.toLowerCase()
+            option.text = classification;
+            classificationSelect.add(option);
+        });
+
+        function updateAmount() {
+    var mvTypeSelect = document.getElementById('mvType');
+    var amountInput = document.getElementById('amount');
+    var price1 = <?php echo $event['price_1']; ?>;
+    var price2 = <?php echo $event['price_2']; ?>;
+    var price3 = <?php echo $event['price_3']; ?>;
+
+    // Get the selected mvType
+    var selectedMvType = mvTypeSelect.value;
+
+    // Update the amount based on mvType
+    if (selectedMvType === 'Mopeds (0-49 cc)' || selectedMvType === 'Motorcycle w/ side car' || selectedMvType === 'Motorcycle w/o side car' || selectedMvType === 'Non-conventional MC (Car)' || selectedMvType === 'Tricycle') {
+        amountInput.value = price1;
+    } else if (selectedMvType === 'Car' || selectedMvType === 'Sports utility Vehicle' || selectedMvType === 'Utility Vehicle' ||  selectedMvType === 'Rebuilt' || selectedMvType === 'Mobil Clinic') {
+        amountInput.value = price2;
+    } else if (selectedMvType === 'School bus' || selectedMvType === 'Shuttle Bus' || selectedMvType === 'Tourist Bus' || selectedMvType === 'Truck Bus' || selectedMvType === 'Trucks' || selectedMvType === 'Trailer') {
+        amountInput.value = price3;
+    } else {
+        // Handle other cases or set a default value
+        amountInput.value = 0;
+    }
+}
+
+// Add an event listener to the mvType select element
+var mvTypeSelect = document.getElementById('mvType');
+mvTypeSelect.addEventListener('change', updateAmount);
+
+// Call the function initially to set the default amount
+updateAmount();
+
+    });
+</script>
+
+    <!-- Include your scripts and other body elements here -->
 </body>
 
 </html>

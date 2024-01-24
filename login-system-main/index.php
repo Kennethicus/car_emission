@@ -50,7 +50,7 @@ if (isset($_POST["login"])) {
 <?php include 'partials/header.php' ?>
 
 <body>
-    <?php include 'partials/nav.php' ?>
+    <?php include 'partials/nav-not-login.php' ?>
     <section class="py-5" style="background: var(--bs-border-color);">
         <div class="container">
 
