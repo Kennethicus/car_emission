@@ -184,8 +184,18 @@ $doneResult = $connect->query($doneQueryForUser);
         <!-- Tab content -->
         <div class="tab-content">
             <!-- Booked Tab -->
-            <div class="tab-pane fade show active" id="booked">
-                <?php displayBookings('Booked'); ?>
+            <div class="tab-pane fade show active" id="ongoing">
+            <div> 
+                            <?php displayBookings('booked'); ?>
+                             <!-- Check if there are no car emission records -->
+        <?php if ($ongoingResult->num_rows === 0): ?>
+            <div class="text-center mt-3">
+                <br> </br>
+                <p class="mb-3">No on going car emission records found.</p>
+                <img src="assets/img/done.png" alt="Image Alt Text" style="max-width: 230px; max-height: 230px;">
+            </div>
+        <?php endif; ?>
+                    </div>   
             </div>
 
             <!-- Canceled Tab -->
@@ -199,6 +209,148 @@ $doneResult = $connect->query($doneQueryForUser);
             </div>
         </div>
     </div>
+
+
+
+    <!-- Modal -->
+<div class="modal fade" id="cancelBookingModal" tabindex="-1" role="dialog" aria-labelledby="cancelBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelBookingModalLabel">Cancel Booking</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this booking?</p>
+
+                <!-- Display Plate Number -->
+                <div class="form-group">
+                    <label for="plateNumber">Plate Number:</label>
+                    <input type="text" class="form-control" id="plateNumber" name="plateNumber" value="" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="startDatetime">Date</label>
+                    <input type="text" class="form-control" id="Date" name="Date" value="" readonly>
+                </div>
+                <!-- Display Start Datetime -->
+                <div class="form-group">
+                    <label for="startDatetime">Start Datetime:</label>
+                    <input type="text" class="form-control" id="startDatetime" name="startDatetime" value="" readonly>
+                </div>
+
+                <!-- Display End Datetime -->
+                <div class="form-group">
+                    <label for="endDatetime">End Datetime:</label>
+                    <input type="text" class="form-control" id="endDatetime" name="endDatetime" value="" readonly>
+                </div>
+
+                <form id="cancelBookingForm">
+                    <input type="hidden" name="bookingId" id="bookingIdInput">
+                    <div class="form-group">
+                        <label for="cancelReason">Reason for Cancellation:</label>
+                        <textarea class="form-control" name="cancelReason" id="cancelReason" rows="3" required></textarea>
+                    </div>
+                    <!-- Inside the modal form -->
+                    <div class="form-group">
+                        <input type="hidden" name="canceledBy" id="canceledBy" value="<?php echo $customerDetails['user_id']; ?>">
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Cancel Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Updated Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Enter Payment Details</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Booking Information -->
+                <div class="form-group mb-3">
+                    <input type="hidden" class="form-control" id="bookingIdInput1" readonly>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="plateNumberDisplay">Plate Number:</label>
+                    <span id="plateNumberDisplay"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="dateDisplay">Date:</label>
+                    <span id="dateDisplay"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="dateStartEnd">Time:</label>
+                    <span id="dateStartEnd"></span>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="form-group mb-3">
+                    <label for="amountDisplay">Pay Full Amount:</label>
+                    <span id="amountDisplay"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="payHalfAmountDisplay">Pay Half Amount:</label>
+                    <span id="payHalfAmountDisplay"></span>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="form-group mb-3">
+                    <label for="paymentMethod">Payment Method:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="payMayaRadio" value="payMaya">
+                        <label class="form-check-label" for="payMayaRadio">PayMaya</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="gcashRadio" value="gcash">
+                        <label class="form-check-label" for="gcashRadio">GCash</label>
+                    </div>
+                </div>
+
+                <!-- Dynamic Account Information -->
+                <div class="alert alert-info" role="alert">
+                    <p><strong>Account Name:</strong> <span id="accountName"></span></p>
+                    <p><strong>Account Number:</strong>
+                        <span id="accountNumber" style="user-select: all;"></span>
+                        <i class="far fa-copy" style="cursor: pointer;" onclick="copyAccountNumber()"></i>
+                    </p>
+                </div>
+
+                <!-- Account Information for Payment -->
+                <div class="form-group mb-3">
+                    <label for="paymentImage">Receipt Image:</label>
+                    <input type="file" class="form-control" id="paymentImage" accept="image/*">
+                    <!-- <img id="selectedImage" style="display: none; max-width: 100%;" alt="Selected Image"> -->
+                </div>
+                <div class="form-group mb-3">
+                    <label for="referenceInput1">Reference Number:</label>
+                    <input type="text" class="form-control" id="referenceInput1" placeholder="Enter reference number">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitPaymentBtn">Submit Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
 
 <script src="admin/assets2/bootstrap/js/bootstrap.min.js"></script>
     <!-- <script src="admin/assets2/js/aos.min.js"></script> -->
@@ -214,6 +366,81 @@ $doneResult = $connect->query($doneQueryForUser);
     <script src="admin/assets/js/chart.min.js"></script>
     <script src="admin/assets/js/bs-init.js"></script>
     <script src="admin/assets/js/theme.js"></script>
+
+
+    <script>
+    // Get elements for account information
+    var accountNameElement = document.getElementById('accountName');
+    var accountNumberElement = document.getElementById('accountNumber');
+
+    // Function to update account information based on payment method
+    function updateAccountInfo(paymentMethod) {
+        if (paymentMethod === 'payMaya') {
+            accountNameElement.textContent = 'Gilene Mardo';
+            accountNumberElement.textContent = '09951260721';
+        } else if (paymentMethod === 'gcash') {
+            accountNameElement.textContent = 'Richard Alaurin';
+            accountNumberElement.textContent = '09927664189';
+        } else {
+            // Handle other payment methods here
+            accountNameElement.textContent = '';
+            accountNumberElement.textContent = '';
+        }
+    }
+
+    // Function to copy account number to clipboard
+    function copyAccountNumber() {
+        var accountNumberText = accountNumberElement.textContent;
+        navigator.clipboard.writeText(accountNumberText)
+            .then(function () {
+                alert('Account number copied to clipboard: ' + accountNumberText);
+            })
+            .catch(function (err) {
+                console.error('Unable to copy account number to clipboard', err);
+            });
+    }
+
+    // Event listener for radio buttons to update account information
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            updateAccountInfo(this.value);
+        });
+    });
+</script>
+
+
+
+
+    
+<script>
+    $(document).ready(function () {
+        // Handle image selection
+        $('#paymentImage').change(function () {
+            var input = this;
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#selectedImage').attr('src', e.target.result).show();
+
+                // Update the preview button name with the image name
+                var imageName = input.files[0].name;
+                $('#previewImageButton').text('Preview Image: ' + imageName);
+
+                // Store the image name for previewing
+                $('#imageNamePreview').text('Image Name: ' + imageName);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        });
+
+        // Handle preview button click to show the modal
+        $('#previewImageButton').on('click', function () {
+            $('#imagePreviewModal').modal('show');
+        });
+    });
+</script>
+
+
     <script>
         // Activate the current tab based on the hash in the URL
         $(document).ready(function () {
@@ -230,7 +457,47 @@ $doneResult = $connect->query($doneQueryForUser);
 
 
 
+    <script>
+    $(document).ready(function () {
+     $('.cancel-booking-btn').click(function () {
+        var bookingId = $(this).data('booking-id');
+        var plateNumber = $(this).data('plate-number');
+        var startDatetime = $(this).data('start-datetime');
+        var endDatetime = $(this).data('end-datetime');
 
+        // Format start_datetime and end_datetime like the time
+        var formattedDate = new Date(startDatetime).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+        var formattedStartDatetime = new Date(startDatetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        var formattedEndDatetime = new Date(endDatetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        $('#Date').val(formattedDate);
+        
+        $('#bookingIdInput').val(bookingId);
+        $('#plateNumber').val(plateNumber);
+        $('#startDatetime').val(formattedStartDatetime);
+        $('#endDatetime').val(formattedEndDatetime);
+    });
+
+        // When the cancel booking form is submitted
+        $('#cancelBookingForm').submit(function (e) {
+            e.preventDefault();
+
+            // Perform AJAX request to cancel-booking.php
+            $.ajax({
+                type: 'POST',
+                url: 'cancel-booking.php',
+                data: $(this).serialize(),
+                success: function (response) {
+                    // Update the modal content with the response
+                    $('.modal-body').html(response);
+                },
+                error: function () {
+                    alert('Error cancelling booking.');
+                }
+            });
+        });
+    });
+</script>
 
 
 
@@ -403,11 +670,114 @@ function clearCancellationReason() {
 $('#cancelModal').on('hidden.bs.modal', clearCancellationReason);
     });
 </script>
+
+
 <!-- Add this script at the end of your HTML body -->
+<script>
+    $(document).ready(function () {
+        // Handle Pay Half Now button click
+        $('.pay-half-btn').on('click', function () {
+            var bookingId = $(this).data('booking-id');
+            var plateNumber = $(this).data('plate-number');
+            var startDatetime = $(this).data('start-datetime');
+            var endDatetime = $(this).data('end-datetime');
+            var amount = $(this).data('amount'); // Assuming the amount is passed as a data attribute
+            var referenceNumber = $('#referenceInput1').val();
+            // Calculate half of the amount
+            var payHalfAmount = amount / 2;
+
+            // Format start_datetime like the time
+            var formattedDate = new Date(startDatetime).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+            var formattedStartDatetime = new Date(startDatetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            var formattedEndDatetime = new Date(endDatetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Open a modal for entering payment details
+            $('#paymentModal').modal('show');
+
+            // Set the booking ID, plate number, and date in the modal for reference
+            $('#bookingIdInput1').val(bookingId);
+            $('#plateNumberDisplay').text(plateNumber);
+            $('#dateDisplay').text(formattedDate);
+            $('#dateStartEnd').text(formattedStartDatetime + ' - ' + formattedEndDatetime);
+
+            // Set the amount and pay half amount in the modal
+            $('#amountDisplay').text(amount);
+            $('#payHalfAmountDisplay').text(payHalfAmount);
+        });
+
+
+            // Handle radio button change for payment method
+            $('input[name="paymentMethod"]').on('change', function () {
+            selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+        });
+
+        // Handle submitting payment details within the modal
+$('#submitPaymentBtn').on('click', function () {
+    // Retrieve entered payment details
+    var bookingId = $('#bookingIdInput1').val();
+    var referenceNumber = $('#referenceInput1').val();
+    var receiptImage = $('#paymentImage')[0].files[0]; // Get the selected image file
+    var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+
+    // Create FormData object to send image file along with other data
+    var formData = new FormData();
+    formData.append('bookingId', bookingId);
+    formData.append('receiptImage', receiptImage);
+    formData.append('paymentMethod', selectedPaymentMethod); // Include the selected payment method
+    formData.append('referenceNumber', referenceNumber);
+
+    // Perform AJAX request to handle payment
+    $.ajax({
+        type: 'POST',
+        url: 'handle-payment.php', // Replace with the actual handling script
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            // Handle the success response, e.g., display a success message
+            alert('Payment successful for booking ID: ' + bookingId);
+
+            // Close the modal
+            $('#paymentModal').modal('hide');
+
+            // Change the button text to "On Review"
+            $('.pay-half-btn[data-booking-id="' + bookingId + '"]').text('On Review').addClass('btn-info').removeClass('btn-warning').attr('disabled', true);
+        },
+        error: function () {
+            // Handle the error response, e.g., display an error message
+            alert('Error processing payment for booking ID: ' + bookingId);
+        }
+    });
+});
+
+    });
+</script>
 
 
 <!-- Bootstrap Script for Modal -->
+<script>
+    $(document).ready(function () {
+        // Function to close the payment modal
+        function closePaymentModal() {
+            $('#paymentModal').modal('hide');
+        }
 
+        // Close the payment modal when the close button is clicked
+        $('#paymentModal .btn-close').on('click', closePaymentModal);
+
+        // Close the payment modal when the Close button is clicked
+        $('#paymentModal .btn-secondary').on('click', closePaymentModal);
+
+        // You can also close the modal when the Submit Payment button is clicked
+        $('#submitPaymentBtn').on('click', function () {
+            // Perform any actions you need before closing the modal
+            // ...
+
+            // Then close the modal
+            closePaymentModal();
+        });
+    });
+</script>
 
 </body>
 
@@ -453,10 +823,22 @@ function displayBookings($status)
             echo '</td>';
             echo '<td class="align-middle">';
             if (strtolower($status) === 'booked') {
-                if ($booking['paymentStatus'] === 'unpaid') {                                                                                                                                                                                                                       
+                if ($booking['paymentStatus'] === 'unpaid') {  
                     // Display "Pay Half Now" button for unpaid bookings
-                    echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button> &nbsp; <a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a> &nbsp; <button type="button" class="btn btn-warning pay-half-btn" data-booking-id="' . $booking['id'] . '">Pay Half Now</button>';
-
+                    if (!empty($booking['reference1'])) {
+                         // If reference1 has a value, change the button to "On Review"
+    echo '<button type="button" class="btn btn-info" disabled>On Review</button>';
+    // Include the "View" link
+    echo ' <a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
+                    } else {
+                        echo '<button type="button" class="btn btn-warning pay-half-btn"
+                            data-booking-id="' . $booking['id'] . '"
+                            data-plate-number="' . $booking['plate_number'] . '"
+                            data-start-datetime="' . $booking['start_datetime'] . '"
+                            data-end-datetime="' . $booking['end_datetime'] . '"
+                            data-ticketing-id="' . $booking['ticketing_id'] . '"
+                            data-amount="' . $booking['amount'] . '">Pay Half Now</button>';
+                    }
                 } else {
                     echo '<a href="#" class="cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</a> &nbsp; <a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
                 }

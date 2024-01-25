@@ -264,7 +264,7 @@ $doneResult = $connect->query($doneQueryForUser);
                 </div>
 
                 <form id="cancelBookingForm">
-                    <input type="hidden" name="bookingId" id="bookingIdInput">
+                    <input type="text" name="bookingId" id="bookingIdInput" readonly>
                     <div class="form-group">
                         <label for="cancelReason">Reason for Cancellation:</label>
                         <textarea class="form-control" name="cancelReason" id="cancelReason" rows="3" required></textarea>
@@ -295,12 +295,24 @@ $doneResult = $connect->query($doneQueryForUser);
             <div class="modal-body">
                 <!-- Add your payment form fields here -->
                 <div class="form-group">
-                    <label for="bookingIdInput">Booking ID:</label>
-                    <input type="text" class="form-control" id="bookingIdInput" readonly>
+                    <label for="bookingIdInput1">Booking ID:</label>
+                    <input type="text" class="form-control" id="bookingIdInput1" readonly>
                 </div>
                 <div class="form-group">
                     <label for="paymentAmountInput">Payment Amount:</label>
                     <input type="text" class="form-control" id="paymentAmountInput" placeholder="Enter payment amount">
+                </div>
+                <!-- Display the plate number -->
+                <div class="form-group">
+                    <label for="plateNumberDisplay">Plate Number:</label>
+                    <p id="plateNumberDisplay"></p>
+                </div>
+                <!-- Add an image here -->
+                <div class="form-group">
+                    <label for="paymentImage">Payment Image:</label>
+                    <input type="file" class="form-control" id="paymentImage" accept="image/*">
+                    <!-- Display the selected image here -->
+                    <img id="selectedImage" src="#" alt="Selected Image" style="display: none; max-width: 100%; margin-top: 10px;">
                 </div>
                 <!-- Add more fields as needed -->
             </div>
@@ -311,6 +323,7 @@ $doneResult = $connect->query($doneQueryForUser);
         </div>
     </div>
 </div>
+
 
 
 <script src="admin/assets2/bootstrap/js/bootstrap.min.js"></script>
@@ -544,15 +557,29 @@ $('#cancelModal').on('hidden.bs.modal', clearCancellationReason);
 <!-- Add this script at the end of your HTML body -->
 <script>
     $(document).ready(function () {
-        // Handle Pay Half Now button click
-        $('.pay-half-btn').on('click', function () {
+       // Handle Pay Half Now button click
+       $('.pay-half-btn').on('click', function () {
             var bookingId = $(this).data('booking-id');
+            var plateNumber = $(this).data('plate-number');
 
             // Open a modal for entering payment details
             $('#paymentModal').modal('show');
 
-            // Set the booking ID in the modal for reference
-            $('#bookingIdInput').val(bookingId);
+            // Set the booking ID and plate number in the modal for reference
+            $('#bookingIdInput1').val(bookingId);
+            $('#plateNumberDisplay').text(plateNumber);
+        });
+
+        // Handle image selection
+        $('#paymentImage').change(function () {
+            var input = this;
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#selectedImage').attr('src', e.target.result).show();
+            };
+
+            reader.readAsDataURL(input.files[0]);
         });
 
         // Handle submitting payment details within the modal
