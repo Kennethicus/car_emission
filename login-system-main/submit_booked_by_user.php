@@ -71,15 +71,17 @@ $grossWeight = isset($_POST['grossWeight']) ? mysqli_real_escape_string($connect
 $netCapacity = isset($_POST['netCapacity']) ? mysqli_real_escape_string($connect, $_POST['netCapacity']) : '';
 $cecNumber = 0;
 $mvectOperator = 'pending';
-$paymentMethod = isset($_POST['paymentMethod']) ? mysqli_real_escape_string($connect, $_POST['paymentMethod']) : '';
-$paymentStatus = isset($_POST['paymentStatus']) ? mysqli_real_escape_string($connect, $_POST['paymentStatus']) : '';
-
-// Check payment method and update payment status accordingly
-if ($paymentMethod === 'cash') {
-    $paymentStatus = 'unpaid';
-} elseif ($paymentMethod === 'paymaya') {
-    $paymentStatus = 'pending';
-}
+$paymentMethod = 'pending';
+$paymentStatus = 'unpaid';
+$amountPaid = '0';
+$reference1 = '0';
+// $paymentStatus = isset($_POST['paymentStatus']) ? mysqli_real_escape_string($connect, $_POST['paymentStatus']) : '';
+// // Check payment method and update payment status accordingly
+// if ($paymentMethod === 'cash') {
+//     $paymentStatus = 'unpaid';
+// } elseif ($paymentMethod === 'paymaya') {
+//     $paymentStatus = 'pending';
+// }
 
 $ticketingId = generateTicketingId();
 $referenceNumber = generateReferenceNumber();

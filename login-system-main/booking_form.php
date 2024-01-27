@@ -291,7 +291,7 @@ $connect->close();
                     <tr>
                         <td id ="amountValue" class="text-center" style="color: ;font-size: 23px;"></td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
     <th><span style="font-weight: normal !important;">Mode of Payment</span></th>
 </tr>
 <tr>
@@ -299,10 +299,10 @@ $connect->close();
         <select class="form-select" id="paymentMode" name="paymentMode">
             <option value="cash">Cash</option>
             <option value="paymaya">PayMaya</option>
-            <!-- Add more payment options if needed -->
+         
         </select>
     </td>
-</tr>
+</tr> -->
                 </tbody>
             </table>
         </div>

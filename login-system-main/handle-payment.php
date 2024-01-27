@@ -5,10 +5,11 @@
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve data from the POST request
     $bookingId = $_POST['bookingId'];
-    $receiptImage = $_FILES['receiptImage'];
+    $receiptImage = $_FILES['paymentImage'];
     $paymentMethod = $_POST['paymentMethod'];
     $referenceNumber = $_POST['referenceNumber'];
-
+    $payAmount1 = 'pending';
+    $paymentLock1 = '1';
     // Validate and process the payment data
     // Add your own validation and processing logic here
 
@@ -21,12 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Prepare and execute the SQL query to update the car_emission table
         include("connect/connection.php");
 
-        $updateQuery = $connect->prepare("UPDATE car_emission SET  receipt1 = ?, paymentMethod1 = ?, reference1 = ? WHERE id = ?");
+        $updateQuery = $connect->prepare("UPDATE car_emission SET  receipt1 = ?, payAmount1 = ?, paymentMethod = ?, reference1 = ?, paymentlock1 = ? WHERE id = ?");
         if (!$updateQuery) {
             die("Error in update query: " . $connect->error);
         }
 
-        $updateQuery->bind_param("sssi", $uniqueFilename, $paymentMethod, $referenceNumber, $bookingId);
+        $updateQuery->bind_param("sssssi", $uniqueFilename, $payAmount1, $paymentMethod, $referenceNumber, $paymentLock1, $bookingId);
         $updateQuery->execute();
 
         if ($updateQuery->affected_rows > 0) {

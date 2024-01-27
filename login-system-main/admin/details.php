@@ -242,6 +242,26 @@ View Picture  <button type="button" class="btn btn-primary "   data-bs-toggle="m
                             }
                         ?>;font-size: 23px;"><?php echo strtoupper($details['status']); ?></td>
                     </tr>
+                    <tr>
+                        <th><span style="font-weight: normal !important;">Reference No.</span></th>
+                    </tr>   
+                    <tr>
+                       <td class="text-center" style="font-size: 23px;"><?php echo $details['reference1']; ?></td>
+                       <tr>
+    <th><span style="font-weight: normal !important;">Payment Receipt</span></th>
+</tr>
+<tr>
+    <td class="text-center">
+        <!-- Make "View Payment Receipt" a button with btn-primary class -->
+        <button type="button" class="btn btn-primary" onclick="viewPaymentReceipt()">View Payment Receipt</button>
+    </td>
+</tr>
+                    <tr>
+                        <th><span style="font-weight: normal !important;">Amount Paid</span></th>
+                    </tr>   
+                    <tr>
+                       <td class="text-center" style="font-size: 23px;"><?php echo $details['payAmount1']; ?></td>
+                    </tr> 
                 </tbody>
             </table>
         </div>
@@ -259,6 +279,7 @@ View Picture  <button type="button" class="btn btn-primary "   data-bs-toggle="m
 
 <?php if ($details['status'] !== 'canceled' && $details['status'] !== 'doned') { ?>
     <button class="btn btn-primary m-2" onclick="editFunction()">Edit</button>
+    <a href="review.php?id=<?php echo $reserve_id; ?>&ticketId=<?php echo $ticketId; ?>" class="btn btn-info m-2">Review 1</a>
     <a href="test.php?id=<?php echo $reserve_id; ?>&ticketId=<?php echo $ticketId; ?>" class="btn btn-success m-2" onclick="testFunction()">Test</a>
     <button class="btn btn-danger m-2" onclick="cancelBookFunction()">Cancel Book</button>
 <?php } elseif ($details['status'] === 'doned') { ?>
@@ -285,11 +306,33 @@ View Picture  <button type="button" class="btn btn-primary "   data-bs-toggle="m
     }
 </script>
 </div>
-                </div>
+</div>
+</div>
+</div>
 
+
+
+
+<!-- Modal for displaying the payment receipt -->
+<div class="modal fade" id="paymentReceiptModal" tabindex="-1" aria-labelledby="paymentReceiptModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentReceiptModalLabel">Payment Receipt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-           
+            <div class="modal-body">
+                <!-- Display the payment receipt content here -->
+                <!-- Use an <img> tag to display the image -->
+                <img id="paymentReceiptImage" class="img-fluid" alt="Payment Receipt">
+            </div>
         </div>
+    </div>
+</div>
+
+
+
+
         <?php include 'partials/footer.php'?>
         <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
@@ -299,6 +342,21 @@ View Picture  <button type="button" class="btn btn-primary "   data-bs-toggle="m
     <script src="assets/js/chart.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
     <script src="assets/js/theme.js"></script>
+
+
+    <script>
+    function viewPaymentReceipt() {
+        // Set the src attribute of the img tag to the payment receipt image path
+        var paymentReceiptImagePath = '../uploads/receipt-image/<?php echo $details['receipt1']; ?>';
+        $('#paymentReceiptImage').attr('src', paymentReceiptImagePath);
+
+        // Show the modal
+        $('#paymentReceiptModal').modal('show');
+    }
+</script>
+
+
+
 <!-- Add this script at the end of your HTML, after including jQuery and Bootstrap JS -->
 <script>
     $(document).ready(function () {

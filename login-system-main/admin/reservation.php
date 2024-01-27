@@ -111,7 +111,7 @@ $doneResult = $connect->query($doneQuery);
                 <div class="container mt-3">
                     <ul class="nav nav-tabs" id="carEmissionTabs">
                         <li class="nav-item">
-                            <a class="nav-link active" id="ongoing-tab" data-bs-toggle="tab" href="#ongoing">On Going</a>
+                            <a class="nav-link active" id="ongoing-tab" data-bs-toggle="tab" href="#ongoing">Book</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="canceled-tab" data-bs-toggle="tab" href="#canceled">Canceled</a>
@@ -314,32 +314,32 @@ $doneResult = $connect->query($doneQuery);
 var cancelReservationId;
 
 // Handle Cancel link click
-$('.cancel-link').on('click', function () {
+// Handle Cancel button click
+$('.cancel-btn').on('click', function () {
     // Get the reservation ID from the data attribute
-    cancelReservationId = $(this).data('reservation-id');
+    var cancelReservationId = $(this).data('reservation-id');
 
     // Display the reservation ID in the modal
     $('#reservationIdDisplay').text(cancelReservationId);
 
- // Make an AJAX request to get customer details and event details
-$.ajax({
-    type: 'POST',
-    url: 'get_customer_details.php',
-    data: { reservationId: cancelReservationId },
-    dataType: 'json', // Expect JSON response
-    success: function (data) {
-        // Display the details in the modal
-        $('#customerName').text('Customer Name: ' + data.customerName);
-        $('#plateNumbers').text('Plate Number: ' + data.plateNumber);
-        $('#EventDate').text('Event Date: ' + data.eventDate);
-        $('#EventStartDate').text('Start Time: ' + data.startTime);
-        $('#EventEndDate').text('End Time: ' + data.endTime);
-    },
-    error: function () {
-        alert('Error fetching customer details');
-    }
-});
-
+    // Make an AJAX request to get customer details and event details
+    $.ajax({
+        type: 'POST',
+        url: 'get_customer_details.php',
+        data: { reservationId: cancelReservationId },
+        dataType: 'json',
+        success: function (data) {
+            // Display the details in the modal
+            $('#customerName').text('Customer Name: ' + data.customerName);
+            $('#plateNumbers').text('Plate Number: ' + data.plateNumber);
+            $('#EventDate').text('Event Date: ' + data.eventDate);
+            $('#EventStartDate').text('Start Time: ' + data.startTime);
+            $('#EventEndDate').text('End Time: ' + data.endTime);
+        },
+        error: function () {
+            alert('Error fetching customer details');
+        }
+    });
 
     // Show the cancel modal
     $('#cancelModal').modal('show');
@@ -493,13 +493,27 @@ function displayCarEmission($carEmissionResult)
             echo '<td>';
             
             // Display "Cancel" link only for entries with status 'booked'
-            if ($status === 'booked') {
-                echo '<a href="#" class="cancel-link" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</a>';
-                echo ' '; // Add a space character
-                echo '<a href="details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '">Details</a>';
-            } else {
-                echo '<a href="details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '">Details</a>';
-            }
+           // Display "Review" button if payment method is not equal to 'pending'
+    if ($status === 'booked' && $row['paymentMethod'] !== 'pending') {
+        echo '<button type="button" class="btn btn-danger cancel-btn" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</button>';
+        echo ' '; // Add a space character
+        echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
+
+        echo ' '; // Add a space character
+        echo '<button class="btn btn-primary review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Review 1</button>';
+        
+    } elseif ($status === 'canceled' || $status === 'done') {
+        // Display only the Details button for canceled and done statuses
+        echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
+    }
+     else {
+        echo '<button type="button" class="btn btn-danger cancel-btn" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</button>';
+        echo ' ';
+        echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
+    }
+
+    echo '</td>';
+    echo '</tr>';
             
             echo '</td>';
             echo '</tr>';

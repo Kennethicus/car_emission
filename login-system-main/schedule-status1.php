@@ -278,11 +278,15 @@ $doneResult = $connect->query($doneQueryForUser);
 
                 <!-- Booking Information -->
                 <div class="form-group mb-3">
-                    <input type="hidden" class="form-control" id="bookingIdInput1" readonly>
+                    <input type="text" class="form-control" id="bookingIdInput1" readonly>
                 </div>
                 <div class="form-group mb-3">
                     <label for="plateNumberDisplay">Plate Number:</label>
                     <span id="plateNumberDisplay"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="mvTypeDisplay">MV Type:</label>
+                    <span id="mvTypeDisplay"></span>
                 </div>
                 <div class="form-group mb-3">
                     <label for="dateDisplay">Date:</label>
@@ -346,6 +350,27 @@ $doneResult = $connect->query($doneQueryForUser);
 </div>
 
 
+<!-- Modal for "On Review" button -->
+<div class="modal fade" id="onReviewModal" tabindex="-1" role="dialog" aria-labelledby="onReviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="onReviewModalLabel">Booking Review</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Add the content you want in the modal body here -->
+        <p>Booking details and review information go here...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- You can add additional buttons or actions here -->
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -409,6 +434,39 @@ $doneResult = $connect->query($doneQueryForUser);
 </script>
 
 
+<!-- ON REVIEW -->
+<script>
+  $(document).ready(function () {
+    // Attach a click event listener to the "On Review" button
+    $('.on-review-btn').on('click', function () {
+      // Get the data attributes from the button
+      var bookingId = $(this).data('booking-id');
+      var plateNumber = $(this).data('plate-number');
+      var startDatetime = $(this).data('start-datetime');
+      var endDatetime = $(this).data('end-datetime');
+      var ticketingId = $(this).data('ticketing-id');
+      var amount = $(this).data('amount');
+      var paymentMethod = $(this).data('payment-method');
+      var reference1 = $(this).data('reference1');
+      var mvType = $(this).data('mv-type');
+      var payAmount1 = $(this).data('pay-amount1'); // Add this line
+
+      // Update the modal body content with the booking details
+      var modalBodyContent = '<p><strong>Booking ID:</strong> ' + bookingId + '</p>' +
+        '<p><strong>Plate Number:</strong> ' + plateNumber + '</p>' +
+        '<p><strong>MV Type:</strong> ' + mvType + '</p>' + 
+        '<p><strong>Start Datetime:</strong> ' + startDatetime + '</p>' +
+        '<p><strong>End Datetime:</strong> ' + endDatetime + '</p>' +
+        '<p><strong>Ticketing ID:</strong> ' + ticketingId + '</p>' +
+        '<p><strong>Total Amount:</strong> ₱' + amount + '</p>' +
+        '<p><strong>Amount paid:</strong> ' + payAmount1 + '</p>' +
+        '<p><strong>Payment Method:</strong> ' + paymentMethod + '</p>' +
+        '<p><strong>Reference:</strong> ' + reference1 + '</p>'; // Add this line
+
+      $('#onReviewModal .modal-body').html(modalBodyContent);
+    });
+  });
+</script>
 
 
     
@@ -683,6 +741,8 @@ $('#cancelModal').on('hidden.bs.modal', clearCancellationReason);
             var endDatetime = $(this).data('end-datetime');
             var amount = $(this).data('amount'); // Assuming the amount is passed as a data attribute
             var referenceNumber = $('#referenceInput1').val();
+            var mvType = $(this).data('mv-type'); // Add this line
+
             // Calculate half of the amount
             var payHalfAmount = amount / 2;
 
@@ -697,6 +757,7 @@ $('#cancelModal').on('hidden.bs.modal', clearCancellationReason);
             // Set the booking ID, plate number, and date in the modal for reference
             $('#bookingIdInput1').val(bookingId);
             $('#plateNumberDisplay').text(plateNumber);
+            $('#mvTypeDisplay').text(mvType);
             $('#dateDisplay').text(formattedDate);
             $('#dateStartEnd').text(formattedStartDatetime + ' - ' + formattedEndDatetime);
 
@@ -855,7 +916,24 @@ function displayBookings($status)
                     // Display "Pay Half Now" button for unpaid bookings
                     if ($booking['paymentMethod'] !== 'pending') {
                          // If reference1 has a value, change the button to "On Review"
-    echo '<button type="button" class="btn btn-info" disabled>On Review</button>';
+  
+                         echo '<button type="button" class="btn btn-info on-review-btn"
+                        data-toggle="modal"
+                        data-target="#onReviewModal"
+                        data-booking-id="' . $booking['id'] . '"
+                        data-plate-number="' . $booking['plate_number'] . '"
+                        data-start-datetime="' . $booking['start_datetime'] . '"
+                        data-end-datetime="' . $booking['end_datetime'] . '"
+                        data-ticketing-id="' . $booking['ticketing_id'] . '"
+                        data-amount="' . $booking['amount'] . '"
+                        data-payment-method="' . $booking['paymentMethod'] . '" 
+                        data-reference1="' . $booking['reference1'] . '"
+                        data-mv-type="' . $booking['mv_type'] . '"
+                        data-pay-amount1="' . $booking['payAmount1'] . '">On Review</button>';
+
+                     
+                     
+    
     // Include the "View" link
     echo ' <a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
                     } else {
@@ -863,6 +941,7 @@ function displayBookings($status)
                         echo '<button type="button" class="btn btn-warning pay-half-btn"
                             data-booking-id="' . $booking['id'] . '"
                             data-plate-number="' . $booking['plate_number'] . '"
+                            data-mv-type="' . $booking['mv_type'] . '"
                             data-start-datetime="' . $booking['start_datetime'] . '"
                             data-end-datetime="' . $booking['end_datetime'] . '"
                             data-ticketing-id="' . $booking['ticketing_id'] . '"
@@ -870,7 +949,8 @@ function displayBookings($status)
                             echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
                         }
                 } else {
-                    echo '<a href="#" class="cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</a> &nbsp; <a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
+                    echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button> &nbsp;';
+                    echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
                 }
             } elseif (strtolower($status) === 'canceled') {
                 echo '<a href="view-booking.php?id=' . $booking['id'] . '">View</a>';
