@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 27, 2024 at 04:55 PM
+-- Generation Time: Jan 28, 2024 at 01:58 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.0.25
 
@@ -88,16 +88,18 @@ CREATE TABLE `car_emission` (
   `payAmount1` varchar(250) DEFAULT NULL,
   `receipt1` varchar(255) DEFAULT NULL,
   `reference1` varchar(50) DEFAULT NULL,
-  `paymentlock1` int(11) NOT NULL DEFAULT 0
+  `paymentlock1` int(11) NOT NULL DEFAULT 0,
+  `payment_date1` datetime DEFAULT NULL,
+  `return_reason1` varchar(255) DEFAULT NULL,
+  `return_switch_1` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `car_emission`
 --
 
-INSERT INTO `car_emission` (`id`, `event_id`, `user_id`, `plate_number`, `customer_email`, `customer_first_name`, `customer_middle_name`, `customer_last_name`, `address`, `status`, `app_date`, `vehicle_cr_no`, `vehicle_or_no`, `first_reg_date`, `year_model`, `fuel_type`, `purpose`, `mv_type`, `region`, `mv_file_no`, `classification`, `payment_date`, `petc_or`, `amount`, `organization`, `engine`, `chassis`, `make`, `series`, `color`, `gross_weight`, `net_capacity`, `cec_number`, `mvect_operator`, `car_picture`, `paymentMethod`, `paymentStatus`, `ticketing_id`, `reference_number`, `date_tested`, `smurf_admin_id`, `payAmount1`, `receipt1`, `reference1`, `paymentlock1`) VALUES
-(1, 1, 3, 'NBAA 1111', '', '12', '12', '12', '12', 'booked', '2024-01-27 15:53:11', '12', '12', '2024-01-10', '2008', 'Diesel - None Turbo', 'For Registration', 'Mopeds (0-49 cc)', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '300.00', '1', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', '', 'payMaya', 'unpaid', '7093553', '87059', '0000-00-00 00:00:00', NULL, 'pending', 'receipt_65b4b6a61f659_412081030_1520072618536041_1929517038923950395_n.jpg', '54354354353', 0),
-(2, 1, 3, 'NBAA 7777', '', '12', '12', '12', '12', 'booked', '2024-01-27 16:24:49', '12', '12', '2024-01-10', '2024', 'Gasoline', 'For Registration', 'Car', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '500.00', '1', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', '', 'gcash', 'unpaid', '2501356', '91325', '0000-00-00 00:00:00', NULL, 'pending', 'receipt_65b5226798b96_R.jpg', '12324214124', 1);
+INSERT INTO `car_emission` (`id`, `event_id`, `user_id`, `plate_number`, `customer_email`, `customer_first_name`, `customer_middle_name`, `customer_last_name`, `address`, `status`, `app_date`, `vehicle_cr_no`, `vehicle_or_no`, `first_reg_date`, `year_model`, `fuel_type`, `purpose`, `mv_type`, `region`, `mv_file_no`, `classification`, `payment_date`, `petc_or`, `amount`, `organization`, `engine`, `chassis`, `make`, `series`, `color`, `gross_weight`, `net_capacity`, `cec_number`, `mvect_operator`, `car_picture`, `paymentMethod`, `paymentStatus`, `ticketing_id`, `reference_number`, `date_tested`, `smurf_admin_id`, `payAmount1`, `receipt1`, `reference1`, `paymentlock1`, `payment_date1`, `return_reason1`, `return_switch_1`) VALUES
+(1, 2, 3, 'NBAA 7888', '', 'Kenneth Gabriel', 'Guimong', 'Tecson', '12', 'booked', '2024-01-28 20:10:02', '12', '12', '2024-01-15', '2024', 'Gasoline', 'For Registration', 'Shuttle Bus', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '600.00', '1', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', 'uploads/car_picture/65b6441a95021_image.png', 'pending', 'unpaid', '9123783', '96088', '0000-00-00 00:00:00', NULL, NULL, NULL, NULL, 0, NULL, 'Unmatch payment receipt, Unmatch reference number, Invalid payment receipt, Invalid reference number', 3);
 
 -- --------------------------------------------------------
 
@@ -500,22 +502,22 @@ CREATE TABLE `schedule_list` (
 --
 
 INSERT INTO `schedule_list` (`id`, `title`, `description`, `qty_of_person`, `reserve_count`, `price_3`, `price_2`, `price_1`, `start_datetime`, `end_datetime`, `availability`) VALUES
-(1, 'Vehicle Emission', 'emission', 5, 2, '600.00', '500.00', '300.00', '2024-01-27 08:00:00', '2024-01-27 08:30:00', 'available'),
-(2, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 08:30:00', '2024-01-27 09:00:00', 'available'),
-(3, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 09:00:00', '2024-01-27 09:30:00', 'available'),
-(4, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 09:30:00', '2024-01-27 10:00:00', 'available'),
-(5, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 10:00:00', '2024-01-27 10:30:00', 'available'),
-(6, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 10:30:00', '2024-01-27 11:00:00', 'available'),
-(7, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 11:00:00', '2024-01-27 11:30:00', 'available'),
-(8, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 11:30:00', '2024-01-27 12:00:00', 'available'),
-(9, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 13:00:00', '2024-01-27 13:30:00', 'available'),
-(10, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 13:30:00', '2024-01-27 14:00:00', 'available'),
-(11, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 14:00:00', '2024-01-27 14:30:00', 'available'),
-(12, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 14:30:00', '2024-01-27 15:00:00', 'available'),
-(13, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 15:00:00', '2024-01-27 15:30:00', 'available'),
-(14, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 15:30:00', '2024-01-27 16:00:00', 'available'),
-(15, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 16:00:00', '2024-01-27 16:30:00', 'available'),
-(16, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-27 16:30:00', '2024-01-27 17:00:00', 'available');
+(1, 'Vehicle Emission', 'emission', 5, 5, '600.00', '500.00', '300.00', '2024-01-28 08:00:00', '2024-01-28 08:30:00', 'available'),
+(2, 'Vehicle Emission', 'emission', 5, 1, '600.00', '500.00', '300.00', '2024-01-28 08:30:00', '2024-01-28 09:00:00', 'available'),
+(3, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 09:00:00', '2024-01-28 09:30:00', 'available'),
+(4, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 09:30:00', '2024-01-28 10:00:00', 'available'),
+(5, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 10:00:00', '2024-01-28 10:30:00', 'available'),
+(6, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 10:30:00', '2024-01-28 11:00:00', 'available'),
+(7, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 11:00:00', '2024-01-28 11:30:00', 'available'),
+(8, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 11:30:00', '2024-01-28 12:00:00', 'available'),
+(9, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 13:00:00', '2024-01-28 13:30:00', 'available'),
+(10, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 13:30:00', '2024-01-28 14:00:00', 'available'),
+(11, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 14:00:00', '2024-01-28 14:30:00', 'available'),
+(12, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 14:30:00', '2024-01-28 15:00:00', 'available'),
+(13, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 15:00:00', '2024-01-28 15:30:00', 'available'),
+(14, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 15:30:00', '2024-01-28 16:00:00', 'available'),
+(15, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 16:00:00', '2024-01-28 16:30:00', 'available'),
+(16, 'Vehicle Emission', 'emission', 5, 0, '600.00', '500.00', '300.00', '2024-01-28 16:30:00', '2024-01-28 17:00:00', 'available');
 
 -- --------------------------------------------------------
 
@@ -729,7 +731,7 @@ ALTER TABLE `cancellation_reasons`
 -- AUTO_INCREMENT for table `car_emission`
 --
 ALTER TABLE `car_emission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `classifications`

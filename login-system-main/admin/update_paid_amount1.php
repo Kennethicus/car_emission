@@ -16,6 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ticketId = $_POST['ticketId'];
     $paidAmount = $_POST['paidAmount'];
 
+    // Set return_switch_1 value
+    $returnSwitch1 = '2'; // You may adjust this value as needed
+
     // Perform validation on the input data if needed
 
     // Fetch total amount from the car_emission table
@@ -25,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($totalAmountResult->num_rows == 1) {
         $totalAmount = $totalAmountResult->fetch_assoc()['amount'];
 
-        // Update the paid amount in the car_emission table
-        $updateQuery = "UPDATE car_emission SET payAmount1 = '$paidAmount' WHERE id = '$reserveId'";
+        // Update the paid amount and return_switch_1 in the car_emission table
+        $updateQuery = "UPDATE car_emission SET payAmount1 = '$paidAmount', return_switch_1 = '$returnSwitch1' WHERE id = '$reserveId'";
         $updateResult = $connect->query($updateQuery);
 
         if ($updateResult) {
@@ -38,13 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $updatePaymentStatusResult = $connect->query($updatePaymentStatusQuery);
 
             if ($updatePaymentStatusResult) {
-                echo "Paid amount and payment status updated successfully!";
+                echo "Paid amount, payment status, and return switch updated successfully!";
             } else {
                 echo "Failed to update payment status!";
             }
         } else {
             // Update failed
-            echo "Failed to update paid amount!";
+            echo "Failed to update paid amount and return switch!";
         }
     } else {
         // Total amount not found

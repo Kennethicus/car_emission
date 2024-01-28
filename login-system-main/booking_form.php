@@ -638,7 +638,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update the amount based on mvType
     if (selectedMvType === 'Mopeds (0-49 cc)' || selectedMvType === 'Motorcycle w/ side car' || selectedMvType === 'Motorcycle w/o side car' || selectedMvType === 'Non-conventional MC (Car)' || selectedMvType === 'Tricycle') {
         amountElement.textContent = price1;
-    } else if (selectedMvType === 'Car' || selectedMvType === 'Sports utility Vehicle' || selectedMvType === 'Utility Vehicle' ||  selectedMvType === 'Rebuilt' || selectedMvType === 'Mobil Clinic') {
+    } else if (selectedMvType === 'Car' || selectedMvType === 'Sports Utility Vehicle' || selectedMvType === 'Utility Vehicle' ||  selectedMvType === 'Rebuilt' || selectedMvType === 'Mobil Clinic') {
         amountElement.textContent = price2;
     } else if (selectedMvType === 'School bus' || selectedMvType === 'Shuttle Bus' || selectedMvType === 'Tourist Bus' || selectedMvType === 'Truck Bus' || selectedMvType === 'Trucks' || selectedMvType === 'Trailer') {
         amountElement.textContent = price3;

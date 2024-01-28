@@ -912,44 +912,45 @@ function displayBookings($status)
             echo '</td>';
             echo '<td class="align-middle">';
             if (strtolower($status) === 'booked') {
-                if ($booking['paymentStatus'] === 'unpaid') {  
+                if ($booking['return_switch_1'] == '0') {  
                     // Display "Pay Half Now" button for unpaid bookings
-                    if ($booking['paymentMethod'] !== 'pending') {
-                         // If reference1 has a value, change the button to "On Review"
-  
-                         echo '<button type="button" class="btn btn-info on-review-btn"
-                        data-toggle="modal"
-                        data-target="#onReviewModal"
-                        data-booking-id="' . $booking['id'] . '"
-                        data-plate-number="' . $booking['plate_number'] . '"
-                        data-start-datetime="' . $booking['start_datetime'] . '"
-                        data-end-datetime="' . $booking['end_datetime'] . '"
-                        data-ticketing-id="' . $booking['ticketing_id'] . '"
-                        data-amount="' . $booking['amount'] . '"
-                        data-payment-method="' . $booking['paymentMethod'] . '" 
-                        data-reference1="' . $booking['reference1'] . '"
-                        data-mv-type="' . $booking['mv_type'] . '"
-                        data-pay-amount1="' . $booking['payAmount1'] . '">On Review</button>';
-
-                     
-                     
-    
-    // Include the "View" link
-    echo ' <a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
-                    } else {
-                        echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button> &nbsp;';
-                        echo '<a href="pay-now.php?id=' . $booking['id'] . '" class="btn btn-warning">Pay Half/Full Now</a> &nbsp;';
-                            
-                            echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
-                        }
-                } else {
-                    echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button> &nbsp;';
+                    echo '<a href="pay-now.php?id=' . $booking['id'] . '" class="btn btn-warning">Pay Half/Full Now</a>';
+                    echo ' ';
+                    echo ' <a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
+                    echo ' ';
+                    echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button>';
+                } else if (($booking['return_switch_1'] == '1')){
+                    echo '<a href="pay-now.php?id=' . $booking['id'] . '" class="btn btn-info on-review-btn">On Review</a>';
+                    echo ' '; // Add a space here
                     echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
+                     echo ' ';
+                    echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button>'; 
+                } else if ($booking['return_switch_1'] == '2'){
+                    // Check if payment status is not "half paid"
+                    if ($booking['paymentStatus'] !== 'fully paid') {
+                        echo '<a href="pay-now-2.php?id=' . $booking['id'] . '" class="btn btn-warning">Pay Full Now</a>';
+                        echo ' ';
+                    }
+                    echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
+                    echo ' ';
+                    echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button>'; 
+                }
+                
+             else if (($booking['return_switch_1'] == '3')){
+                echo '<a href="pay-now.php?id=' . $booking['id'] . '" class="btn btn-danger">Return</a>';
+                
+                echo ' ';
+                echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button>';
+                  echo ' ';
+                echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
+                
+                } else  {
+                    echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button>';
                 }
             } elseif (strtolower($status) === 'canceled') {
-                echo '<a href="view-booking.php?id=' . $booking['id'] . '">View</a>';
+                echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
             } elseif (strtolower($status) === 'doned') {
-                echo '<a href="view-booking-doned.php?id=' . $booking['id'] . '">View</a> &nbsp; <a href="test-link.php">Test</a>';
+                echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
             }
             echo '</td>';
             echo '</tr>';
@@ -961,4 +962,5 @@ function displayBookings($status)
 }
 
 ?>
+
 

@@ -6,7 +6,7 @@ include("connect/connection.php");
 // Check if the user is logged in
 if (!isset($_SESSION['email'])) {
     // If not logged in, redirect to the login page
-    header('Location: index.php');
+    header('Location: index.php');return
     exit();
 }
 
@@ -89,6 +89,9 @@ if (isset($_GET['id'])) {
     $paymentLock1 = $bookingDetails['paymentlock1'];
     $paymentMethod1 = $bookingDetails['paymentMethod'];
     $carPicturePath = $bookingDetails['car_picture'];
+    $returnSwitch1 = $bookingDetails['return_switch_1'];
+    $returnReason1 = $bookingDetails['return_reason1'];
+
 $userName = $bookingDetails['customer_first_name'];
 
     // Now you have $scheduleDetails with information from the 'schedule list' related to the 'event_id'
@@ -125,7 +128,33 @@ $userName = $bookingDetails['customer_first_name'];
     <div class="container mt-3">  
                     <form    method="POST"  name="bookingForm">
                     <div class="row d-flex justify-content-center">
-                
+           
+                    <div>      
+    <?php if ($returnSwitch1 == 0) : ?>
+        <!-- Display warning for Pay Half/Full Now -->
+        <div class="card bg-warning p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;"> 
+        <p style="color: white; text-align: center; font-size: 20px;">Pay Half or Full Now </p>
+        </div>
+    <?php elseif ($returnSwitch1 == 1) : ?>
+        <!-- Display On review info color -->
+        <div class="card bg-info p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
+        <p style="color: white; text-align: center; font-size: 20px;">On Review</p>
+        </div>
+    <?php elseif ($returnSwitch1 == 2) : ?>
+        <!-- Display Payment Success -->
+        <div class="card bg-success p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
+        <p style="color: white; text-align: center; font-size: 20px;">Payment Success</p>
+        </div>
+    <?php elseif ($returnSwitch1 == 3) : ?>
+        <!-- Display return reason -->
+        <div class="card bg-danger p-3 mx-auto" style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
+            <p style="color: white; text-align: center; font-size: 20px;"><?php echo $returnReason1; ?></p>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+
                    
                         <div class="col-lg-9">
                             
@@ -248,7 +277,7 @@ $userName = $bookingDetails['customer_first_name'];
                 <table class="table">
                     <tbody>
                     <tr>
-                            <th><span style="font-weight: normal !important;">Pay Now</span></th>
+                            <th><span style="font-weight: normal !important;">Submit</span></th>
                         </tr>   
                         <tr>
                         <td class="" style="font-size: normal;">
@@ -662,7 +691,7 @@ function payNow() {
 
     // Send AJAX request
     $.ajax({
-        url: 'handle-payment.php',
+        url: 'handle-payment1.php',
         type: 'POST',
         data: formData,
         contentType: false,

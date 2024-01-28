@@ -358,23 +358,39 @@ $userName = $bookingDetails['customer_first_name'];
         <h6 class="mb-0" style="text-align: center; color: var(--bs-body-bg); font-weight: bold; font-size: 16px;">ACTIONS</h6>
     </div>
     <div class="card-body" style="text-align: center; padding-top: 10px;">
-
         <?php
-        // Check if paymentMethod is equal to 'pending' and status is not equal to 'canceled'
-        if (
-            strtolower($bookingDetails['paymentMethod']) === 'pending' &&
-            strtolower($bookingDetails['status']) !== 'canceled'
-        ) {
-        ?>
-            <!-- Modify your existing "Submit Booking" button -->
-            <button type="button" class="btn btn-warning" onclick="openEditModal()">Edit Booking</button>
+        // Check the booking status and display buttons accordingly
+        $status = strtolower($bookingDetails['status']);
+        if ($status === 'booked') {
+            // Display "Review 1" and "Cancel" buttons
+            ?>
+            <?php if ($bookingDetails['paymentStatus'] === 'half paid') : ?>
+                
+                <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-success">Success Half Payment</a>
+                <a href="pay-now-2.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-warning">Pay Full Now</a>
+            <?php elseif ($bookingDetails['paymentStatus'] === 'fully paid') : ?>
+                <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-success">Success Fully Paid</a>
+            <?php else : ?>
+                <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-warning">Pay Half/Full Now</a>
+            <?php endif; ?>
+        
             <button type="button" class="btn btn-danger m-2" onclick="cancelFunction()">Cancel</button>
         <?php
+        }elseif ($status === 'doned') {
+            // Display "Review 1" button
+            ?>
+            <button type="button" class="btn btn-primary" onclick="openReview1Modal()">Review 1</button>
+            <?php
+        } elseif ($status === 'canceled') {
+            // Display message indicating no further actions allowed
+            ?>
+            <p>No further actions allowed.</p>
+            <?php
         }
         ?>
-
     </div>
 </div>
+
 
 
 <!-- Add this code where your other HTML content is -->

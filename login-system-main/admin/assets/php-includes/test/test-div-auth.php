@@ -44,12 +44,7 @@
                                                             <input class="form-check-input" type="checkbox" id="uploadedImage" value="<?php echo $UploadedImageValue; ?>" <?php echo ($UploadedImageValue == 1) ? 'checked' : ''; ?> disabled>
                                                             <label class="form-check-label" for="formCheck-6"><span style="font-weight: normal !important;">Uploaded Image</span></label></div>
                                                     </th>
-                                                    <th>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" id="retest" disabled>
-                                                            <label class="form-check-label" for="formCheck-10">
-                                                                <span style="font-weight: normal !important;">Retest</span></label></div>
-                                                    </th>
+                                                  
                                                 </tr>
                                             </thead>
                                             <tbody>

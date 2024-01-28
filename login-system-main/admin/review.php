@@ -36,9 +36,8 @@ if (isset($_GET['id']) && isset($_GET['ticketId'])) {
         $details = $detailsResult->fetch_assoc();
         // Now you have the details of the specific car emission entry and ticketId
 $event_id = $details['event_id'];
-        // Perform actions with $details (e.g., display, update, etc.)
-        echo "Car emission details found!";
-
+$returnSwitch1 = $details['return_switch_1'];
+$returnReason1 = $details['return_reason1'];
         // Fetch additional schedule details where id equals $reserve_id
         $scheduleQuery = "SELECT * FROM schedule_list WHERE id = '$event_id'";
         $scheduleResult = $connect->query($scheduleQuery);
@@ -82,7 +81,12 @@ $event_id = $details['event_id'];
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="assets/design/reservation.css">
+<style>
+    .btn-wide {
+    width: 90px; /* Adjust the width as needed */
+}
 
+</style>
 </head>
 
 <body id="page-top">
@@ -94,9 +98,32 @@ $event_id = $details['event_id'];
                 <!-- Display the details content here -->
                 <div class="container mt-3">
                     <div class="row d-flex justify-content-center">
-                
-                        <div class="col-lg-9 ">
+                    <div>      
+    <?php if ($returnSwitch1 == 0) : ?>
+        <!-- Display warning for Pay Half/Full Now -->
+        <div class="card bg-warning p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;"> 
+        <p style="color: white; text-align: center; font-size: 20px;">Waiting for Payment </p>
+        </div>
+    <?php elseif ($returnSwitch1 == 1) : ?>
+        <!-- Display On review info color -->
+        <div class="card bg-info p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
+        <p style="color: white; text-align: center; font-size: 20px;">Review Now</p>
+        </div>
+    <?php elseif ($returnSwitch1 == 2) : ?>
+        <!-- Display Payment Success -->
+        <div class="card bg-success p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
+        <p style="color: white; text-align: center; font-size: 20px;">Successful Payment</p>
+        </div>
+    <?php elseif ($returnSwitch1 == 3) : ?>
+        <!-- Display return reason -->
+        <div class="card bg-danger p-3 mx-auto" style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
+            <p style="color: white; text-align: center; font-size: 20px;"><?php echo $returnReason1; ?></p>
+        </div>
+    <?php endif; ?>
+</div>
 
+                        <div class="col-lg-9 ">
+                        <input id="bookingIdInput1"  type="hidden" value="<?php echo $details['id'];  ?>" readonly> </input>
                         <!-- <div class="col-lg-5 col-xl-4 col-xxl-4"> -->
                         <div class="">
 
@@ -174,13 +201,13 @@ $event_id = $details['event_id'];
                     </tr>   
                     <tr>
                     <td class="text-center" style="font-size: 23px;"><?php echo date('g:ia', strtotime( $scheduleDetails['start_datetime'])) . ' to ' . date('g:ia', strtotime( $scheduleDetails['end_datetime'])); ?></td>
-                       <td class="text-center" style="font-size: 23px;"><?php echo $details['reference1']; ?></td>
+                    <td class="text-center" style="font-size: 23px;"><?php echo !empty($details['reference1']) ? $details['reference1'] : '0'; ?></td>
                        <tr>
     <th><span style="font-weight: normal !important;">Amount Paid</span></th>
     <th><span style="font-weight: normal !important;">Payment Receipt</span></th>
 </tr>
 <tr>
-<td class="text-center" style="font-size: 23px;"><?php echo $details['payAmount1']; ?></td>
+<td class="text-center" style="font-size: 23px;"><?php echo !empty($details['payAmount1']) ? $details['payAmount1'] : '0'; ?></td>
     <td class="text-center">
         <!-- Make "View Payment Receipt" a button with btn-primary class -->
         <button type="button" class="btn btn-primary" onclick="viewPaymentReceipt()">View Payment Receipt</button>
@@ -191,34 +218,39 @@ $event_id = $details['event_id'];
         </div>
     </div>
 </div>
-
-
-
-
-                            <div class="card" style="height: 160px; margin-bottom: 20px;">
-    <div class="card-header" style="background: var(--bs-success-text-emphasis);">
-        <h6 class="mb-0" style="text-align: center; color: var(--bs-body-bg); font-weight: bold; font-size: 16px;">ACTIONS</h6>
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Payment Receipt Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                  
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="previewImage" src="#" alt="Payment Receipt" class="img-fluid">
+            </div>
+        </div>
     </div>
-    <div class="card-body" style="text-align: center; padding-top: 10px;">
-<?php if ($details['status'] !== 'canceled' && $details['status'] !== 'doned') { ?>
-    <button class="btn btn-primary m-2" onclick="PaidFunction()">Paid</button>
-    <a href="details.php?id=<?php echo $reserve_id; ?>&ticketId=<?php echo $ticketId; ?>" class="btn btn-success m-2">Details</a>
-    <button class="btn btn-danger m-2" onclick="cancelBookFunction()">Return</button>
-<?php } elseif ($details['status'] === 'doned') { ?>
-    <a href="test.php?id=<?php echo $reserve_id; ?>&ticketId=<?php echo $ticketId; ?>" class="btn btn-success m-2" onclick="testFunction()">Test</a>
-<?php } else { ?>
-    <br>
-    <p class="text-danger">Booking is canceled. No further actions allowed.</p>
-<?php } ?>
 </div>
 
 
-</div>
 
-<!-- Back button outside the card, positioned lower and larger with increased margin-top -->
-<div class="text-end mt-5">
-    <button class="btn btn-secondary btn-lg" onclick="goBack()">Back</button>
-</div>
+<script>
+function previewReceipt() {
+    var input = document.getElementById('paymentImage1'); // Corrected ID here
+    var file = input.files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        $('#previewImage').attr('src', e.target.result);
+        $('#previewModal').modal('show');
+    }
+    reader.readAsDataURL(file);
+}
+
+</script>
+
        
 <script>
     // JavaScript function to navigate back to reservation.php
@@ -228,7 +260,204 @@ $event_id = $details['event_id'];
 </script>
 </div>
 </div>
+<div class="col-lg-3">
 
+<div class="card shadow mb-4">
+<div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
+<h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">PAYMENT DETAIL 1</span></h6>
+</div>
+<div class="card-body">
+<div class="table-responsive">
+<table class="table">
+<tbody>
+<tr>
+      <th><span style="font-weight: normal !important;">Pay Now</span></th>
+  </tr>   
+  <tr>
+  <td class="" style="font-size: normal;">
+<label for="payhalf2">Half Payment: <?php echo $details['amount']/2 ?></label> <span id="payhalf2"></span><br>
+<span>or</span><br>
+<label for="payfull1">Full Payment:  <?php echo $details['amount'] ?></label> <span id="payfull1"></span> 
+</td>
+
+  </tr> 
+  <tr>
+      <th><span style="font-weight: normal !important;">Payment Method</span></th>
+  </tr>
+  <tr>
+      <td class="" style="font-size: normal;">
+      <input type="radio" id="cash" name="payment_method" value="cash" onclick="updateAccountDetails('cash')">
+          <label for="cash">Cash</label><br>
+          <input type="radio" id="gcash" name="payment_method" value="gcash" onclick="updateAccountDetails('gcash')">
+          <label for="gcash">Gcash</label><br>
+          <input type="radio" id="paymaya" name="payment_method" value="paymaya" onclick="updateAccountDetails('paymaya')">
+          <label for="paymaya">PayMaya</label><br>
+      </td>
+  </tr> 
+  <tr>
+      <th><span style="font-weight: normal !important;">Account Details</span></th>
+  </tr>   
+  <tr>
+      <td class="" style="font-size: normal;">
+          <label for="account_name">Name:</label> <span id="account_name"></span><br>
+          <label for="account_number">Number:</label> <span id="account_number"></span> <i id="copy_icon" class="far fa-clipboard" style="display: none;" onclick="copyToClipboard('account_number')"></i><br>
+      </td>
+  </tr> 
+  <tr>
+<th><span style="font-weight: normal !important;">Payment Receipt Input</span></th>
+</tr>
+<tr>
+<td style="text-align: center;">
+  <div style="margin-bottom: 10px;">
+      <input type="file" class="form-control" id="paymentImage1" accept="image/*">
+  </div>
+  <div>
+      <button type="button" class="btn btn-primary" onclick="previewReceipt()">Preview Payment Picture</button>
+  </div>
+</td>
+</tr>
+  <tr>
+      <th><span style="font-weight: normal !important;">Reference No.</span></th>
+  </tr>
+  <td class="text-center">
+<input type="text" id="referenceNumberInput" class="form-control" style="font-size: normal;" value="<?php echo $details['reference1']; ?>">
+</td>
+<tr>
+      <th><span style="font-weight: normal !important;">(Optional) Amount Paid</span></th>
+  </tr>
+  <td class="text-center">
+<input type="text" id="referenceNumberInput" class="form-control" style="font-size: normal;" value="<?php echo $details['payAmount1']; ?>">
+</td>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<script>
+    // Function to check the payment method and update account details
+    function updatePaymentMethodAndDetails() {
+        // Get the payment method from PHP
+        var paymentMethod = "<?php echo $details['paymentMethod']; ?>";
+
+        // Check the payment method and update accordingly
+        if (paymentMethod === 'paymaya') {
+            // Click the PayMaya radio button
+            document.getElementById('paymaya').checked = true;
+
+            // Update account details for PayMaya
+            updateAccountDetails('paymaya');
+        } else if (paymentMethod === 'gcash') {
+            // Click the Gcash radio button
+            document.getElementById('gcash').checked = true;
+
+            // Update account details for Gcash
+            updateAccountDetails('gcash');
+        }
+    }
+
+    // Call the function when the page loads
+    window.onload = function() {
+        updatePaymentMethodAndDetails();
+        disableElementsIfLocked();
+    };
+</script>
+<script>
+    // Get the payment lock status from PHP
+    var paymentLockStatus = <?php echo $returnSwitch1; ?>;
+
+    // Function to disable elements if paymentLock1 equals 1
+    function disableElementsIfLocked() {
+        if (paymentLockStatus === 2) {
+            // Disable the "Pay Now" button
+            document.getElementById('paid1').disabled = true;
+
+            // Disable the payment image input
+            document.getElementById('save1').disabled = true;
+
+            // Disable the reference number input
+            document.getElementById('return1').disabled = true;
+        }
+    }
+
+    
+</script>
+
+<script>
+function updateAccountDetails(method) {
+    var accountName = document.getElementById("account_name");
+    var accountNumber = document.getElementById("account_number");
+    var copyIcon = document.getElementById("copy_icon");
+
+    if (method === 'gcash') {
+        accountName.textContent = "Richard Alaurin";
+        accountNumber.textContent = "0823123213";
+    } else if (method === 'paymaya') {
+        accountName.textContent = "Gilene Mardo";
+        accountNumber.textContent = "09756253";
+    } else if (method === 'cash') {
+        // Set the admin username as the account name for cash payment
+        // You can replace 'adminUsername' with the actual admin username variable
+        var adminUsername = "<?php echo $username; ?>";
+        accountName.textContent = adminUsername;
+        accountNumber.textContent = ""; // Clear account number for cash payment
+    }
+
+    if (accountNumber.textContent !== "") {
+        copyIcon.style.display = "inline";
+    } else {
+        copyIcon.style.display = "none";
+    }
+}
+
+
+function viewPaymentReceipt() {
+// Functionality to view payment receipt
+}
+
+function copyToClipboard(elementId) {
+var element = document.getElementById(elementId);
+var text = element.textContent;
+
+var textarea = document.createElement('textarea');
+textarea.value = text;
+document.body.appendChild(textarea);
+
+textarea.select();
+document.execCommand('copy');
+
+document.body.removeChild(textarea);
+alert('Copied to clipboard: ' + text);
+}
+</script>
+<div class="card" style="height: 160px; margin-bottom: 20px;">
+    <div class="card-header" style="background: var(--bs-success-text-emphasis);">
+        <h6 class="mb-0" style="text-align: center; color: var(--bs-body-bg); font-weight: bold; font-size: 16px;">ACTIONS</h6>
+    </div>
+    <div class="card-body" style="text-align: center; padding-top: 10px;">
+        <?php if ($details['status'] !== 'canceled' && $details['status'] !== 'doned') { ?>
+            
+            <button id="paid1" class="btn btn-primary m-2 btn-wide" onclick="PaidFunction()">Paid</button>
+            <button id="save1" class="btn btn-info m-2 btn-wide" onclick="savePayment1()">Save</button>
+            <a href="details.php?id=<?php echo $reserve_id; ?>&ticketId=<?php echo $ticketId; ?>" class="btn btn-success m-2 btn-wide">Details</a>
+            <button id="return1" class="btn btn-danger m-2 btn-wide" onclick="returnPayment1()">Return</button>
+           
+        <?php } elseif ($details['status'] === 'doned') { ?>
+            <a href="test.php?id=<?php echo $reserve_id; ?>&ticketId=<?php echo $ticketId; ?>" class="btn btn-success m-2 btn-wide" onclick="testFunction()">Test</a>
+        <?php } else { ?>
+            <br>
+            <p class="text-danger">Booking is canceled. No further actions allowed.</p>
+        <?php } ?>
+    </div>
+</div>
+
+
+<!-- Back button outside the card, positioned lower and larger with increased margin-top -->
+<div class="text-end mt-5">
+    <button class="btn btn-secondary btn-lg" onclick="goBack()">Back</button>
+</div>
+<br>
+</div>
 </div>
 </div>
 
@@ -251,6 +480,55 @@ $event_id = $details['event_id'];
         </div>
     </div>
 </div>
+
+
+
+
+<!-- Modal for confirming return payment -->
+<div class="modal fade" id="returnConfirmationModal" tabindex="-1" aria-labelledby="returnConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnConfirmationModalLabel">Confirm Return Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Choose reason(s) for return:</p>
+                
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Unmatch payment receipt" id="returnWrongPaymentReceipt">
+                    <label class="form-check-label" for="returnWrongPaymentReceipt">Unmatch payment receipt</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Unmatch reference number" id="returnWrongReferenceNumber">
+                    <label class="form-check-label" for="returnWrongReferenceNumber">Unmatch reference number</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Invalid payment receipt" id="returnInvalidPaymentReceipt">
+                    <label class="form-check-label" for="returnInvalidPaymentReceipt">Invalid payment receipt</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Invalid reference number" id="returnInvalidReferenceNumber">
+                    <label class="form-check-label" for="returnInvalidReferenceNumber">Invalid reference number</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Duplicate payment receipt" id="returnDuplicatePayment">
+                    <label class="form-check-label" for="returnDuplicatePayment">Duplicate payment receipt</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Duplicate reference number" id="returnDuplicateReference">
+                    <label class="form-check-label" for="returnDuplicateReference">Duplicate reference number</label>
+                </div>
+              
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="confirmReturnPayment()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -306,6 +584,58 @@ $event_id = $details['event_id'];
 
 
 <script>
+    // Function to display the modal for confirming the return payment
+function showReturnConfirmationModal() {
+    $('#returnConfirmationModal').modal('show'); // Show the modal
+}
+
+// Function to handle the return payment action
+function returnPayment1() {
+    // Show the confirmation modal
+    showReturnConfirmationModal();
+}
+
+function confirmReturnPayment() {
+    // Get the selected return reasons
+    var returnReasons = [];
+    $('input[type="checkbox"]:checked').each(function() {
+        returnReasons.push($(this).val());
+    });
+
+    // Perform actions to return the payment here
+    var bookingId = $('#bookingIdInput1').val(); // Get the booking ID
+    var referenceNumber = $('#referenceNumberInput').val(); // Get the reference number
+    
+    // Send an AJAX request to update the payment status
+    $.ajax({
+        url: 'return_payment1.php', // Specify the PHP file to handle the return payment process
+        type: 'POST',
+        data: { 
+            bookingId: bookingId, 
+            referenceNumber: referenceNumber, 
+            returnReasons: returnReasons // Pass the selected return reasons as an array
+        },
+        success: function(response) {
+            // Handle the success response, if needed
+            console.log(response);
+            // For example, you can display a success message or reload the page
+            alert('Payment returned successfully.');
+            window.location.reload(); // Reload the page to reflect changes
+        },
+        error: function(xhr, status, error) {
+            // Handle the error response, if needed
+            console.error(xhr.responseText);
+            // For example, you can display an error message
+            alert('Error returning payment. Please try again.');
+        }
+    });
+}
+
+
+
+    </script>
+
+<script>
     // JavaScript function to handle the "Paid" button click
     function PaidFunction() {
         // Get the receipt image path
@@ -352,6 +682,45 @@ $event_id = $details['event_id'];
     }
 </script>
 
+<script>
+function savePayment1() {
+    var bookingId = $('#bookingIdInput1').val();
+    var referenceNumber = document.getElementById('referenceNumberInput').value;
+    var paymentMethodRadio = document.querySelector('input[name="payment_method"]:checked');
+
+    // Check if a payment method radio button is selected
+    var paymentMethod = paymentMethodRadio ? paymentMethodRadio.value : '';
+
+    var paymentImage = document.getElementById('paymentImage1').files[0];
+    // Check if paymentImage is null
+    paymentImage = paymentImage ? paymentImage : '';
+
+    var formData = new FormData();
+    formData.append('bookingId', bookingId);
+    formData.append('referenceNumber', referenceNumber);
+    formData.append('paymentMethod', paymentMethod);
+    formData.append('paymentImage', paymentImage);
+
+    // Send AJAX request
+    $.ajax({
+        url: 'update-save-payment-1.php',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            // Handle success response
+            console.log(response);
+        },
+        error: function(xhr, status, error) {
+            // Handle error
+            console.error(xhr.responseText);
+        }
+    });
+}
+
+
+</script>
 
 
 </body>

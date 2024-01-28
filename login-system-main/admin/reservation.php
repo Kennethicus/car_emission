@@ -493,25 +493,29 @@ function displayCarEmission($carEmissionResult)
             echo '<td>';
             
             // Display "Cancel" link only for entries with status 'booked'
-           // Display "Review" button if payment method is not equal to 'pending'
-    if ($status === 'booked' && $row['paymentMethod'] !== 'pending') {
-        echo '<button type="button" class="btn btn-danger cancel-btn" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</button>';
-        echo ' '; // Add a space character
-        echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
-
-        echo ' '; // Add a space character
-        echo '<button class="btn btn-primary review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Review 1</button>';
-        
-    } elseif ($status === 'canceled' || $status === 'done') {
-        // Display only the Details button for canceled and done statuses
-        echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
-    }
-     else {
-        echo '<button type="button" class="btn btn-danger cancel-btn" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</button>';
-        echo ' ';
-        echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
-    }
-
+            if ($status === 'booked' && $row['paymentMethod'] !== 'pending') {
+                echo '<button type="button" class="btn btn-danger cancel-btn" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</button>';
+                echo ' '; // Add a space character
+                echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
+            
+                echo ' '; // Add a space character
+                // Check return_switch_1 value and change the button text accordingly
+                if ($row['return_switch_1'] == 2) {
+                    echo '<button class="btn btn-success review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Success</button>';
+                } elseif ($row['return_switch_1'] == 3) {
+                    echo '<button class="btn btn-warning review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Return</button>';
+                } else {
+                    echo '<button class="btn btn-primary review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Review 1</button>';
+                }
+            } elseif ($status === 'canceled' || $status === 'done') {
+                // Display only the Details button for canceled and done statuses
+                echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
+            } else {
+                echo '<button type="button" class="btn btn-danger cancel-btn" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</button>';
+                echo ' ';
+                echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
+            }
+            
     echo '</td>';
     echo '</tr>';
             

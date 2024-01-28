@@ -246,21 +246,22 @@ View Picture  <button type="button" class="btn btn-primary "   data-bs-toggle="m
                         <th><span style="font-weight: normal !important;">Reference No.</span></th>
                     </tr>   
                     <tr>
-                       <td class="text-center" style="font-size: 23px;"><?php echo $details['reference1']; ?></td>
+                    <td class="text-center" style="font-size: 23px;"><?php echo !empty($details['reference1']) ? $details['reference1'] : '0'; ?></td>  
                        <tr>
     <th><span style="font-weight: normal !important;">Payment Receipt</span></th>
 </tr>
 <tr>
     <td class="text-center">
         <!-- Make "View Payment Receipt" a button with btn-primary class -->
-        <button type="button" class="btn btn-primary" onclick="viewPaymentReceipt()">View Payment Receipt</button>
+        <button type="button" class="btn btn-primary" onclick="viewPaymentReceipt()" <?php if (empty($details['receipt1'])) echo 'disabled'; ?>>View Payment Receipt</button>
+
     </td>
 </tr>
                     <tr>
                         <th><span style="font-weight: normal !important;">Amount Paid</span></th>
                     </tr>   
                     <tr>
-                       <td class="text-center" style="font-size: 23px;"><?php echo $details['payAmount1']; ?></td>
+                    <td class="text-center" style="font-size: 23px;"><?php echo !empty($details['payAmount1']) ? $details['payAmount1'] : '0'; ?></td>
                     </tr> 
                 </tbody>
             </table>
