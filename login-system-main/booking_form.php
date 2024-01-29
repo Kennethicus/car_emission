@@ -123,7 +123,8 @@ $connect->close();
                 </label>
                 <!-- Button to display the selected picture -->
                 <button type="button" class="btn btn-success" onclick="displaySelectedPicture()" id="selectedPictureFilename">Display</button>  
-                </td>
+             
+            </td>
                                                     <td class="text-end">First Name<input id="firstnameInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" type="text"></td>
                                                 </tr> 
                                                 <tr>
@@ -170,53 +171,56 @@ $connect->close();
                                                 </tr>
                                                 <tr>
                                                     <td class="text-end">Year Model
-                                                    <select id="yearModelInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;"> <!-- Adjust the width as needed -->
-                                                    <?php
-                                                    // Assuming $startYear and $endYear are your desired range
-                                                    $startYear = date("Y") - 20; // Display 20 recent years
-                                                    $endYear = date("Y"); // Current year
+                                                    <select id="yearModelInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
+                                              <option value="" selected>Select Year</option>
+                                                <?php
+                                                // Assuming $startYear and $endYear are your desired range
+                                                $startYear = date("Y") - 20; // Display 20 recent years
+                                                $endYear = date("Y"); // Current year
 
-                                                    // Loop to generate options
-                                                    for ($year = $endYear; $year >= $startYear; $year--) {
-                                                        echo '<option value="' . $year . '">' . $year . '</option>';
-                                                    }
-                                                    ?>
-                                                </select>
+                                                // Loop to generate options
+                                                for ($year = $endYear; $year >= $startYear; $year--) {
+                                                    echo '<option value="' . $year . '">' . $year . '</option>';
+                                                }
+                                                ?>
+                                            </select>
+
                                                     </td>
                                                     <td class="text-end">Make
                                                     <select name="makeInput" id="makeInput"  class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" >
-                        <!-- Populate options dynamically based on your requirements -->
+                                                    <option value="" selected>Select Make</option>
+                                                    <!-- Populate options dynamically based on your requirements -->
                                                     </select>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-end">Fuel type
                                                     <select name="fuelTypeInput" id="fuelTypeInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                        <!-- Populate options dynamically based on your requirements -->
-                    </select>
+                                                    <option value="" selected>Select Fuel</option>
+                                                    </select>
                                                     </td>
                                                     <td class="text-end">Series
                                                     <select name="seriesInput" id="seriesInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                <!-- Populate options dynamically based on your requirements -->
+                                                    <option value="" selected>Select Series</option>
                                                 </select>    
                                                 </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-end">Purpose
                                                     <select name="purposeInput" id="purposeInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                    <!-- Populate options dynamically based on your requirements -->
+                                                    <option value="" selected>Select Purpose</option>
                                                     </select>
                                                     </td>
                                                     <td class="text-end">Color
                                                     <select name="colorInput" id="colorInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                    <!-- Populate options dynamically based on your requirements -->
+                                                    <option value="" selected>Select Color</option>
                                                     </select>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-end">MV Type
                                                     <select name="mvTypeInput" id="mvTypeInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                    <!-- Populate options dynamically based on your requirements -->
+                                                    <option value="" selected>Select MV Type</option>
                                                     </select>
                                                     </td>
                                                     <td class="text-end">
@@ -235,12 +239,12 @@ $connect->close();
                                                       <!-- <td class="text-end" style="width: 200px;">Ticketing ID<input type="text" style="margin-left: 5px;" ></td> -->
                                                       <td class="text-end">Classification
                                                     <select name="classification" id="classificationInput"  class="form-control" style="max-width: 230px; display: inline-block; margin-left: 8px;" type="text">
-                        <!-- Populate options dynamically based on your requirements -->
+                                                    <option value="" selected>Select Classification</option>
                                                     </select>
                                                     </td>
                                                     <td class="text-end">Region
                                                     <select name="regionInput" id="regionInput" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;">
-                                                    <!-- Populate options dynamically based on your requirements -->
+                                                    <option value="" selected>Select Region</option>
                                                     </select>
                                                     </td>
                                                 </tr>
@@ -426,6 +430,23 @@ $connect->close();
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="responseModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Response</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Response message will be displayed here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 
   <?php include 'partials/footer.php' ?>
@@ -680,6 +701,14 @@ updateAmount();
         // Validate the Gross Weight and Net Capacity fields
         var grossWeightInput = $('#grossWeightInput').val();
         var netCapacityInput = $('#netCapacityInput').val();
+        var makeInput =  $('#makeInput').val();
+        var mvType =  $('#mvTypeInput').val();
+        var fuelType =  $('#fuelTypeInput').val();
+        var purposeInput =  $('#purposeInput').val();
+        var seriesInput =  $('#seriesInput').val();
+        var colorInput =  $('#colorInput').val();
+        var regionInput =  $('#regionInput').val();
+        var classificationInput =  $('#classificationInput').val();
         var chassisInput = $('#chassisInput').val();
         var engineInput = $('#engineInput').val();
         var addressInput = $('#addressInput').val();
@@ -694,11 +723,75 @@ updateAmount();
         var firstRegInput =  $('#firstRegInput').val();
         var mvFileInput = $('#mvFileInput').val();
         var lastNameInput = $('#lastNameInput').val();
+        var carPictureInput = $('#carPictureInput').val();
+        var CrInputPicture = $('#CrInputPicture').val();
+        var OrInputPicture = $('#OrInputPicture').val();
+        var yearModelInput = $('#yearModelInput').val();
+        
         // Check if both Gross Weight and Net Capacity are not empty
-        return grossWeightInput !== '' && netCapacityInput !== '' && chassisInput !== '' && engineInput !== '' && addressInput !== '' && firstnameInput !== ''  && organizationInput !== '' && userNameInput !== '' && vehicleCrInput !== '' && vehicleOrInput !== '' && firstRegInput !== '' && mvFileInput !== ''  && middleNameInput !== '' && lastNameInput !== '' && plateNumberLetter !== '' && plateNumberNumbers !== '';
+        return grossWeightInput !== '' && netCapacityInput !== '' && chassisInput !== '' && engineInput !== '' && addressInput !== '' && firstnameInput !== ''  && organizationInput !== '' && userNameInput !== '' && vehicleCrInput !== '' && vehicleOrInput !== '' && firstRegInput !== '' && mvFileInput !== ''  && middleNameInput !== '' && lastNameInput !== '' && plateNumberLetter !== '' && plateNumberNumbers !== '' && carPictureInput !== '' && CrInputPicture !== '' && OrInputPicture !== '' && yearModelInput !== '' && makeInput !== '' && fuelType !== '' && purposeInput !== ''  && seriesInput !== '' && colorInput !== '' && regionInput !== '' && classificationInput !== '' && mvType !== '';
+    }
+
+    function highlightmvTypeInput() {
+        // Remove existing red border from Gross Weight field
+        $('#mvTypeInput').removeClass('border-danger');
     }
 
 
+    function highlightClassificationInput() {
+        // Remove existing red border from Gross Weight field
+        $('#classificationInput').removeClass('border-danger');
+    }
+
+    function highlightRegionInput() {
+        // Remove existing red border from Gross Weight field
+        $('#regionInput').removeClass('border-danger');
+    }
+    
+    function highlightColorInput() {
+        // Remove existing red border from Gross Weight field
+        $('#colorInput').removeClass('border-danger');
+    }
+
+    function highlightSeriesInput() {
+        // Remove existing red border from Gross Weight field
+        $('#seriesInput').removeClass('border-danger');
+    }
+
+
+    function highlightPurposeInput() {
+        // Remove existing red border from Gross Weight field
+        $('#purposeInput').removeClass('border-danger');
+    }
+
+
+    function highlightFuelType() {
+        // Remove existing red border from Gross Weight field
+        $('#fuelTypeInput').removeClass('border-danger');
+    }
+
+    function highlightMake() {
+        // Remove existing red border from Gross Weight field
+        $('#makeInput').removeClass('border-danger');
+    }
+
+    function yearModelInput() {
+        // Remove existing red border from Gross Weight field
+        $('#yearModelInput').removeClass('border-danger');
+    }
+
+    function carPictureInput() {
+        // Remove existing red border from Gross Weight field
+        $('#carPictureInput').removeClass('border-danger');
+    }
+    function CrInputPicture() {
+        // Remove existing red border from Gross Weight field
+        $('#CrInputPicture').removeClass('border-danger');
+    }
+    function OrInputPicture() {
+        // Remove existing red border from Gross Weight field
+        $('#OrInputPicture').removeClass('border-danger');
+    }
 
     function highlightGrossWeight() {
         // Remove existing red border from Gross Weight field
@@ -776,6 +869,78 @@ updateAmount();
         $('#plateNumberNumbers').removeClass('border-danger');
     }
 
+
+// Add event listener to the file input field for change event
+$('#mvTypeInput').on('change', function () {
+    // Call the function to handle the selected picture
+    highlightmvTypeInput();
+});
+
+    // Add event listener to the file input field for change event
+$('#carPictureInput').on('change', function () {
+    // Call the function to handle the selected picture
+    displaySelectedPicture(this);
+});
+
+// Add event listener to the file input field for change event
+$('#CrInputPicture').on('change', function () {
+    // Call the function to handle the selected picture
+    displaySelectedCrPicture(this);
+});
+
+// Add event listener to the file input field for change event
+$('#OrInputPicture').on('change', function () {
+    // Call the function to handle the selected picture
+    displaySelectedOrPicture(this);
+});
+
+ // Add event listeners to the input fields for the input event
+ $('#yearModelInput').on('change', function () {
+        // Remove the highlight from Gross Weight field when the user starts typing
+        yearModelInput();
+    });
+
+     // Add event listeners to the input fields for the input event
+ $('#makeInput').on('change', function () {
+        // Remove the highlight from Gross Weight field when the user starts typing
+        highlightMake();
+    });
+
+     // Add event listeners to the input fields for the input event
+     $('#fuelTypeInput').on('change', function () {
+        // Remove the highlight from Gross Weight field when the user starts typing
+        highlightFuelType();
+    });
+
+     // Add event listeners to the input fields for the input event
+     $('#purposeInput').on('change', function () {
+        // Remove the highlight from Gross Weight field when the user starts typing
+        highlightPurposeInput();
+    });
+
+   // Add event listeners to the input fields for the input event
+     $('#seriesInput').on('change', function () {
+        // Remove the highlight from Gross Weight field when the user starts typing
+        highlightSeriesInput();
+    });
+
+     // Add event listeners to the input fields for the input event
+     $('#colorInput').on('change', function () {
+        // Remove the highlight from Gross Weight field when the user starts typing
+        highlightColorInput();
+    });
+
+     // Add event listeners to the input fields for the input event
+     $('#regionInput').on('change', function () {
+        // Remove the highlight from Gross Weight field when the user starts typing
+        highlightRegionInput();
+    });
+
+         // Add event listeners to the input fields for the input event
+         $('#classificationInput').on('change', function () {
+        // Remove the highlight from Gross Weight field when the user starts typing
+        highlightClassificationInput();
+    })
 
  // Add event listeners to the input fields for the input event
  $('#grossWeightInput').on('input', function () {
@@ -867,6 +1032,7 @@ updateAmount();
 
     function highlightEmptyFields() {
         // Remove existing red borders
+        
         $('.form-control').removeClass('border-danger');
 
         // Highlight the empty required fields (excluding the date field) with red border
@@ -882,6 +1048,18 @@ updateAmount();
         function highlightVehicleInformation() {
         // Highlight the fields with red border if they are empty
         if (!validateVehicleInformation()) {
+            $('#mvTypeInput').addClass('border-danger');
+            $('#classificationInput').addClass('border-danger');
+            $('#regionInput').addClass('border-danger');
+            $('#colorInput').addClass('border-danger');
+            $('#seriesInput').addClass('border-danger');
+            $('#purposeInput').addClass('border-danger');
+            $('#fuelTypeInput').addClass('border-danger');
+            $('#yearModelInput').addClass('border-danger');
+            $('#makeInput').addClass('border-danger');
+            $('#carPictureInput').addClass('border-danger');
+              $('#OrInputPicture').addClass('border-danger');
+              $('#CrInputPicture').addClass('border-danger');
             $('#grossWeightInput').addClass('border-danger');
             $('#netCapacityInput').addClass('border-danger');
             $('#engineInput').addClass('border-danger');
@@ -936,6 +1114,8 @@ updateAmount();
         formData.append("grossWeight", $("#grossWeightInput").val());
         formData.append("netCapacity", $("#netCapacityInput").val());
         formData.append("carPicture", $("#carPictureInput")[0].files[0]);
+        formData.append("OrInputPicture", $("#OrInputPicture")[0].files[0]);
+        formData.append("CrInputPicture", $("#CrInputPicture")[0].files[0]);
         formData.append("paymentMethod", $("#paymentMode").val());
         // formData.append("paymentStatus", $("#paymentStatus").val());
         formData.append("plateNumberLetters", $("#plateNumberLetters").val());
@@ -950,25 +1130,39 @@ updateAmount();
     processData: false,
     dataType: "json", // Change this based on your server response type
     success: function (response) {
-        // Handle the server response here
+        // Log the response to the console
         console.log(response);
 
+        // Update modal content based on response
         if (response.status === 'error') {
-            // Show alert if there's an error
-            alert(response.message);
+            $('#responseModal .modal-body').text(response.message);
         } else {
-            // Show success message
-            alert("Data sent successfully!");
+            $('#responseModal .modal-body').text("Data sent successfully!");
+            
+            // Redirect to schedule-status.php after a short delay
+            setTimeout(function() {
+                window.location.href = "schedule-status.php";
+            }, 2000); // 2000 milliseconds = 2 seconds
         }
+
+        // Show the modal
+        $('#responseModal').modal('show');
     },
     error: function (xhr, status, error) {
-        // Handle errors
+        // Log errors to the console
         console.error("XHR status:", status);
         console.error("XHR error:", error);
         console.error("XHR response:", xhr.responseText);
-        alert("Error sending data to the server! Check the console for details.");
+
+        // Update modal content with error message
+        $('#responseModal .modal-body').text("Error sending data to the server! Check the console for details.");
+
+        // Show the modal
+        $('#responseModal').modal('show');
     }
 });
+
+
 
     } else {
         // Highlight the empty required fields

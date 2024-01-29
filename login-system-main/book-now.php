@@ -105,9 +105,11 @@ if (isset($_SESSION['email'])) {
                         eventDetails += '<p><strong>TIME:</strong> ' + formatDate(response[i].start) + ' - ' + formatDate(response[i].end) + '</p>';
                         eventDetails += '</div>';
                         eventDetails += '<div class="col-md-4">';
-                        eventDetails += '<p><strong>SLOT:</strong> ' + response[i].qty_of_person + '</p>';
-                        eventDetails += '<p><strong>PRICE:</strong> ' + "₱" + response[i].price_1 + '</p>';
-                        eventDetails += '<p><strong>STATUS:</strong> ' + response[i].availability + '</p>';
+                        eventDetails += '<p><strong>SLOT:</strong> '+ response[i].reserve_count +' of '+ response[i].qty_of_person + '</p>';
+                        eventDetails += '<p><strong>PRICE I:</strong> ' + "₱" + response[i].price_1 + '</p>';
+                        eventDetails += '<p><strong>PRICE II:</strong> ' + "₱" + response[i].price_2 + '</p>';
+                        eventDetails += '<p><strong>PRICE III:</strong> ' + "₱" + response[i].price_3 + '</p>';
+                        // eventDetails += '<p><strong>STATUS:</strong> ' + response[i].availability + '</p>';
                         eventDetails += '</div>';
                         eventDetails += '<div class="col-md-4 text-end">';
                         

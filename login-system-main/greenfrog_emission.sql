@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 28, 2024 at 01:58 PM
+-- Generation Time: Jan 28, 2024 at 08:24 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.0.25
 
@@ -91,15 +91,23 @@ CREATE TABLE `car_emission` (
   `paymentlock1` int(11) NOT NULL DEFAULT 0,
   `payment_date1` datetime DEFAULT NULL,
   `return_reason1` varchar(255) DEFAULT NULL,
-  `return_switch_1` int(11) DEFAULT 0
+  `return_switch_1` int(11) DEFAULT 0,
+  `payAmount2` decimal(10,2) DEFAULT NULL,
+  `receipt2` varchar(255) DEFAULT NULL,
+  `reference2` varchar(50) DEFAULT NULL,
+  `paymentlock2` int(11) DEFAULT 0,
+  `payment_date2` datetime DEFAULT NULL,
+  `return_reason2` varchar(255) DEFAULT NULL,
+  `return_switch_2` int(11) DEFAULT 0,
+  `paymentMethod2` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `car_emission`
 --
 
-INSERT INTO `car_emission` (`id`, `event_id`, `user_id`, `plate_number`, `customer_email`, `customer_first_name`, `customer_middle_name`, `customer_last_name`, `address`, `status`, `app_date`, `vehicle_cr_no`, `vehicle_or_no`, `first_reg_date`, `year_model`, `fuel_type`, `purpose`, `mv_type`, `region`, `mv_file_no`, `classification`, `payment_date`, `petc_or`, `amount`, `organization`, `engine`, `chassis`, `make`, `series`, `color`, `gross_weight`, `net_capacity`, `cec_number`, `mvect_operator`, `car_picture`, `paymentMethod`, `paymentStatus`, `ticketing_id`, `reference_number`, `date_tested`, `smurf_admin_id`, `payAmount1`, `receipt1`, `reference1`, `paymentlock1`, `payment_date1`, `return_reason1`, `return_switch_1`) VALUES
-(1, 2, 3, 'NBAA 7888', '', 'Kenneth Gabriel', 'Guimong', 'Tecson', '12', 'booked', '2024-01-28 20:10:02', '12', '12', '2024-01-15', '2024', 'Gasoline', 'For Registration', 'Shuttle Bus', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '600.00', '1', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', 'uploads/car_picture/65b6441a95021_image.png', 'pending', 'unpaid', '9123783', '96088', '0000-00-00 00:00:00', NULL, NULL, NULL, NULL, 0, NULL, 'Unmatch payment receipt, Unmatch reference number, Invalid payment receipt, Invalid reference number', 3);
+INSERT INTO `car_emission` (`id`, `event_id`, `user_id`, `plate_number`, `customer_email`, `customer_first_name`, `customer_middle_name`, `customer_last_name`, `address`, `status`, `app_date`, `vehicle_cr_no`, `vehicle_or_no`, `first_reg_date`, `year_model`, `fuel_type`, `purpose`, `mv_type`, `region`, `mv_file_no`, `classification`, `payment_date`, `petc_or`, `amount`, `organization`, `engine`, `chassis`, `make`, `series`, `color`, `gross_weight`, `net_capacity`, `cec_number`, `mvect_operator`, `car_picture`, `paymentMethod`, `paymentStatus`, `ticketing_id`, `reference_number`, `date_tested`, `smurf_admin_id`, `payAmount1`, `receipt1`, `reference1`, `paymentlock1`, `payment_date1`, `return_reason1`, `return_switch_1`, `payAmount2`, `receipt2`, `reference2`, `paymentlock2`, `payment_date2`, `return_reason2`, `return_switch_2`, `paymentMethod2`) VALUES
+(1, 2, 3, 'NBAA 7888', '', 'Kenneth Gabriel', 'Guimong', 'Tecson', '12', 'booked', '2024-01-28 20:10:02', '12', '12', '2024-01-15', '2024', 'Gasoline', 'For Registration', 'Shuttle Bus', 'Region I', '12', 'Diplomatic-Consular Corps', '0000-00-00 00:00:00', '0', '600.00', '1', '12', '12', 'Toyota', 'Sedan', 'Red', '12.00', '12.00', '0', 'pending', 'uploads/car_picture/65b6441a95021_image.png', 'gcash', 'half paid', '9123783', '96088', '0000-00-00 00:00:00', NULL, '300', 'receipt_65b673f05a590_411321256_741547854194916_5862979652846574138_n.jpg', '12321421412', 1, NULL, 'Unmatch reference number', 2, NULL, NULL, NULL, 0, NULL, NULL, 0, NULL);
 
 -- --------------------------------------------------------
 

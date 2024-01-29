@@ -927,10 +927,18 @@ function displayBookings($status)
                     echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button>'; 
                 } else if ($booking['return_switch_1'] == '2'){
                     // Check if payment status is not "half paid"
-                    if ($booking['paymentStatus'] !== 'fully paid') {
-                        echo '<a href="pay-now-2.php?id=' . $booking['id'] . '" class="btn btn-warning">Pay Full Now</a>';
+                    if  (($booking['paymentStatus'] !== 'fully paid') && ($booking['return_switch_2'] == '0')) {
+                        echo '<a href="pay-full-now.php?id=' . $booking['id'] . '" class="btn btn-warning">Pay Full Now</a>';
+                        echo ' ';
+                    } else if (($booking['paymentStatus'] !== 'fully paid') && ($booking['return_switch_2'] == '1')){
+                        echo '<a href="pay-full-now.php?id=' . $booking['id'] . '" class="btn btn-info">On Review</a>';
+                        echo ' ';
+                    } else if (($booking['paymentStatus'] !== 'fully paid') && ($booking['return_switch_2'] == '3')){
+                        echo '<a href="pay-full-now.php?id=' . $booking['id'] . '" class="btn btn-danger">Return</a>';
                         echo ' ';
                     }
+
+
                     echo '<a href="view-booking.php?id=' . $booking['id'] . '" class="btn btn-primary">View</a>';
                     echo ' ';
                     echo '<button type="button" class="btn btn-danger cancel-booking-btn" data-toggle="modal" data-target="#cancelBookingModal" data-booking-id="' . $booking['id'] . '" data-plate-number="' . $booking['plate_number'] . '" data-start-datetime="' . $booking['start_datetime'] . '" data-end-datetime="' . $booking['end_datetime'] . '">Cancel</button>'; 

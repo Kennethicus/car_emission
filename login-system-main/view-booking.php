@@ -87,6 +87,8 @@ if (isset($_GET['id'])) {
     $scheduleQuery->close();
     
     $carPicturePath = $bookingDetails['car_picture'];
+    $orPicturePath = $bookingDetails['vehicle_or_pic'];
+    $crPicturePath = $bookingDetails['vehicle_cr_pic'];
 $userName = $bookingDetails['customer_first_name'];
     // Now you have $scheduleDetails with information from the 'schedule list' related to the 'event_id'
 } else {
@@ -165,7 +167,7 @@ $userName = $bookingDetails['customer_first_name'];
     <input type="file" id="OrInputPicture" class="d-none" accept="image/*" onchange="displaySelectedOrPicture(this)" disabled>
 </label>
                 <!-- Button to display the selected picture -->
-                <button type="button" class="btn btn-success" onclick="displaySelectedOrPicture(this)" id="selectedOrFilename">Display</button>
+                <button type="button" class="btn btn-success" onclick="displaySelectedOrPicture()" id="selectedOrFilename">Display</button>
                 </td>
                 <td class="text-end" style="width: 200px;">Middle Name<input id="middleNameInput" type="text" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 8px;" value="<?php echo $bookingDetails['customer_middle_name']; ?>"  readonly disabled></td>
                                             
@@ -311,40 +313,44 @@ $userName = $bookingDetails['customer_first_name'];
                     <tr>
                         <td id ="amountValue" class="text-center" style="color: ;font-size: 23px;" ><?php echo $bookingDetails['amount']; ?></td>
                     </tr>
-                    
-                    <tr>
-    <th><span style="font-weight: normal !important;">Mode of Payment</span></th>
-</tr>
-<tr>
-<td class="text-center" style="font-size: 23px;"><?php echo strtoupper($bookingDetails['paymentMethod']); ?></td>
-</tr>
-<tr>
+   <tr>
     <th><span style="font-weight: normal !important;">Status</span></th>
 </tr>
 <tr>
 <td class="text-center" style="font-size: 23px; color:orange;"><?php echo strtoupper($bookingDetails['status']); ?></td>
-</tr>
-<tr>
-<th><span style="font-weight: normal !important;">Reference No.</span></th>
-</tr>
-<tr>
-<td id ="amountValue" class="text-center" style="color: ;font-size: 23px;" ><?php echo $bookingDetails['reference1']; ?></td>
-</tr>
-<tr>
-                        <th><span style="font-weight: normal !important;">Amount Paid</span></th>
-                    </tr>
+</tr>                 
                     <tr>
-                        <td id ="amountPaid1" class="text-center" style="color: ;font-size: 23px;" ><?php echo $bookingDetails['payAmount1']; ?></td>
-                    </tr>
-                    <tr>
-    <th><span style="font-weight: normal !important;">Payment Receipt</span></th>
+    <th><span style="font-weight: normal !important;">Mode of Payment I</span></th>
 </tr>
 <tr>
-    <td class="text-center">
-        <!-- Make "View Payment Receipt" a button with btn-primary class -->
-        <button type="button" class="btn btn-primary" onclick="viewPaymentReceipt()">View Payment Receipt</button>
-    </td>
+<td class="text-center" style="font-size: 23px;"><?php echo strtoupper($bookingDetails['paymentMethod']); ?></td>
 </tr>
+<?php if ($bookingDetails['payAmount2'] !== null): ?>
+<tr>
+    <th><span style="font-weight: normal !important;">Mode of Payment II</span></th>
+</tr>
+<tr>
+<td class="text-center" style="font-size: 23px;"><?php echo strtoupper($bookingDetails['paymentMethod2']); ?></td>
+</tr>
+<?php endif; ?>
+
+
+
+<tr>
+    <th><span style="font-weight: normal !important;">Amount Paid I</span></th>
+</tr>
+<tr>
+    <td id="amountPaid1" class="text-center" style="color: ;font-size: 23px;"><?php echo $bookingDetails['payAmount1']; ?></td>
+</tr>
+<?php if ($bookingDetails['payAmount2'] !== null): ?>
+    <tr>
+        <th><span style="font-weight: normal !important;">Amount Paid II</span></th>
+    </tr>
+    <tr>
+        <td id="amountPaid2" class="text-center" style="color: ;font-size: 23px;"><?php echo $bookingDetails['payAmount2']; ?></td>
+    </tr>
+<?php endif; ?>
+
                 </tbody>
             </table>
         </div>
@@ -364,17 +370,26 @@ $userName = $bookingDetails['customer_first_name'];
         if ($status === 'booked') {
             // Display "Review 1" and "Cancel" buttons
             ?>
-            <?php if ($bookingDetails['paymentStatus'] === 'half paid') : ?>
+            <?php if (($bookingDetails['paymentStatus'] === 'half paid') && ($bookingDetails['return_switch_1'] == '2')) : ?>
                 
-                <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-success">Success Half Payment</a>
-                <a href="pay-now-2.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-warning">Pay Full Now</a>
-            <?php elseif ($bookingDetails['paymentStatus'] === 'fully paid') : ?>
-                <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-success">Success Fully Paid</a>
-            <?php else : ?>
+                <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-success">Success Half Payment</a>    
+               
+                <a href="pay-full-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-warning">Pay Full Now</a>
+
+            <?php elseif ($bookingDetails['paymentStatus'] === 'fully paid' && ($bookingDetails['return_switch_1'] == '2') && ($bookingDetails['return_switch_2'] == '') ) : ?>
+                <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-success">Success Full Payment</a>
+               
+                <?php elseif ($bookingDetails['paymentStatus'] === 'fully paid' && ($bookingDetails['return_switch_1'] == '2') && ($bookingDetails['return_switch_2'] == '2') ) : ?>
+             <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-success">Success Half Payment</a>
+<a href="pay-full-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-success mt-1">Success Full Payment</a>
+                <?php else : ?>
                 <a href="pay-now.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-warning">Pay Half/Full Now</a>
+                <?php if ($bookingDetails['paymentStatus'] === 'unpaid') : ?>
+    <a href="edit-booking.php?id=<?php echo $bookingDetails['id']; ?>" class="btn btn-warning">Edit Booking</a>
+<?php endif; ?>
+
+            <button type="button" class="btn btn-danger m-2" onclick="cancelFunction()">Cancel</button>  
             <?php endif; ?>
-        
-            <button type="button" class="btn btn-danger m-2" onclick="cancelFunction()">Cancel</button>
         <?php
         }elseif ($status === 'doned') {
             // Display "Review 1" button
@@ -493,7 +508,7 @@ $userName = $bookingDetails['customer_first_name'];
             </div>
             <div class="modal-body">
                 <!-- Display the OR picture here -->
-                <img id="orPictureDisplay" class="img-fluid" alt="OR Picture">
+                <img src="<?php echo $orPicturePath; ?>" class="img-fluid" alt="OR Picture">
             </div>
         </div>
     </div>
@@ -510,29 +525,12 @@ $userName = $bookingDetails['customer_first_name'];
             </div>
             <div class="modal-body">
                 <!-- Display the CR picture here -->
-                <img id="crPictureDisplay" class="img-fluid" alt="CR Picture">
+                <img src="<?php echo $crPicturePath; ?>" class="img-fluid" alt="CR Picture">
             </div>
         </div>
     </div>
 </div>
 
-
-<!-- Modal for displaying the payment receipt -->
-<div class="modal fade" id="paymentReceiptModal" tabindex="-1" aria-labelledby="paymentReceiptModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="paymentReceiptModalLabel">Payment Receipt</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Display the payment receipt content here -->
-                <!-- Use an <img> tag to display the image -->
-                <img id="paymentReceiptImage" class="img-fluid" alt="Payment Receipt">
-            </div>
-        </div>
-    </div>
-</div>
 
   <?php include 'partials/footer.php' ?>
 
@@ -544,16 +542,6 @@ $userName = $bookingDetails['customer_first_name'];
 
 
 
-<script>
-    function viewPaymentReceipt() {
-        // Set the src attribute of the img tag to the payment receipt image path
-        var paymentReceiptImagePath = 'uploads/receipt-image/<?php echo $bookingDetails['receipt1']; ?>';
-        $('#paymentReceiptImage').attr('src', paymentReceiptImagePath);
-
-        // Show the modal
-        $('#paymentReceiptModal').modal('show');
-    }
-</script>
 
 
 <script>
@@ -578,7 +566,19 @@ function displaySelectedPicture() {
 }
 </script>
 
+<script>
+function displaySelectedOrPicture() {
+    // Show the modal when the button is clicked
+    $('#orPictureModal').modal('show');
+}
+</script>
 
+<script>
+function displaySelectedCrPicture() {
+    // Show the modal when the button is clicked
+    $('#crPictureModal').modal('show');
+}
+</script>
 
 <script>
     function navigateBack() {

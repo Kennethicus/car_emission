@@ -108,15 +108,56 @@ if (isset($_FILES['carPicture']) && $_FILES['carPicture']['error'] == UPLOAD_ERR
     $carPicturePath = '';
 }
 
+// Check if a file is selected
+if (isset($_FILES['OrInputPicture']) && $_FILES['OrInputPicture']['error'] == UPLOAD_ERR_OK) {
+    // Define the directory to store the uploaded car pictures
+    $uploadOrDir = 'uploads/or_picture/';
+
+    // Generate a unique filename
+    $uploadOrFile = $uploadOrDir . uniqid() . '_' . basename($_FILES['OrInputPicture']['name']);
+
+    // Move the uploaded file to the destination directory
+    if (move_uploaded_file($_FILES['OrInputPicture']['tmp_name'], $uploadOrFile)) {
+        // File upload success
+        $OrPicturePath = $uploadOrFile;
+    } else {
+        // File upload failed
+        $OrPicturePath = '';
+    }
+} else {
+    // No file selected or an error occurred
+    $OrPicturePath = '';
+}
+
+// Check if a file is selected
+if (isset($_FILES['CrInputPicture']) && $_FILES['CrInputPicture']['error'] == UPLOAD_ERR_OK) {
+    // Define the directory to store the uploaded car pictures
+    $uploadCrDir = 'uploads/cr_picture/';
+
+    // Generate a unique filename
+    $uploadCrFile = $uploadCrDir . uniqid() . '_' . basename($_FILES['CrInputPicture']['name']);
+
+    // Move the uploaded file to the destination directory
+    if (move_uploaded_file($_FILES['CrInputPicture']['tmp_name'], $uploadCrFile)) {
+        // File upload success
+        $CrPicturePath = $uploadCrFile;
+    } else {
+        // File upload failed
+        $CrPicturePath = '';
+    }
+} else {
+    // No file selected or an error occurred
+    $CrPicturePath = '';
+}
 
 
 // Perform the database insert with prepared statement and bind_param
-$query = "INSERT INTO car_emission (event_id, user_id, plate_number, customer_first_name, customer_middle_name, customer_last_name, address, status, app_date, vehicle_cr_no, vehicle_or_no, first_reg_date, year_model, fuel_type, purpose, mv_type, region, mv_file_no, classification, payment_date, petc_or, amount, organization, engine, chassis, make, series, color, gross_weight, net_capacity, cec_number, mvect_operator, car_picture, paymentMethod, paymentStatus, ticketing_id, reference_number, date_tested) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$query = "INSERT INTO car_emission (event_id, user_id, plate_number, customer_first_name, customer_middle_name, customer_last_name, address, status, app_date, vehicle_cr_no, vehicle_or_no, first_reg_date, year_model, fuel_type, purpose, mv_type, region, mv_file_no, classification, payment_date, petc_or, amount, organization, engine, chassis, make, series, color, gross_weight, net_capacity, cec_number, mvect_operator, car_picture, paymentMethod, paymentStatus, ticketing_id, reference_number, date_tested, vehicle_or_pic, vehicle_cr_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $connect->prepare($query);
 
 // Bind parameters
-$stmt->bind_param("iisssssssssssssssssssdssssssssssssssss", $event_id, $user_id, $plate_number, $first_name, $middle_name, $last_name, $address, $status, $appdate, $vehicleCrNo, $vehicleOrNo, $firstReg, $yearModel, $fuelType, $purpose, $mvType, $region, $mvFileNo, $classification, $paymentDate, $petc_or, $amount, $organization, $engine, $chassis, $make, $series, $color, $grossWeight, $netCapacity, $cecNumber, $mvectOperator, $carPicturePath, $paymentMethod, $paymentStatus, $ticketingId, $referenceNumber, $dateTested);
+$stmt->bind_param("iisssssssssssssssssssdssssssssssssssssss", $event_id, $user_id, $plate_number, $first_name, $middle_name, $last_name, $address, $status, $appdate, $vehicleCrNo, $vehicleOrNo, $firstReg, $yearModel, $fuelType, $purpose, $mvType, $region, $mvFileNo, $classification, $paymentDate, $petc_or, $amount, $organization, $engine, $chassis, $make, $series, $color, $grossWeight, $netCapacity, $cecNumber, $mvectOperator, $carPicturePath, $paymentMethod, $paymentStatus, $ticketingId, $referenceNumber, $dateTested, $OrPicturePath, $CrPicturePath);
 
 // Execute the statement
 $stmt->execute();

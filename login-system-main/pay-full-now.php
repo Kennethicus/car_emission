@@ -6,7 +6,7 @@ include("connect/connection.php");
 // Check if the user is logged in
 if (!isset($_SESSION['email'])) {
     // If not logged in, redirect to the login page
-    header('Location: index.php');return
+    header('Location: index.php');
     exit();
 }
 
@@ -72,7 +72,7 @@ if (isset($_GET['id'])) {
         die("Error in schedule query: " . $connect->error);
     }
 
-    $scheduleQuery->bind_param("i",     $event_id);
+    $scheduleQuery->bind_param("i", $event_id);
     $scheduleQuery->execute();
 
     $scheduleResult = $scheduleQuery->get_result();
@@ -85,16 +85,27 @@ if (isset($_GET['id'])) {
 
     // Close the schedule query statement
     $scheduleQuery->close();
-    $paymentLock1 = $bookingDetails['paymentlock1'];
-    $paymentLock1 = $bookingDetails['paymentlock1'];
-    $paymentMethod1 = $bookingDetails['paymentMethod'];
+  
+    $paymentLock2 = $bookingDetails['paymentlock2'];
+    $paymentMethod2 = $bookingDetails['paymentMethod2'];
     $carPicturePath = $bookingDetails['car_picture'];
-    $returnSwitch1 = $bookingDetails['return_switch_1'];
-    $returnReason1 = $bookingDetails['return_reason1'];
+    $returnSwitch2 = $bookingDetails['return_switch_2'];
+    $returnReason2 = $bookingDetails['return_reason2'];
 
-$userName = $bookingDetails['customer_first_name'];
+    $userName = $bookingDetails['customer_first_name'];
 
-    // Now you have $scheduleDetails with information from the 'schedule list' related to the 'event_id'
+    // Check access conditions
+    if (
+        $bookingDetails['paymentStatus'] == 'pending' ||
+        $bookingDetails['paymentStatus'] == 'unpaid' ||
+        ($bookingDetails['paymentStatus'] == 'fully paid' && $bookingDetails['return_switch_1'] == '2' &&  $bookingDetails['return_switch_2'] == '')
+    ) {
+        echo "Access Denied! Reservation cannot be accessed.";
+        exit();
+    } else {
+        // echo "Access Granted! Reservation can be accessed.";
+    }
+
 } else {
     // If 'id' parameter is not set, redirect to the schedule status page
     header('Location: schedule-status.php');
@@ -130,25 +141,25 @@ $userName = $bookingDetails['customer_first_name'];
                     <div class="row d-flex justify-content-center">
            
                     <div>      
-    <?php if ($returnSwitch1 == 0) : ?>
+    <?php if ($returnSwitch2 == 0) : ?>
         <!-- Display warning for Pay Half/Full Now -->
         <div class="card bg-warning p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;"> 
-        <p style="color: white; text-align: center; font-size: 20px;">Pay Half or Full Now </p>
+        <p style="color: white; text-align: center; font-size: 20px;">Pay Full Now </p>
         </div>
-    <?php elseif ($returnSwitch1 == 1) : ?>
+    <?php elseif ($returnSwitch2 == 1) : ?>
         <!-- Display On review info color -->
         <div class="card bg-info p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
         <p style="color: white; text-align: center; font-size: 20px;">On Review</p>
         </div>
-    <?php elseif ($returnSwitch1 == 2) : ?>
+    <?php elseif ($returnSwitch2 == 2) : ?>
         <!-- Display Payment Success -->
         <div class="card bg-success p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
-        <p style="color: white; text-align: center; font-size: 20px;">Half Payment Success</p>
+        <p style="color: white; text-align: center; font-size: 20px;">Full Payment Success</p>
         </div>
-    <?php elseif ($returnSwitch1 == 3) : ?>
+    <?php elseif ($returnSwitch2 == 3) : ?>
         <!-- Display return reason -->
         <div class="card bg-danger p-3 mx-auto" style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
-            <p style="color: white; text-align: center; font-size: 20px;"><?php echo $returnReason1; ?></p>
+            <p style="color: white; text-align: center; font-size: 20px;"><?php echo $returnReason2; ?></p>
         </div>
     <?php endif; ?>
 </div>
@@ -158,19 +169,20 @@ $userName = $bookingDetails['customer_first_name'];
                    
                         <div class="col-lg-9">
                             
-                        <input id="bookingIdInput1"  type="hidden" value="<?php echo $bookingDetails['id'];  ?>" readonly> </input>
+                        <input id="bookingIdInput2"  type="hidden" value="<?php echo $bookingDetails['id'];  ?>" readonly> </input>
                         <!-- <div class="col-lg-5 col-xl-4 col-xxl-4"> -->
                         <div class="">
                        <div class="card shadow mb-4">
     <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
-        <h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">DETAIL I</span></h6>
+        <h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">DETAIL II</span></h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table">
                 <tbody> <!-- Wrap the table content in tbody for better structure -->
                 <tr>
-                <th><span style="font-weight: normal !important;">Plate Number</span></th>
+
+<th><span style="font-weight: normal !important;">Plate Number</span></th>
         <th><span style="font-weight: normal !important;">Vehicle Owner</span></th>
     </tr>   
     <tr>
@@ -180,10 +192,11 @@ $userName = $bookingDetails['customer_first_name'];
         <?php echo strtoupper($bookingDetails['customer_first_name'] . ' ' . $bookingDetails['customer_middle_name'] . ' ' . $bookingDetails['customer_last_name']); ?>
     </span>
 </td>  
-</tr> 
+    </tr> 
                 <tr>
+
                 <th><span style="font-weight: normal !important;">Ticketing ID</span></th>
-                        <th><span style="font-weight: normal !important;">Amount</span></th>
+                        <th><span style="font-weight: normal !important;">Amount (PHP)</span></th>
                     </tr>   
                     <tr>
                     <td id ="ticketingValue" class="text-center" style="color: ;font-size: 23px;" ><?php echo $bookingDetails['ticketing_id']; ?></td>
@@ -194,20 +207,28 @@ $userName = $bookingDetails['customer_first_name'];
                         <th><span style="font-weight: normal !important;">Mode of payment</span></th>
                     </tr>   
                     <tr>
-                    <td id ="mvTypeValue" class="text-center" style="color: ;font-size: 23px;" ><?php echo strtoupper($bookingDetails['mv_type']); ?></td>
-                    <td id ="paymentMethod" class="text-center" style="color: ;font-size: 23px;" ><?php echo $bookingDetails['paymentMethod']; ?></td>
+                    <tr> <td id ="mvTypeValue" class="text-center" style="color: ;font-size: 23px;" ><?php echo strtoupper($bookingDetails['mv_type']); ?></td>
+                    <td id="paymentMethod2" class="text-center" style="color: ;font-size: 23px;">
+    <?php 
+    if(isset($bookingDetails['paymentMethod2']) && !empty($bookingDetails['paymentMethod2'])) {
+        echo $bookingDetails['paymentMethod2']; 
+    } else {
+        echo "0"; // Replace this with your temporary placeholder
+    }
+    ?>
+</td>
+
                     </tr>  
-                <tr>  
-                <th><span style="font-weight: normal !important;">Date</span></th> 
+                <tr> 
+                <th><span style="font-weight: normal !important;">Date</span></th>
                         <th><span style="font-weight: normal !important;">Payment Status</span></th>
                     </tr>
-                    <tr>
                     <td class="text-center" style="font-size: 23px;"><?php echo date('M. j, Y', strtotime( $scheduleDetails['start_datetime'])); ?></td>
                         <td id ="paymentStatusValue" class="text-center" style="color: ;font-size: 23px;" ><?php echo strtoupper($bookingDetails['paymentStatus']); ?></td>
                     </tr>
                     
                     <tr>
-                    <th><span style="font-weight: normal !important;">Time</span></th>       
+                    <th><span style="font-weight: normal !important;">Time</span></th>   
     <th><span style="font-weight: normal !important;">Book Status</span></th>
 </tr>
 <tr>
@@ -215,24 +236,23 @@ $userName = $bookingDetails['customer_first_name'];
 <td class="text-center" style="font-size: 23px; color:orange;"><?php echo strtoupper($bookingDetails['status']); ?></td>
 </tr>
 <tr>
-<th><span style="font-weight: normal !important;">Amount Paid</span></th>
-    <th><span style="font-weight: normal !important;">Reference No.</span></th>
+<th><span style="font-weight: normal !important;">Amount Paid I</span></th>
+    <th><span style="font-weight: normal !important;">Reference No. II</span></th>
 </tr>
 <tr>
 <td id="payAmount1" class="text-center" style="font-size: 23px;"><?php echo strtoupper($bookingDetails['payAmount1']); ?></td>
-<td id="referenceValue1" class="text-center" style="font-size: 23px;"><?php echo strtoupper($bookingDetails['reference1']); ?></td>
+<td id="referenceValue2" class="text-center" style="font-size: 23px;"><?php echo strtoupper($bookingDetails['reference2']); ?></td>
 </tr>
 <tr>
-
-<th><span style="font-weight: normal !important;">Payment Receipt</span></th>
+<th><span style="font-weight: normal !important;">Amount Paid II</span></th>
+<th><span style="font-weight: normal !important;">Payment Receipt II</span></th>
 </tr>
 
-<tr>
-</tr>
+
                   
 
 <tr>
-
+<td id="payAmount2" class="text-center" style="font-size: 23px;"><?php echo strtoupper($bookingDetails['payAmount2']); ?></td>
     <td class="text-center">
         <!-- Make "View Payment Receipt" a button with btn-primary class -->
         <button id="paymentReceiptButton" type="button" class="btn btn-primary" onclick="viewPaymentReceipt()">View Payment Receipt</button>
@@ -283,7 +303,7 @@ $userName = $bookingDetails['customer_first_name'];
 
                       <div class="card shadow mb-4">
         <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
-            <h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">PAYMENT DETAIL I</span></h6>
+            <h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">PAYMENT DETAIL II</span></h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -326,7 +346,7 @@ $userName = $bookingDetails['customer_first_name'];
                 <tr>
                     <td style="text-align: center;">
 <div style="margin-bottom: 10px;">
-    <input type="file" class="form-control" id="paymentImage1" accept="image/*">
+    <input type="file" class="form-control" id="paymentImage2" accept="image/*">
 </div>
                         <div>
                             <button type="button" class="btn btn-primary" onclick="previewReceipt()">Preview Payment Picture</button>
@@ -337,7 +357,7 @@ $userName = $bookingDetails['customer_first_name'];
                             <th><span style="font-weight: normal !important;">Reference No.</span></th>
                         </tr>
                         <td class="text-center">
-        <input type="text" id="referenceNumberInput" class="form-control" style="font-size: normal;" value="<?php echo $bookingDetails['reference1']; ?>">
+        <input type="text" id="referenceNumberInput" class="form-control" style="font-size: normal;" value="<?php echo $bookingDetails['reference2']; ?>">
     </td>
                     </tbody>
                 </table>
@@ -389,12 +409,12 @@ $userName = $bookingDetails['customer_first_name'];
         <h6 class="mb-0" style="text-align: center; color: var(--bs-body-bg); font-weight: bold; font-size: 16px;">ACTIONS</h6>
     </div>
     <div class="card-body" style="text-align: center; padding-top: 10px;">
-    <button id="payNow1" type="button" class="btn btn-success m-2" onclick="showConfirmationModal()">Pay Now</button>
+    <button id="payNow2" type="button" class="btn btn-success m-2" onclick="showConfirmationModal()">Pay Now</button>
 
  <?php
         // Check if paymentMethod is equal to 'pending' and status is not equal to 'canceled'
         if (
-            strtolower($bookingDetails['paymentMethod']) === 'pending' &&
+            strtolower($bookingDetails['paymentMethod2']) === 'pending' &&
             strtolower($bookingDetails['status']) !== 'canceled'
         ) {
         ?>
@@ -489,7 +509,7 @@ $userName = $bookingDetails['customer_first_name'];
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
 function previewReceipt() {
-    var input = document.getElementById('paymentImage1'); // Corrected ID here
+    var input = document.getElementById('paymentImage2'); // Corrected ID here
     var file = input.files[0];
     var reader = new FileReader();
     reader.onload = function (e) {
@@ -503,7 +523,7 @@ function previewReceipt() {
 <script>
    function viewPaymentReceipt() {
     // Check if the payment receipt image path is empty or null
-    var paymentReceiptImagePath = '<?php echo $bookingDetails['receipt1']; ?>';
+    var paymentReceiptImagePath = '<?php echo $bookingDetails['receipt2']; ?>';
     if (paymentReceiptImagePath === null || paymentReceiptImagePath === '') {
         // If no payment receipt available, disable the button and return
         $('#paymentReceiptButton').prop('disabled', true);
@@ -520,7 +540,7 @@ function previewReceipt() {
 </script>
 <script>
   // Get the element by ID
-var amountValueElement = document.getElementById('payAmount1');
+var amountValueElement = document.getElementById('payAmount2');
 
 // Check if the element is empty before setting the placeholder text
 if (!amountValueElement.innerText.trim()) {
@@ -528,8 +548,8 @@ if (!amountValueElement.innerText.trim()) {
     amountValueElement.innerText = '0';
 }
 
-// Repeat the same process for the referenceValue1 element
-var referenceValueElement = document.getElementById('referenceValue1');
+// Repeat the same process for the referenceValue2 element
+var referenceValueElement = document.getElementById('referenceValue2');
 
 if (!referenceValueElement.innerText.trim()) {
     referenceValueElement.innerText = '0';
@@ -553,16 +573,16 @@ if (!referenceValueElement.innerText.trim()) {
 
 <script>
     // Get the payment lock status from PHP
-    var paymentLockStatus = <?php echo $paymentLock1; ?>;
+    var paymentLockStatus = <?php echo $paymentLock2; ?>;
 
-    // Function to disable elements if paymentLock1 equals 1
+    // Function to disable elements if paymentLock2 equals 1
     function disableElementsIfLocked() {
         if (paymentLockStatus === 1) {
             // Disable the "Pay Now" button
-            document.getElementById('payNow1').disabled = true;
+            document.getElementById('payNow2').disabled = true;
 
             // Disable the payment image input
-            document.getElementById('paymentImage1').disabled = true;
+            document.getElementById('paymentImage2').disabled = true;
 
             // Disable the payment method radio buttons
             var paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
@@ -583,7 +603,7 @@ if (!referenceValueElement.innerText.trim()) {
     // Function to check the payment method and update account details
     function updatePaymentMethodAndDetails() {
         // Get the payment method from PHP
-        var paymentMethod = "<?php echo $bookingDetails['paymentMethod']; ?>";
+        var paymentMethod = "<?php echo $bookingDetails['paymentMethod2']; ?>";
 
         // Check the payment method and update accordingly
         if (paymentMethod === 'paymaya') {
@@ -628,7 +648,7 @@ if (!referenceValueElement.innerText.trim()) {
         // Validate fields before showing the modal
         var referenceNumberInput = document.getElementById('referenceNumberInput');
         var paymentMethodInputs = document.querySelectorAll('input[name="payment_method"]');
-        var paymentImageInput = document.getElementById('paymentImage1');
+        var paymentImageInput = document.getElementById('paymentImage2');
 
         var isValid = true;
 
@@ -673,7 +693,7 @@ if (!referenceValueElement.innerText.trim()) {
     }
 
     // Remove red border color once there are values
-    $('#referenceNumberInput, input[name="payment_method"], #paymentImage1').on('input', function() {
+    $('#referenceNumberInput, input[name="payment_method"], #paymentImage2').on('input', function() {
         if (this.value.trim() !== '') {
             this.style.borderColor = ''; // Revert border color
         }
@@ -690,11 +710,11 @@ if (!referenceValueElement.innerText.trim()) {
 <script>
 
 function payNow() {
-    var bookingId = $('#bookingIdInput1').val();
+    var bookingId = $('#bookingIdInput2').val();
     var referenceNumber = document.getElementById('referenceNumberInput').value;
     var paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-    var paymentImage = document.getElementById('paymentImage1').files[0];
- 
+    var paymentImage = document.getElementById('paymentImage2').files[0];
+
 
     var formData = new FormData();
     formData.append('bookingId', bookingId);  // Add this line to include bookingId in the FormData
@@ -704,7 +724,7 @@ function payNow() {
 
     // Send AJAX request
     $.ajax({
-        url: 'handle-payment1.php',
+        url: 'handle-payment2.php',
         type: 'POST',
         data: formData,
         contentType: false,

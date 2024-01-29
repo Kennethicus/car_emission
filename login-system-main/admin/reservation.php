@@ -458,7 +458,7 @@ function displayCarEmission($carEmissionResult)
         // Inside the displayCarEmission function
      
         echo '<table id="carEmissionTable" class="table table-bordered custom-table no-vertical-border">';
-        echo '<thead><tr><th class="date">Date</th><th>Time</th><th>Ticket ID</th><th>Customer Name</th><th>Plate Number</th><th>Booked by</th><th class="action">Action</th></tr></thead>';
+        echo '<thead><tr><th class="date">Date</th><th>Time</th><th>Ticket ID</th><th>Customer Name</th><th>Plate Number</th><th>Booked by</th><th>Payment Status</th><th class="action">Action</th></tr></thead>';
         // Rest of your table rendering code...
         
         echo '<tbody>';
@@ -472,6 +472,7 @@ function displayCarEmission($carEmissionResult)
             $status = $row['status'];
             $eventId = $row['event_id'];
             $adminId = $row['smurf_admin_id'];
+            $paymentStatus =  $row['paymentStatus'];
 
             // Retrieve start and end datetime from schedule_list
             $scheduleQuery = "SELECT start_datetime, end_datetime FROM schedule_list WHERE id = $eventId";
@@ -484,43 +485,56 @@ function displayCarEmission($carEmissionResult)
             $bookedBy = ($adminId !== null) ? 'Admin' : 'Customer';
 
             echo '<tr>';
-            echo '<td>' . date('M. j, Y', strtotime($startDatetime)) . '</td>';
-            echo '<td>' . date('g:ia', strtotime($startDatetime)) . ' - ' . date('g:ia', strtotime($endDatetime)) . '</td>';
-            echo '<td>' . $ticketingId . '</td>';
-            echo '<td>' . $firstName . ' ' . $lastName . '</td>';
-            echo '<td>' . $plateNumber . '</td>';
-            echo '<td>' . $bookedBy . '</td>';
+            echo '<td class="align-middle">' . date('M. j, Y', strtotime($startDatetime)) . '</td>';
+            echo '<td class="align-middle">' . date('g:ia', strtotime($startDatetime)) . ' - ' . date('g:ia', strtotime($endDatetime)) . '</td>';
+            echo '<td class="align-middle">' . $ticketingId . '</td>';
+            echo '<td class="align-middle">' . $firstName . ' ' . $lastName . '</td>';
+            echo '<td class="align-middle">' . $plateNumber . '</td>';
+            echo '<td class="align-middle">' . $bookedBy . '</td>';
+            echo '<td class="align-middle">' . $paymentStatus . '</td>';
             echo '<td>';
             
             // Display "Cancel" link only for entries with status 'booked'
-            if ($status === 'booked' && $row['paymentMethod'] !== 'pending') {
+            if ($status === 'booked') {
                 echo '<button type="button" class="btn btn-danger cancel-btn" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</button>';
                 echo ' '; // Add a space character
-                echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
-            
+                echo '<button class="btn btn-primary" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
                 echo ' '; // Add a space character
-                // Check return_switch_1 value and change the button text accordingly
-                if ($row['return_switch_1'] == 2) {
-                    echo '<button class="btn btn-success review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Success</button>';
-                } elseif ($row['return_switch_1'] == 3) {
-                    echo '<button class="btn btn-warning review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Return</button>';
-                } else {
-                    echo '<button class="btn btn-primary review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Review 1</button>';
-                }
+                
+              // Check the value of return_switch_1 and paymentStatus
+if ($row['return_switch_1'] == 1 ) {
+    echo '<button class="btn btn-info" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Review 1</button>';
+} elseif ($row['return_switch_1'] == 2 && $row['paymentStatus'] !== 'half paid') {
+    // echo '<button class="btn btn-success" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Success</button>';
+} elseif ($row['return_switch_1'] == 3) {
+    echo '<button class="btn btn-warning review-btn" onclick="location.href=\'review.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Return</button>';
+}
+
+
+if ($row['return_switch_2'] == 1 ) {
+    echo '<button class="btn btn-info" onclick="location.href=\'review-full-payment.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Review 2</button>';
+} elseif ($row['return_switch_2'] == 2 && $row['paymentStatus'] !== 'fully paid') {
+    echo '<button class="btn btn-success" onclick="location.href=\'review-full-payment.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Success 2</button>';
+} elseif ($row['return_switch_2'] == 3) {
+    echo '<button class="btn btn-warning review-btn" onclick="location.href=\'review-full-payment.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Return 2</button>';
+}
+
+
             } elseif ($status === 'canceled' || $status === 'done') {
                 // Display only the Details button for canceled and done statuses
                 echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
             } else {
+                // Display Cancel button and Details button
                 echo '<button type="button" class="btn btn-danger cancel-btn" data-reservation-id="' . $reserve_id . '" data-toggle="modal" data-target="#cancelModal">Cancel</button>';
                 echo ' ';
                 echo '<button class="btn btn-info" onclick="location.href=\'details.php?id=' . $reserve_id . '&ticketId=' . $ticketId . '\'">Details</button>';
             }
             
+            
+            
     echo '</td>';
     echo '</tr>';
-            
-            echo '</td>';
-            echo '</tr>';
+     
         }
         echo '</tbody>';
         echo '</table>';

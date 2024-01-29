@@ -66,39 +66,44 @@ if (isset($_GET['id'])) {
         exit();
     }
 
+    // Check if payment status is 'unpaid'
+    if ($bookingDetails['paymentStatus'] !== 'unpaid') {
+        // If payment status is not 'unpaid', redirect to schedule status page or show an appropriate message
+        header('Location: schedule-status.php');
+        exit();
+    }
 
-     // Now, fetch details from the 'schedule list' based on the 'event_id' from the 'car_emission' table
-     $event_id = $bookingDetails['event_id'];
+    // Now, fetch details from the 'schedule list' based on the 'event_id' from the 'car_emission' table
+    $event_id = $bookingDetails['event_id'];
 
-     $scheduleQuery = $connect->prepare("SELECT * FROM schedule_list WHERE id = ?");
-     if (!$scheduleQuery) {
-         die("Error in schedule query: " . $connect->error);
-     }
- 
-     $scheduleQuery->bind_param("i", $event_id);
-     $scheduleQuery->execute();
- 
-     $scheduleResult = $scheduleQuery->get_result();
- 
-     if (!$scheduleResult) {
-         die("Error fetching schedule details: " . $scheduleQuery->error);
-     }
- 
-     $scheduleDetails = $scheduleResult->fetch_assoc();
- 
-     // Close the schedule query statement
-     $scheduleQuery->close();
-     
-     $carPicturePath = $bookingDetails['car_picture'];
-     $userName = $bookingDetails['customer_first_name'];
+    $scheduleQuery = $connect->prepare("SELECT * FROM schedule_list WHERE id = ?");
+    if (!$scheduleQuery) {
+        die("Error in schedule query: " . $connect->error);
+    }
+
+    $scheduleQuery->bind_param("i", $event_id);
+    $scheduleQuery->execute();
+
+    $scheduleResult = $scheduleQuery->get_result();
+
+    if (!$scheduleResult) {
+        die("Error fetching schedule details: " . $scheduleQuery->error);
+    }
+
+    $scheduleDetails = $scheduleResult->fetch_assoc();
+
+    // Close the schedule query statement
+    $scheduleQuery->close();
+
+    $carPicturePath = $bookingDetails['car_picture'];
+    $userName = $bookingDetails['customer_first_name'];
 } else {
     // If 'id' parameter is not set, redirect to the schedule status page
     header('Location: schedule-status.php');
     exit();
 }
-
-
 ?>
+
 
 <!-- Rest of the HTML/PHP code for your page -->
 

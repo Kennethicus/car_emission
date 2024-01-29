@@ -1,4 +1,3 @@
-<!-- details.php -->
 <?php
 // Include necessary files and start the session
 session_start();
@@ -34,10 +33,25 @@ if (isset($_GET['id']) && isset($_GET['ticketId'])) {
 
     if ($detailsResult->num_rows === 1) {
         $details = $detailsResult->fetch_assoc();
-        // Now you have the details of the specific car emission entry and ticketId
-$event_id = $details['event_id'];
-$returnSwitch1 = $details['return_switch_1'];
-$returnReason1 = $details['return_reason1'];
+
+        // Add validation here
+        if (
+            $details['paymentStatus'] == 'pending' ||  // Condition 1
+            $details['paymentStatus'] == 'unpaid' ||   // Condition 2
+            ($details['paymentStatus'] == 'fully paid' && $details['return_switch_1'] == '2' &&  $details['return_switch_2'] == '') // Condition 3
+        ) {
+            echo "Access Denied! Reservation cannot be accessed.";
+            exit();
+        } else {
+            echo "Access Granted! Reservation can be accessed.";
+        }
+        
+
+        // Continue fetching details if validation passed
+        $event_id = $details['event_id'];
+        $returnSwitch2 = $details['return_switch_2'];
+        $returnReason2 = $details['return_reason2'];
+
         // Fetch additional schedule details where id equals $reserve_id
         $scheduleQuery = "SELECT * FROM schedule_list WHERE id = '$event_id'";
         $scheduleResult = $connect->query($scheduleQuery);
@@ -99,38 +113,38 @@ $returnReason1 = $details['return_reason1'];
                 <div class="container mt-3">
                     <div class="row d-flex justify-content-center">
                     <div>      
-    <?php if ($returnSwitch1 == 0) : ?>
+    <?php if ($returnSwitch2 == 0) : ?>
         <!-- Display warning for Pay Half/Full Now -->
         <div class="card bg-warning p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;"> 
         <p style="color: white; text-align: center; font-size: 20px;">Waiting for Payment </p>
         </div>
-    <?php elseif ($returnSwitch1 == 1) : ?>
+    <?php elseif ($returnSwitch2 == 1) : ?>
         <!-- Display On review info color -->
         <div class="card bg-info p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
         <p style="color: white; text-align: center; font-size: 20px;">Review Now</p>
         </div>
-    <?php elseif ($returnSwitch1 == 2) : ?>
+    <?php elseif ($returnSwitch2 == 2) : ?>
         <!-- Display Payment Success -->
         <div class="card bg-success p-3 mx-auto"  style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
         <p style="color: white; text-align: center; font-size: 20px;">Successful Payment</p>
         </div>
-    <?php elseif ($returnSwitch1 == 3) : ?>
+    <?php elseif ($returnSwitch2 == 3) : ?>
         <!-- Display return reason -->
         <div class="card bg-danger p-3 mx-auto" style="max-width: 1275px; margin-bottom: 10px; height: 60px;">
-            <p style="color: white; text-align: center; font-size: 20px;"><?php echo $returnReason1; ?></p>
+            <p style="color: white; text-align: center; font-size: 20px;"><?php echo $returnReason2; ?></p>
         </div>
     <?php endif; ?>
 </div>
 
                         <div class="col-lg-9 ">
-                        <input id="bookingIdInput1"  type="hidden" value="<?php echo $details['id'];  ?>" readonly> </input>
+                        <input id="bookingIdInput2"  type="hidden" value="<?php echo $details['id'];  ?>" readonly> </input>
                         <!-- <div class="col-lg-5 col-xl-4 col-xxl-4"> -->
                         <div class="">
 
 
                         <div class="card shadow mb-4">
     <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
-        <h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">PAYMENT REVIEW I</span></h6>
+        <h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">PAYMENT REVIEW II</span></h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -147,30 +161,32 @@ $returnReason1 = $details['return_reason1'];
         <?php echo strtoupper($details['customer_first_name'] . ' ' . $details['customer_middle_name'] . ' ' . $details['customer_last_name']); ?>
     </span>
 </td>
+
+
                     </tr> 
                 <tr>
                 <th><span style="font-weight: normal !important;">Ticketing ID</span></th>
-                        <th><span style="font-weight: normal !important;">Amount(PHP)</span></th>
+                <th><span style="font-weight: normal !important;">Amount(PHP)</span></th>
                     </tr>   
                     <tr>
-                    <td class="text-center" style="font-size: 23px;"><?php echo strtoupper($details['ticketing_id']); ?></td>   
-                       <td class="text-center" style="font-size: 23px;"><?php echo $details['amount']; ?></td>
-                    </tr> 
-                <tr>
-                <th><span style="font-weight: normal !important;">MV Type</span></th>
-                        <th><span style="font-weight: normal !important;">Mode of Payment</span></th>
-                    </tr>   
-                    <tr>
-                    <td class="text-center" style="font-size: 23px;"><?php echo strtoupper($details['mv_type']); ?></td>
-                       <td class="text-center" style="font-size: 23px;"><?php echo strtoupper($details['paymentMethod']); ?></td>
+                    <td class="text-center" style="font-size: 23px;"><?php echo strtoupper($details['ticketing_id']); ?></td>
+                    <td class="text-center" style="font-size: 23px;"><?php echo $details['amount']; ?></td>
                     </tr>  
                 <tr>
-                <th><span style="font-weight: normal !important;">Date</span></th>
-                        <th><span style="font-weight: normal !important;">Payment Status</span></th>
+                <th><span style="font-weight: normal !important;">MV Type</span></th>
+                <th><span style="font-weight: normal !important;">Mode of Payment</span></th>  
+                    </tr>
+                    <tr>
+                    <td class="text-center" style="font-size: 23px;"><?php echo strtoupper($details['mv_type']); ?></td>
+                    <td class="text-center" style="font-size: 23px;"><?php echo strtoupper($details['paymentMethod2']); ?></td>
+                    </tr>
+                    <tr>
+                    <th><span style="font-weight: normal !important;">Date</span></th>
+                    <th><span style="font-weight: normal !important;">Payment Status</span></th>
                     </tr>
                     <tr>
                     <td class="text-center" style="font-size: 23px;"><?php echo date('M. j, Y', strtotime( $scheduleDetails['start_datetime'])); ?></td>
-                        <td class="text-center" style="color: <?php
+                    <td class="text-center" style="color: <?php
                             // Set color based on payment status
                             switch ($details['paymentStatus']) {
                                 case 'unpaid':
@@ -185,12 +201,12 @@ $returnReason1 = $details['return_reason1'];
                         ?>;font-size: 23px;"><?php echo strtoupper($details['paymentStatus']); ?></td>
                     </tr>
                     <tr>
-                    <th><span style="font-weight: normal !important;">Time</span></th>
+                        <th><span style="font-weight: normal !important;">Time</span></th>
                         <th><span style="font-weight: normal !important;">Book Status</span></th>
-                    </tr>
+                    </tr>   
                     <tr>
                     <td class="text-center" style="font-size: 23px;"><?php echo date('g:ia', strtotime( $scheduleDetails['start_datetime'])) . ' to ' . date('g:ia', strtotime( $scheduleDetails['end_datetime'])); ?></td>
-                        <td class="text-center" style="color: <?php
+                    <td class="text-center" style="color: <?php
                             // Set color based on payment status
                             switch ($details['status']) {
                                 case 'booked':
@@ -206,23 +222,24 @@ $returnReason1 = $details['return_reason1'];
                                     echo 'black'; // Default color if none of the above matches
                             }
                         ?>;font-size: 23px;"><?php echo strtoupper($details['status']); ?></td>
-                    </tr>
-                    <tr>
-                    <th><span style="font-weight: normal !important;">Amount Paid</span></th>
-                        <th><span style="font-weight: normal !important;">Reference No.</span></th>
-                    </tr>   
-                    <tr>
-                    <td class="text-center" style="font-size: 23px;"><?php echo !empty($details['payAmount1']) ? $details['payAmount1'] : '0'; ?></td>
-                    <td class="text-center" style="font-size: 23px;"><?php echo !empty($details['reference1']) ? $details['reference1'] : '0'; ?></td>
                        <tr>
-
-    <th><span style="font-weight: normal !important;">Payment Receipt</span></th>
+    <th><span style="font-weight: normal !important;">Amount Paid I</span></th>
+    <th><span style="font-weight: normal !important;">Reference No. II</span></th>
 </tr>
 <tr>
+<td class="text-center" style="font-size: 23px;"><?php echo !empty($details['payAmount1']) ? $details['payAmount1'] : '0'; ?></td>
+<td class="text-center" style="font-size: 23px;"><?php echo !empty($details['reference2']) ? $details['reference2'] : '0'; ?></td>
+</tr>
 
+<tr>
+    <th><span style="font-weight: normal !important;">Amount Paid II</span></th>
+    <th><span style="font-weight: normal !important;">Payment Receipt II</span></th>
+</tr>
+<tr>
+<td class="text-center" style="font-size: 23px;"><?php echo !empty($details['payAmount2']) ? $details['payAmount2'] : '0'; ?></td>
     <td class="text-center">
         <!-- Make "View Payment Receipt" a button with btn-primary class -->
-        <button id="viewReceiptButton1" type="button" class="btn btn-primary" onclick="viewPaymentReceipt()">View Payment Receipt</button>
+        <button type="button" class="btn btn-primary" onclick="viewPaymentReceipt()">View Payment Receipt</button>
     </td>
 </tr>
                 </tbody>
@@ -251,7 +268,7 @@ $returnReason1 = $details['return_reason1'];
 
 <script>
 function previewReceipt() {
-    var input = document.getElementById('paymentImage1'); // Corrected ID here
+    var input = document.getElementById('paymentImage2'); // Corrected ID here
     var file = input.files[0];
     var reader = new FileReader();
     reader.onload = function (e) {
@@ -276,7 +293,7 @@ function previewReceipt() {
 
 <div class="card shadow mb-4">
 <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--bs-success-text-emphasis);">
-<h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">PAYMENT DETAIL I</span></h6>
+<h6 class="text-primary fw-bold m-0" style="background: Transparent;"><span style="color: rgb(244, 248, 244);">PAYMENT DETAIL II</span></h6>
 </div>
 <div class="card-body">
 <div class="table-responsive">
@@ -321,7 +338,7 @@ function previewReceipt() {
 <tr>
 <td style="text-align: center;">
   <div style="margin-bottom: 10px;">
-      <input type="file" class="form-control" id="paymentImage1" accept="image/*">
+      <input type="file" class="form-control" id="paymentImage2" accept="image/*">
   </div>
   <div>
       <button type="button" class="btn btn-primary" onclick="previewReceipt()">Preview Payment Picture</button>
@@ -329,10 +346,10 @@ function previewReceipt() {
 </td>
 </tr>
   <tr>
-      <th><span style="font-weight: normal !important;">Reference No.</span></th>
+      <th><span style="font-weight: normal !important;">Reference No. II</span></th>
   </tr>
   <td class="text-center">
-<input type="text" id="referenceNumberInput" class="form-control" style="font-size: normal;" value="<?php echo $details['reference1']; ?>">
+<input type="text" id="referenceNumberInput2" class="form-control" style="font-size: normal;" value="<?php echo $details['reference2']; ?>">
 </td>
 
 </tbody>
@@ -345,7 +362,7 @@ function previewReceipt() {
     // Function to check the payment method and update account details
     function updatePaymentMethodAndDetails() {
         // Get the payment method from PHP
-        var paymentMethod = "<?php echo $details['paymentMethod']; ?>";
+        var paymentMethod = "<?php echo $details['paymentMethod2']; ?>";
 
         // Check the payment method and update accordingly
         if (paymentMethod === 'paymaya') {
@@ -371,7 +388,7 @@ function previewReceipt() {
 </script>
 <script>
     // Get the payment lock status from PHP
-    var paymentLockStatus = <?php echo $returnSwitch1; ?>;
+    var paymentLockStatus = <?php echo $returnSwitch2; ?>;
 
     // Function to disable elements if paymentLock1 equals 1
     function disableElementsIfLocked() {
@@ -511,12 +528,12 @@ alert('Copied to clipboard: ' + text);
                     <input class="form-check-input" type="checkbox" value="Invalid payment receipt" id="returnInvalidPaymentReceipt">
                     <label class="form-check-label" for="returnInvalidPaymentReceipt">Invalid payment receipt</label>
                 </div>
-            
+                
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="Duplicate payment receipt" id="returnDuplicatePayment">
                     <label class="form-check-label" for="returnDuplicatePayment">Duplicate payment receipt</label>
                 </div>
-            
+                
               
             </div>
             <div class="modal-footer">
@@ -543,21 +560,13 @@ alert('Copied to clipboard: ' + text);
 
 
     <script>
-  function viewPaymentReceipt() {
-        // Get the payment receipt image path
-        var paymentReceiptImagePath = '<?php echo isset($details["receipt1"]) ? "../uploads/receipt-image/" . $details["receipt1"] : ""; ?>';
+    function viewPaymentReceipt() {
+        // Set the src attribute of the img tag to the payment receipt image path
+        var paymentReceiptImagePath = '../uploads/receipt-image/<?php echo $details['receipt2']; ?>';
+        $('#paymentReceiptImage').attr('src', paymentReceiptImagePath);
 
-        // If payment receipt image path is empty, disable the button
-        if (paymentReceiptImagePath === '') {
-            // Disable the button
-            $('#viewReceiptButton1').prop('disabled', true);
-        } else {
-            // Set the src attribute of the img tag to the payment receipt image path
-            $('#paymentReceiptImage').attr('src', paymentReceiptImagePath);
-
-            // Show the modal
-            $('#paymentReceiptModal').modal('show');
-        }
+        // Show the modal
+        $('#paymentReceiptModal').modal('show');
     }
 </script>
 
@@ -609,12 +618,12 @@ function confirmReturnPayment() {
     });
 
     // Perform actions to return the payment here
-    var bookingId = $('#bookingIdInput1').val(); // Get the booking ID
-    var referenceNumber = $('#referenceNumberInput').val(); // Get the reference number
+    var bookingId = $('#bookingIdInput2').val(); // Get the booking ID
+    var referenceNumber = $('#referenceNumberInput2').val(); // Get the reference number
     
     // Send an AJAX request to update the payment status
     $.ajax({
-        url: 'return_payment1.php', // Specify the PHP file to handle the return payment process
+        url: 'return_payment2.php', // Specify the PHP file to handle the return payment process
         type: 'POST',
         data: { 
             bookingId: bookingId, 
@@ -645,7 +654,7 @@ function confirmReturnPayment() {
     // JavaScript function to handle the "Paid" button click
     function PaidFunction() {
         // Get the receipt image path
-        var receiptImagePath = '../uploads/receipt-image/<?php echo $details['receipt1']; ?>';
+        var receiptImagePath = '../uploads/receipt-image/<?php echo $details['receipt2']; ?>';
 
         // Set the src attribute of the img tag to the receipt image path
         $('#receiptImage').attr('src', receiptImagePath);
@@ -663,7 +672,7 @@ function confirmReturnPayment() {
 
         // Make an AJAX request to the PHP script for updating the paid amount
         $.ajax({
-            url: 'update_paid_amount1.php', // Replace with the actual path to your PHP script
+            url: 'update_paid_amount2.php', // Replace with the actual path to your PHP script
             method: 'POST',
             data: {
                 reserveId: <?php echo $reserve_id; ?>,
@@ -690,14 +699,14 @@ function confirmReturnPayment() {
 
 <script>
 function savePayment1() {
-    var bookingId = $('#bookingIdInput1').val();
-    var referenceNumber = document.getElementById('referenceNumberInput').value;
+    var bookingId = $('#bookingIdInput2').val();
+    var referenceNumber = document.getElementById('referenceNumberInput2').value;
     var paymentMethodRadio = document.querySelector('input[name="payment_method"]:checked');
 
     // Check if a payment method radio button is selected
     var paymentMethod = paymentMethodRadio ? paymentMethodRadio.value : '';
 
-    var paymentImage = document.getElementById('paymentImage1').files[0];
+    var paymentImage = document.getElementById('paymentImage2').files[0];
     // Check if paymentImage is null
     paymentImage = paymentImage ? paymentImage : '';
 
@@ -709,7 +718,7 @@ function savePayment1() {
 
     // Send AJAX request
     $.ajax({
-        url: 'update-save-payment-1.php',
+        url: 'update-save-payment-2.php',
         type: 'POST',
         data: formData,
         contentType: false,
