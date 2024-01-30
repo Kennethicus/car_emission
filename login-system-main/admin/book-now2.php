@@ -223,7 +223,7 @@ Motorcycle w/o sidecar"></i>
     </div>
     <!-- Event Details Modal -->
 
-
+            </div>
 
             </div>
        <?php include 'partials/footer.php' ?>

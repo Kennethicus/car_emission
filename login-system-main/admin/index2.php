@@ -1,6 +1,26 @@
 <?php
+// Include necessary files and start the session
+session_start();
 include("../connect/connection.php");
 
+// Check if the admin is logged in, if not, redirect to the login page
+if (!isset($_SESSION['admin'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
+// Fetch admin details based on the session information (you may customize this part)
+$username = $_SESSION['admin'];
+$query = "SELECT * FROM smurf_admin WHERE username = '$username'";
+$result = $connect->query($query);
+
+if ($result->num_rows == 1) {
+    $admin = $result->fetch_assoc();
+} else {
+    // Handle the case where admin details are not found
+    echo "Admin details not found!";
+    exit();
+}
 
 // Fetch scheduled time slots from the database
 $sql = "SELECT start_datetime AS start, end_datetime AS end FROM schedule_list";
@@ -75,6 +95,7 @@ if (isset($_POST['insert_day'])) {
 ?>
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,6 +112,17 @@ if (isset($_POST['insert_day'])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
+
+
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/animate.min.css">
+   
+  
+    <link rel="stylesheet" href="assets/css/Continue-Button.css">
+
+   
   <!-- <style>
     .fc-toolbar.fc-header-toolbar .fc-left,
     .fc-toolbar.fc-header-toolbar .fc-right {
@@ -106,8 +138,8 @@ if (isset($_POST['insert_day'])) {
 <style>
     /* Adjust the position of the entire datepicker dropdown */
     .datepicker-dropdown {
-        top: 160px !important;
-        left: 830px !important;
+        top: 230px !important;
+        left: 970px !important;
         z-index: 10;
         display: block;
     }
@@ -122,39 +154,39 @@ if (isset($_POST['insert_day'])) {
 </style>
 
 </head>
-<body>
-    
+<body id="page-top">
+<div id="wrapper">
+<?php include 'partials/nav.php'?>
+<div class="d-flex flex-column" id="content-wrapper">
+<div id="content">
+<?php include 'partials/nav-2.php' ?>
 <div class="container mt-5">
     <div class="row">
     <div class="col-md-8">
 
     <div class="row">
-        <div class="">
-            <!-- Insert Day Form -->
-            <div class="mt-3">
+    <div class="col-md-6">
+        <!-- Insert Day Form -->
+        <div class="mt-3">
             <form method="post" id="insertDeleteDayForm">
-    <input type="date" name="selected_date" required>
-    <button type="submit" name="action" value="insert_day" class="btn btn-primary">Insert Day</button>
-    <button type="submit" name="action" value="delete_day" class="btn btn-danger">Delete Day</button>
-</form>
-
-
-            </div>
-        </div>
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <div class="">
-            <!-- Insert/Delete Month Form -->
-            <div class="mt-3  mb-3">
-                <form method="post" id="insertDeleteForm">
-                    <button type="submit" id="insertMonthBtn" class="btn btn-primary">Insert Month</button>
-                   
-                    <button type="submit" id="deleteMonthBtn" class="btn btn-danger">Delete Month</button>
-                    <!-- Add a custom class to style the month input separately -->
-                    <input type="month" name="month" id="monthInput" class="form-control month-input" required>
-                </form>
-            </div>
+                <input type="date" name="selected_date" required>
+                <button type="submit" name="action" value="insert_day" class="btn btn-primary">Insert Day</button>
+                <button type="submit" name="action" value="delete_day" class="btn btn-danger">Delete Day</button>
+            </form>
         </div>
     </div>
+    <div class="col-md-6">
+        <!-- Insert/Delete Month Form -->
+        <div class="mt-3 mb-3">
+            <form method="post" id="insertDeleteForm">
+                <button type="submit" id="insertMonthBtn" class="btn btn-primary">Insert Month</button>
+                <button type="submit" id="deleteMonthBtn" class="btn btn-danger">Delete Month</button>
+                <!-- Add a custom class to style the month input separately -->
+                <input type="month" name="month" id="monthInput" class="form-control month-input" required>
+            </form>
+        </div>
+    </div>
+</div>
 
     <!-- Display the calendar here -->
     <div class="row">
@@ -325,8 +357,14 @@ Motorcycle w/o sidecar"></i>
             </div>
         </div>
     </div>
+</div></div>
+<?php include 'partials/footer.php' ?>
+</div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 </div>
-
+<script src="../app/assets/js/script.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/chart.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
 <script>
 $(document).ready(function () {
     // Function to handle form submission via AJAX

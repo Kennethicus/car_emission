@@ -58,9 +58,7 @@ $doneResult = $connect->query($doneQuery);
 
 
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.7/css/buttons.dataTables.min.css">
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.7/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.7/js/buttons.print.min.js"></script>
+   
 
     <style>
   #reservationIdDisplay {
@@ -311,13 +309,13 @@ $doneResult = $connect->query($doneQuery);
 
 
        // Store the reservation ID when the Cancel link is clicked
-var cancelReservationId;
+
 
 // Handle Cancel link click
 // Handle Cancel button click
 $('.cancel-btn').on('click', function () {
     // Get the reservation ID from the data attribute
-    var cancelReservationId = $(this).data('reservation-id');
+    cancelReservationId = $(this).data('reservation-id');
 
     // Display the reservation ID in the modal
     $('#reservationIdDisplay').text(cancelReservationId);
@@ -347,7 +345,16 @@ $('.cancel-btn').on('click', function () {
 
 // Handle cancel confirmation
 $('#confirmCancelBtn').on('click', function () {
-    // Close the modal
+    // Check if cancelReservationId is defined
+    if (typeof cancelReservationId !== 'undefined') {
+                // Get cancellation reason and admin ID
+                var cancellationReason = $('#cancellationReason').val();
+                var adminId = $('#adminId').val();
+
+                // Rest of your code...
+            } else {
+                alert('Reservation ID is not defined.');
+            }
     $('#cancelModal').modal('hide');
 
     // Perform the cancel action (you can implement the cancellation logic here)
